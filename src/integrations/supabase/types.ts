@@ -14,7 +14,135 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      daily_readings: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          reading_date: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          reading_date: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          reading_date?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      journal_entries: {
+        Row: {
+          content: string
+          created_at: string
+          entry_date: string
+          id: string
+          mood: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          entry_date?: string
+          id?: string
+          mood?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          entry_date?: string
+          id?: string
+          mood?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          birth_date: string
+          birth_lat: number | null
+          birth_lng: number | null
+          birth_place: string
+          birth_time: string | null
+          chart_summary: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          moon_sign: string | null
+          rising_sign: string | null
+          sun_sign: string | null
+          timezone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          birth_date: string
+          birth_lat?: number | null
+          birth_lng?: number | null
+          birth_place: string
+          birth_time?: string | null
+          chart_summary?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          moon_sign?: string | null
+          rising_sign?: string | null
+          sun_sign?: string | null
+          timezone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          birth_date?: string
+          birth_lat?: number | null
+          birth_lng?: number | null
+          birth_place?: string
+          birth_time?: string | null
+          chart_summary?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          moon_sign?: string | null
+          rising_sign?: string | null
+          sun_sign?: string | null
+          timezone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
