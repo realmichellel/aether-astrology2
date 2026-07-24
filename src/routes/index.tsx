@@ -6,10 +6,18 @@ export const Route = createFileRoute("/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Ephemeris — Minimalist AI Astrology" },
-      { name: "description", content: "A minimalist astrology practice. Daily readings drawn from your birth chart, the sky today, and your own words." },
-      { property: "og:title", content: "Ephemeris — Minimalist AI Astrology" },
-      { property: "og:description", content: "Daily readings drawn from your birth chart, the sky today, and your own words." },
+      { title: "Aeterna — A quiet astrologer" },
+      {
+        name: "description",
+        content:
+          "Aeterna reads the sky as it moves over you — a personal AI astrologer trained on your natal chart, real planetary transits, and the record you keep of your own life.",
+      },
+      { property: "og:title", content: "Aeterna — A quiet astrologer" },
+      {
+        property: "og:description",
+        content:
+          "A personal AI astrologer trained on your natal chart, real planetary transits, and your own chronicle.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -28,57 +36,82 @@ function Landing() {
     });
   }, [navigate]);
 
-  if (checking) return <div className="min-h-screen" />;
+  if (checking) return <div className="min-h-screen bg-background" />;
 
   return (
-    <main className="relative min-h-screen overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 opacity-40" style={{
-        backgroundImage: "radial-gradient(circle at 20% 20%, rgba(200,170,90,0.08), transparent 50%), radial-gradient(circle at 80% 60%, rgba(200,170,90,0.05), transparent 50%)",
-      }} />
+    <div className="min-h-screen bg-background text-foreground selection:bg-accent/30 selection:text-primary-foreground">
+      <nav className="flex items-center justify-between px-8 py-6 border-b border-border">
+        <div className="text-xl font-serif italic tracking-widest text-accent">AETERNA</div>
+        <Link
+          to="/auth"
+          className="text-[10px] uppercase tracking-[0.2em] font-medium text-muted-foreground hover:text-foreground transition-colors"
+        >
+          Sign in
+        </Link>
+      </nav>
 
-      <header className="relative z-10 mx-auto flex max-w-5xl items-center justify-between px-6 py-6">
-        <span className="text-eyebrow text-foreground">Ephemeris</span>
-        <Link to="/auth" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-gold">Sign in</Link>
-      </header>
-
-      <section className="relative z-10 mx-auto max-w-3xl px-6 pt-24 pb-32">
-        <p className="text-eyebrow">A minimalist astrology practice</p>
-        <h1 className="text-display mt-8 text-5xl sm:text-7xl">
-          The sky is a mirror.<br />
-          <span className="text-gold">Read it daily.</span>
+      <main className="max-w-4xl mx-auto px-8 pt-32 pb-24">
+        <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-8">
+          A personal astrologer
+        </p>
+        <h1 className="font-serif text-6xl md:text-7xl font-light leading-[1.05] mb-10 max-w-3xl">
+          Your fate is written
+          <br />
+          <span className="italic">in the silent movements.</span>
         </h1>
-        <p className="mt-8 max-w-lg font-serif text-xl text-muted-foreground">
-          Ephemeris draws your chart, tracks the planets, and reads them against what you're actually living.
-          One paragraph a day. No horoscopes for millions.
+        <p className="max-w-xl text-lg text-stone-400 leading-relaxed mb-14">
+          Aeterna reads the sky as it moves over you. A natal chart, the current
+          transits, and the record you keep of your own life — synthesized into
+          a daily reading, and a conversation you can return to.
         </p>
 
-        <div className="mt-16 flex items-center gap-6">
+        <div className="flex flex-wrap items-center gap-6">
           <Link
             to="/auth"
-            className="border border-gold bg-gold px-6 py-3 text-sm font-medium"
-            style={{ color: "var(--background)" }}
+            className="bg-accent text-primary-foreground py-4 px-10 font-serif italic text-lg hover:bg-stone-100 transition-colors"
           >
-            Begin with Google
+            Enter the observatory
           </Link>
-          <span className="text-eyebrow">Free. Private. Quiet.</span>
+          <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+            Free while in early orbit
+          </span>
         </div>
 
-        <div className="mt-32 grid grid-cols-1 gap-10 border-t border-border pt-12 sm:grid-cols-3">
-          <Feature n="I" title="Your chart" body="Enter your birth details. We draw the sky as it was." />
-          <Feature n="II" title="Today's reading" body="A daily paragraph — chart, transits, and your own notes." />
-          <Feature n="III" title="The astrologer" body="A conversational AI that remembers what you've told it." />
+        <div className="mt-32 grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-border pt-14">
+          <FeatureBlock
+            index="I"
+            title="Natal chart"
+            body="Enter your birth date, time, and city. Aeterna computes your chart and grounds every reading in it."
+          />
+          <FeatureBlock
+            index="II"
+            title="Daily reading"
+            body="A short, specific reading each day, drawn from your chart, the current transits, and the notes you've been leaving yourself."
+          />
+          <FeatureBlock
+            index="III"
+            title="The Oracle"
+            body="A conversational astrologer that remembers your placements. Ask it anything — a decision, a dream, a passing worry."
+          />
         </div>
-      </section>
-    </main>
+      </main>
+
+      <footer className="py-12 border-t border-border">
+        <div className="max-w-6xl mx-auto px-8 flex justify-between items-center text-[10px] uppercase tracking-widest text-muted-foreground">
+          <div>© Aeterna</div>
+          <div>An observatory for one</div>
+        </div>
+      </footer>
+    </div>
   );
 }
 
-function Feature({ n, title, body }: { n: string; title: string; body: string }) {
+function FeatureBlock({ index, title, body }: { index: string; title: string; body: string }) {
   return (
     <div>
-      <p className="font-serif text-3xl text-gold">{n}</p>
-      <p className="mt-3 text-eyebrow">{title}</p>
-      <p className="mt-3 text-sm text-muted-foreground">{body}</p>
+      <div className="text-[10px] uppercase tracking-[0.3em] text-accent mb-3">{index}</div>
+      <h3 className="font-serif italic text-2xl mb-3">{title}</h3>
+      <p className="text-sm text-stone-400 leading-relaxed">{body}</p>
     </div>
   );
 }
