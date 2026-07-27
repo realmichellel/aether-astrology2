@@ -21,6 +21,9 @@ export function AppNav() {
         <Link to="/dashboard" className="text-muted-foreground hover:text-foreground transition-colors">
           Today
         </Link>
+        <Link to="/you" className="text-muted-foreground hover:text-foreground transition-colors">
+          You
+        </Link>
         <Link to="/chat" className="text-muted-foreground hover:text-foreground transition-colors">
           Oracle
         </Link>

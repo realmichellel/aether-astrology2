@@ -86,6 +86,7 @@ function Dashboard() {
               </div>
             </div>
           )}
+          
         </section>
 
         <section className="mb-24">
