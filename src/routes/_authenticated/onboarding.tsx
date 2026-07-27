@@ -34,7 +34,7 @@ function Onboarding() {
     setError(null);
     setBusy(true);
     try {
-      await save({ data: { ...form, birth_time: form.birth_time || null } });
+      await save({ data: form });
       navigate({ to: "/dashboard", replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
@@ -51,8 +51,9 @@ function Onboarding() {
           When and where <span className="italic">did you arrive?</span>
         </h1>
         <p className="text-stone-400 mb-12 max-w-lg">
-          The sky at the moment of your birth is the map Aeterna reads from. Be as precise as you can —
-          the time in particular shapes your ascendant.
+          The sky at the moment of your birth is the map Aeterna reads from. All three fields below
+          are required — the exact time in particular is what fixes your rising sign and houses; an
+          approximate time will place them in the wrong sign.
         </p>
 
         <form onSubmit={submit} className="space-y-8">
@@ -72,10 +73,11 @@ function Onboarding() {
               required
             />
             <Field
-              label="Birth time (optional)"
+              label="Birth time"
               value={form.birth_time}
               onChange={(v) => setForm({ ...form, birth_time: v })}
               type="time"
+              required
             />
           </div>
           <Field
@@ -85,6 +87,10 @@ function Onboarding() {
             placeholder="e.g. Casablanca, Morocco"
             required
           />
+          <p className="text-xs text-muted-foreground -mt-2">
+            Don't know your exact birth time? Check your birth certificate or ask family — it's the
+            one detail we can't approximate our way around.
+          </p>
 
           {error && (
             <p className="text-sm text-destructive-foreground bg-destructive/20 border border-destructive/40 px-4 py-2">
