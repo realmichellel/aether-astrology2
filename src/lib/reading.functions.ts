@@ -59,12 +59,9 @@ export const getDailyReading = createServerFn({ method: "POST" })
 
     const { text } = await generateText({
       model: gateway("openai/gpt-5.5"),
+      system:
+        "You are a minimalist, poetic astrologer in the vein of Co-Star. Write in short, unadorned, sometimes provocative sentences. No emojis. No exclamation marks. Second person. 90-140 words.",
       messages: [
-        {
-          role: "system",
-          content:
-            "You are a minimalist, poetic astrologer in the vein of Co-Star. Write in short, unadorned, sometimes provocative sentences. No emojis. No exclamation marks. Second person. 90-140 words.",
-        },
         {
           role: "user",
           content: `Write today's reading (${date}) for ${profile.full_name}.
