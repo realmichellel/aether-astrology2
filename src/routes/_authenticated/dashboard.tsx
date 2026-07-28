@@ -18,6 +18,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 });
 
 type Entry = { id: string; entry_date: string; mood: string | null; content: string; created_at: string };
+type Reading = { headline: string; body: string; dos: string[]; donts: string[] };
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ function Dashboard() {
   const loadEntries = useServerFn(listJournal);
 
   const [profile, setProfile] = useState<any>(null);
-  const [reading, setReading] = useState<string>("");
+  const [reading, setReading] = useState<Reading | null>(null);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -86,7 +87,6 @@ function Dashboard() {
               </div>
             </div>
           )}
-          
         </section>
 
         <section className="mb-24">
@@ -101,11 +101,44 @@ function Dashboard() {
               </div>
             ) : error ? (
               <div className="text-destructive-foreground">{error}</div>
-            ) : (
-              <p className="font-serif text-2xl md:text-3xl font-light leading-snug italic text-stone-200 whitespace-pre-wrap">
-                {reading}
-              </p>
-            )}
+            ) : reading ? (
+              <>
+                <h2 className="font-serif text-2xl md:text-3xl font-semibold leading-snug text-stone-100 mb-4">
+                  {reading.headline}
+                </h2>
+                <p className="text-base md:text-lg font-light leading-relaxed text-stone-400 mb-8">
+                  {reading.body}
+                </p>
+                {(reading.dos.length > 0 || reading.donts.length > 0) && (
+                  <div className="grid grid-cols-2 gap-8 pt-6 border-t border-border">
+                    <div>
+                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-3">
+                        Do
+                      </div>
+                      <ul className="space-y-2">
+                        {reading.dos.map((item, i) => (
+                          <li key={i} className="text-stone-200">
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-3">
+                        Don't
+                      </div>
+                      <ul className="space-y-2">
+                        {reading.donts.map((item, i) => (
+                          <li key={i} className="text-stone-200">
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : null}
           </div>
         </section>
 
@@ -154,41 +187,22 @@ function Dashboard() {
                 Log your first mood or moment to give Aeterna context.
               </Link>
             ) : (
-              <>
-                <Link to="/journal" className="block group border border-border bg-surface p-6 hover:border-accent/40 transition-colors">
-                  <div className="flex justify-between text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
-                    <span>Most recent</span>
+              entries.slice(0, 4).map((e) => (
+                <Link key={e.id} to="/journal" className="block group">
+                  <div className="flex justify-between text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">
                     <span>
-                      {new Date(entries[0].created_at).toLocaleDateString("en-US", {
+                      {new Date(e.created_at).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
                       })}
-                      {entries[0].mood && <span className="text-accent ml-2">· {entries[0].mood}</span>}
                     </span>
+                    {e.mood && <span>{e.mood}</span>}
                   </div>
-                  <p className="font-serif italic text-xl text-stone-200 leading-snug group-hover:text-accent transition-colors">
-                    {entries[0].content.length > 220
-                      ? entries[0].content.slice(0, 220) + "…"
-                      : entries[0].content}
-                  </p>
+                  <div className="text-lg font-serif italic text-stone-300 group-hover:text-accent transition-colors">
+                    {e.content.length > 70 ? e.content.slice(0, 70) + "…" : e.content}
+                  </div>
                 </Link>
-                {entries.slice(1, 4).map((e) => (
-                  <Link key={e.id} to="/journal" className="block group">
-                    <div className="flex justify-between text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">
-                      <span>
-                        {new Date(e.created_at).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </span>
-                      {e.mood && <span>{e.mood}</span>}
-                    </div>
-                    <div className="text-lg font-serif italic text-stone-300 group-hover:text-accent transition-colors">
-                      {e.content.length > 70 ? e.content.slice(0, 70) + "…" : e.content}
-                    </div>
-                  </Link>
-                ))}
-              </>
+              ))
             )}
           </div>
         </section>
