@@ -89,17 +89,24 @@ export const getDailyReading = createServerFn({ method: "POST" })
       - Minimalist and existential, avoiding generic cheerleader "horoscope" cliché advice.
       - Use sharp, evocative imagery and real-life metaphors.
       - Never use exclamation points or fluffy language. Do not include the user's name.
-      - Dos and Donts rules: include both purely emotional or abstract advice (e.g. "Force clarity", "Find inner peace", "Move slowly"), 
-      as well as concrete and specific advice that anchor items in tangible physical objects, sensory details, mundane habits, pop culture/tech actions, or specific interactions (e.g. "sticky lip gloss", 
-      "iced espresso", "voicemails", "the group chat", "scrolling past 1 AM", "unmatching", "heavy denim", "second guessing a compliment", "buying green tea". Try to mix categories across the items.
-      - NO CONTRADICTIONS: Ensure none of the items under "Dos" contradict or overlap in meaning with items under "Don'ts" (e.g., do not say "Do: Text back fast" while also saying "Don't: Rush your replies").
+    
 
       Shape:
       {"headline": string, "body": string, "dos": string[], "donts": string[]}
       - headline: A short, intriguing 3 to 6-word phrase, second person (e.g., "Stop negotiating with your instincts.", "Solitude is not a performance.").
-      - body: A short paragraph (3-4 sentences) exploring the emotional theme of the day, second person, focusing on tension, vulnerability, or self-awareness, do not explicitly mention astrological signs.
+      - body: A short paragraph (3-4 sentences) exploring the emotional theme of the day, second person, focusing on tension, vulnerability, human interactions, atmosphere, or self-awareness, do not explicitly mention astrological signs.
       - dos: exactly 3 short phrases (1-3 words each) — things to lean into today.
-      - donts: exactly 3 short phrases (1-3 words each) — things to avoid today.`,
+      - donts: exactly 3 short phrases (1-3 words each) — things to avoid today.
+      
+      Writing rules for body:
+      - MINIMIZE ASTROLOGY JARGON: Do NOT explicitly name planets or signs in every sentence (e.g., limit or eliminate phrases like "Your Scorpio Moon..." or "Venus in Capricorn..."). Translate the astrological energetic meaning into human feeling, imagery, and mood instead.
+      
+      Writing rules for dos and donts:
+      - Include both purely emotional or abstract advice (e.g. "Force clarity", "Find inner peace", "Move slowly"), 
+      as well as concrete and specific advice that anchor items in tangible physical objects, sensory details, mundane habits, pop culture/tech actions, or specific interactions (e.g. "sticky lip gloss", 
+      "iced espresso", "voicemails", "the group chat", "scrolling past 1 AM", "unmatching", "heavy denim", "second guessing a compliment", "buying green tea". 
+      - Try to mix categories across the items.
+      - NO CONTRADICTIONS: Ensure none of the items under "Dos" contradict or overlap in meaning with items under "Don'ts" (e.g., do not say "Do: Text back fast" while also saying "Don't: Rush your replies").`,
         messages: [
           {
             role: "user",
