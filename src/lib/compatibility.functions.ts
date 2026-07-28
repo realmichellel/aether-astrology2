@@ -109,8 +109,8 @@ Output the response in clean JSON with exactly this shape:
       prompt,
     });
 
-    const report = parseJson(text) as Record<string, unknown>;
-    return { report, person1, person2 };
+    const reportJson = JSON.stringify(parseJson(text));
+    return { reportJson, person1, person2 };
   });
 
 function extractSign(summary: string | null, body: string): string {

@@ -58,12 +58,12 @@ function CompatibilityPage() {
     setError(null);
     setBusy(true);
     try {
-      const r = (await run({ data: form })) as {
-        report: Report;
-        person1: Placements;
-        person2: Placements;
-      };
-      setResult(r);
+      const r = await run({ data: form });
+      setResult({
+        report: JSON.parse(r.reportJson) as Report,
+        person1: r.person1,
+        person2: r.person2,
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
