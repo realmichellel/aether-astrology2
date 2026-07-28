@@ -109,7 +109,7 @@ Output the response in clean JSON with exactly this shape:
       prompt,
     });
 
-    const report = parseJson(text);
+    const report = parseJson(text) as Record<string, unknown>;
     return { report, person1, person2 };
   });
 
