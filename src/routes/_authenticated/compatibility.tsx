@@ -158,11 +158,11 @@ function ReportView({
         <div className="flex justify-center gap-12 mt-8 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
           <div>
             <div className="text-accent mb-1">{person1.name}</div>
-            <div>☉ {person1.sun} · ☾ {person1.moon} · ASC {person1.rising}</div>
+            <div>☉ {person1.sun} · ☾ {person1.moon} · ↑ {person1.rising}</div>
           </div>
           <div>
             <div className="text-accent mb-1">{person2.name}</div>
-            <div>☉ {person2.sun} · ☾ {person2.moon} · ASC {person2.rising}</div>
+            <div>☉ {person2.sun} · ☾ {person2.moon} · ↑ {person2.rising}</div>
           </div>
         </div>
       </section>
