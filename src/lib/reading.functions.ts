@@ -7,6 +7,12 @@ function today(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+// Returns a YYYY-MM-DD string `daysAgo` days before today (UTC).
+function dateNDaysAgo(daysAgo: number): string {
+  const d = new Date();
+  d.setUTCDate(d.getUTCDate() - daysAgo);
+  return d.toISOString().slice(0, 10);
+}
 // Rough planetary transit summary — deterministic seed so AI has variety without external calls.
 function planetarySnapshot(date: string): string {
   const d = new Date(date + "T00:00:00Z");
@@ -79,14 +85,19 @@ export const getDailyReading = createServerFn({ method: "POST" })
         model: gateway("openai/gpt-5.5"),
         system: `You are a modern astrologer writing a daily reading in the style of Co-Star Astrology.
       Tone Guidelines:
-      - Concise, slightly stark, poetic, and direct.
+      - Concise, slightly stark, poetic, slightly surreal, and direct.
       - Minimalist and existential, avoiding generic cheerleader "horoscope" cliché advice.
       - Use sharp, evocative imagery and real-life metaphors.
       - Never use exclamation points or fluffy language. Do not include the user's name.
+      - Dos and Donts rules: include both purely emotional or abstract advice (e.g. "Force clarity", "Find inner peace", "Move slowly"), 
+      as well as concrete and specific advice that anchor items in tangible physical objects, sensory details, mundane habits, pop culture/tech actions, or specific interactions (e.g. "sticky lip gloss", 
+      "iced espresso", "voicemails", "the group chat", "scrolling past 1 AM", "unmatching", "heavy denim", "second guessing a compliment", "buying green tea". Try to mix categories across the items.
+      - NO CONTRADICTIONS: Ensure none of the items under "Dos" contradict or overlap in meaning with items under "Don'ts" (e.g., do not say "Do: Text back fast" while also saying "Don't: Rush your replies").
+
       Shape:
       {"headline": string, "body": string, "dos": string[], "donts": string[]}
       - headline: A short, intriguing 3 to 6-word phrase, second person (e.g., "Stop negotiating with your instincts.", "Solitude is not a performance.").
-      - body: A short paragraph (3-4 sentences) exploring the emotional theme of the day, second person, focusing on tension, vulnerability, or self-awareness.
+      - body: A short paragraph (3-4 sentences) exploring the emotional theme of the day, second person, focusing on tension, vulnerability, or self-awareness, do not explicitly mention astrological signs.
       - dos: exactly 3 short phrases (1-3 words each) — things to lean into today.
       - donts: exactly 3 short phrases (1-3 words each) — things to avoid today.`,
         messages: [
@@ -109,6 +120,12 @@ export const getDailyReading = createServerFn({ method: "POST" })
       reading_date: date,
       content: JSON.stringify(parsed),
     });
-
+    // Retention: keep only the most recent 5 days of readings for this user.
+    await context.supabase
+      .from("daily_readings")
+      .delete()
+      .eq("user_id", context.userId)
+      .lt("reading_date", dateNDaysAgo(5));
+    
     return { content: parsed, date };
   });
