@@ -30,6 +30,9 @@ export function AppNav() {
         <Link to="/journal" className="text-muted-foreground hover:text-foreground transition-colors">
           Chronicles
         </Link>
+        <Link to="/compatibility" className="text-muted-foreground hover:text-foreground transition-colors">
+          Synastry
+        </Link>
         <button
           onClick={signOut}
           className="text-muted-foreground hover:text-accent transition-colors"
