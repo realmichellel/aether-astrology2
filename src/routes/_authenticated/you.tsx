@@ -83,48 +83,83 @@ function ChartTable({ chart }: { chart: NonNullable<NonNullable<ChartData>["char
   const ascSign = chart.ascendant?.name;
   const mcSign = chart.midheaven?.name;
 
-  // Build a row per placement (Ascendant, Midheaven, then planets), each mapped to its house.
-  const placements: Array<{ body: string; symbol: string; sign: string; house: number | null }> = [];
-
   const houseOf = (sign: string): number | null => {
     if (!chart.houses) return null;
     const h = chart.houses.find((h) => h.sign === sign);
     return h ? h.house : null;
   };
 
+  const placements: Array<{ body: string; symbol: string; sign: string; house: number | null }> = [];
+
   if (ascSign) placements.push({ body: "Rising", symbol: "↑", sign: ascSign, house: 1 });
-  if (mcSign) placements.push({ body: "Midheaven", symbol: "⊤", sign: mcSign, house: houseOf(mcSign) });
+  if (mcSign) placements.push({ body: "Midheaven", symbol: "⊤", sign: mcSign, house: (chart.midheaven as any)?.house ?? 10 });
+
   for (const p of chart.planets) {
     placements.push({
       body: p.body,
       symbol: PLANET_SYMBOLS[p.body] ?? "•",
       sign: p.name,
-      house: houseOf(p.name),
+      house: (p as any).house ?? houseOf(p.name),
     });
   }
 
+  // Sort by house number
+  placements.sort((a, b) => (a.house ?? 99) - (b.house ?? 99));
+
   return (
     <div className="border border-border">
-      <div className="grid grid-cols-[1fr_2fr_1fr] text-[10px] uppercase tracking-[0.2em] text-muted-foreground border-b border-border px-6 py-3">
-        <div>Body</div>
-        <div>Sign</div>
-        <div className="text-right">House</div>
+      {/* Header */}
+      <div className="grid grid-cols-[1.2fr_2fr_1fr] text-[10px] uppercase tracking-[0.2em] text-muted-foreground border-b border-border">
+        <div className="px-6 py-2">Body</div>
+        <div className="px-6 py-2 border-l border-border/40">Sign</div>
+        <div className="px-6 py-2 text-right border-l border-border/40">House</div>
       </div>
-      {placements.map((p, i) => (
-        <div
-          key={i}
-          className="grid grid-cols-[1fr_2fr_1fr] items-center px-6 py-4 border-b border-border/50 last:border-b-0"
-        >
-          <div className="flex items-center gap-3">
-            <span className="text-accent text-lg w-5">{p.symbol}</span>
-            <span className="text-[11px] uppercase tracking-[0.2em]">{p.body}</span>
+
+      {/* Rows */}
+      {placements.map((p, i) => {
+        const prevItem = placements[i - 1];
+        const nextItem = placements[i + 1];
+        const isLastRow = i === placements.length - 1;
+
+        // Check if values match adjacent rows
+        const signMatchesPrevious = prevItem && prevItem.sign === p.sign;
+        const houseMatchesPrevious = prevItem && prevItem.house === p.house;
+
+        const signMatchesNext = nextItem && nextItem.sign === p.sign;
+        const houseMatchesNext = nextItem && nextItem.house === p.house;
+
+        // Show border only on the last row of a duplicate group
+        const showSignBorder = isLastRow || !signMatchesNext;
+        const showHouseBorder = isLastRow || !houseMatchesNext;
+
+        return (
+          <div key={i} className="grid grid-cols-[1.2fr_2fr_1fr] items-stretch">
+            {/* Body Column: Always shown, no horizontal border */}
+            <div className="flex items-center gap-3 px-6 py-2.5">
+              <span className="text-accent text-base w-5">{p.symbol}</span>
+              <span className="text-[11px] uppercase tracking-[0.2em]">{p.body}</span>
+            </div>
+
+            {/* Sign Column: Only show text if it's NOT a repeat of the row above */}
+            <div
+              className={`font-serif italic text-lg px-6 py-2.5 flex items-center border-l border-border/40 ${
+                showSignBorder ? "border-b border-border/40" : ""
+              }`}
+            >
+              {signMatchesPrevious ? "" : p.sign}
+            </div>
+
+            {/* House Column: Only show text if it's NOT a repeat of the row above */}
+            <div
+              className={`text-right font-serif text-xl text-stone-400 px-6 py-2.5 flex items-center justify-end border-l border-border/40 ${
+                showHouseBorder ? "border-b border-border/40" : ""
+              }`}
+            >
+              {houseMatchesPrevious ? "" : (p.house ?? "—")}
+            </div>
           </div>
-          <div className="font-serif italic text-xl">{p.sign}</div>
-          <div className="text-right font-serif text-lg text-stone-400">
-            {p.house ?? "—"}
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
