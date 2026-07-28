@@ -60,7 +60,7 @@ export const getDailyReading = createServerFn({ method: "POST" })
     const { text } = await generateText({
       model: gateway("openai/gpt-5.5"),
       system:
-        "You are a minimalist, poetic astrologer in the vein of Co-Star. Write in short, unadorned, sometimes provocative sentences. No emojis. No exclamation marks. Second person. 90-140 words.",
+        "You are a minimalist, poetic astrologer in the vein of Co-Star. Write in short, unadorned, sometimes provocative sentences. No emojis. No exclamation marks. Second person. 1-2 sentences.",
       messages: [
         {
           role: "user",
@@ -70,7 +70,7 @@ Sky today: ${planetarySnapshot(date)}.
 Recent journal:
 ${journalContext}
 
-Weave the sky, their chart, and their recent moods into a single reading. End with one sharp instruction for the day.`,
+Weave the sky, their chart, and their recent moods into a single reading. End with one sharp instruction for the day, one sentence only.`,
         },
       ],
     });
