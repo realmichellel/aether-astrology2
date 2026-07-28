@@ -117,7 +117,7 @@ function Dashboard() {
                       </div>
                       <ul className="space-y-2">
                         {reading.dos.map((item, i) => (
-                          <li key={i} className="font-serif text-stone-200">
+                          <li key={i} className="font-serif text-lg md:text-xl text-stone-200">
                             {item}
                           </li>    
                         ))}
@@ -129,7 +129,7 @@ function Dashboard() {
                       </div>
                       <ul className="space-y-2">
                         {reading.donts.map((item, i) => (
-                          <li key={i} className="font-serif text-stone-200">
+                          <li key={i} className="font-serif text-lg md:text-xl text-stone-200">
                             {item}
                           </li>
                         ))}
