@@ -25,6 +25,29 @@ export const getProfile = createServerFn({ method: "GET" })
     return data;
   });
 
+export const getBirthChart = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase
+      .from("profiles")
+      .select("*")
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!data) return null;
+    if (data.birth_lat == null || data.birth_lng == null || !data.timezone || !data.birth_time) {
+      return { profile: data, chart: null };
+    }
+    const { utc } = localWallTimeToUtc(data.birth_date, data.birth_time, data.timezone);
+    const chart = computeBirthChart({
+      utcDate: utc,
+      latitude: Number(data.birth_lat),
+      longitude: Number(data.birth_lng),
+      timeIsKnown: true,
+    });
+    return { profile: data, chart };
+  });
+
 export const saveProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => ProfileInput.parse(input))
