@@ -55,9 +55,9 @@ export const saveProfile = createServerFn({ method: "POST" })
       timeIsKnown: true,
     });
 
-    const moon_sign = chart.planets.find((p) => p.body === "Moon")?.sign ?? null;
+    const moon_sign = chart.planets.find((p) => p.body === "Moon")?.name ?? null;
     const rising_sign = chart.ascendant?.name ?? null;
-    const planetSummary = chart.planets.map((p) => `${p.body} in ${p.sign}`).join(", ");
+    const planetSummary = chart.planets.map((p) => `${p.body} in ${p.name}`).join(", ");
     const chart_summary = `${planetSummary}, Ascendant in ${chart.ascendant!.name}, Midheaven in ${chart.midheaven!.name}`;
 
     const { error } = await context.supabase.from("profiles").upsert(

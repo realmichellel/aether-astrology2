@@ -40,10 +40,10 @@ async function computePlacements(input: z.infer<typeof PartnerInput>): Promise<P
     longitude: coords.lon,
     timeIsKnown: true,
   });
-  const get = (body: string) => chart.planets.find((p) => p.body === body)?.sign ?? "Unknown";
+  const get = (body: string) => chart.planets.find((p) => p.body === body)?.name ?? "Unknown";
   return {
     name: input.full_name,
-    sun: get("Sun") || sunSignFor(input.birth_date).name,
+    sun: get("Sun") !== "Unknown" ? get("Sun") : sunSignFor(input.birth_date).name,
     moon: get("Moon"),
     rising: chart.ascendant?.name ?? "Unknown",
     venus: get("Venus"),
