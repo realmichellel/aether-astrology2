@@ -20,6 +20,23 @@ function planetarySnapshot(date: string): string {
   return `Moon in ${moon}, Mercury in ${mercury}, Venus in ${venus}, Mars in ${mars}`;
 }
 
+type ReadingPayload = { headline: string; body: string; dos: string[]; donts: string[] };
+
+function parseReading(raw: string): ReadingPayload {
+  try {
+    const parsed = JSON.parse(raw);
+    return {
+      headline: typeof parsed.headline === "string" ? parsed.headline : "",
+      body: typeof parsed.body === "string" ? parsed.body : "",
+      dos: Array.isArray(parsed.dos) ? parsed.dos : [],
+      donts: Array.isArray(parsed.donts) ? parsed.donts : [],
+    };
+  } catch {
+    // fallback for malformed model output or legacy plain-text cached rows
+    return { headline: "", body: raw, dos: [], donts: [] };
+  }
+}
+
 export const getDailyReading = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
@@ -32,7 +49,7 @@ export const getDailyReading = createServerFn({ method: "POST" })
       .eq("reading_date", date)
       .maybeSingle();
 
-    if (existing) return { content: existing.content, date };
+    if (existing) return { content: parseReading(existing.content), date };
 
     const { data: profile } = await context.supabase
       .from("profiles")
@@ -59,27 +76,44 @@ export const getDailyReading = createServerFn({ method: "POST" })
 
     const { text } = await generateText({
       model: gateway("openai/gpt-5.5"),
-      system:
-        "You are a minimalist, poetic astrologer in the vein of Co-Star. Write in short, unadorned, sometimes provocative sentences. No emojis. No exclamation marks. Second person. 1-2 sentences.",
       messages: [
         {
+          role: "system",
+          content:
+            `YYou are a modern astrologer writing a daily reading in the style of Co-Star Astrology. 
+          Tone Guidelines:
+          - Concise, slightly stark, poetic, and direct.
+          - Minimalist and existential, avoiding generic cheerleader "horoscope" cliché advice.
+          - Use sharp, evocative imagery and real-life metaphors.
+          - Never use exclamation points or fluffy language. Do not include the user's name.
+Shape:
+{"headline": string, "body": string, "dos": string[], "donts": string[]}
+- headline: A short, intriguing 3 to 6-word phrase, second person (e.g., "Stop negotiating with your instincts.", "Solitude is not a performance.").
+- body: A short paragraph (3-4 sentences) exploring the emotional theme of the day, second person, focusing on tension, vulnerability, or self-awareness.
+- dos: exactly 3 short phrases (1-3 words each) — things to lean into today.
+- donts: exactly 3 short phrases (1-3 words each) — things to avoid today.
+  
+        },
+        {
           role: "user",
-          content: `Write today's reading (${date}) for ${profile.full_name}.
+          content: `Generate today's reading (${date}) for ${profile.full_name}.
 Sun: ${profile.sun_sign}. Born ${profile.birth_date} in ${profile.birth_place}.
 Sky today: ${planetarySnapshot(date)}.
 Recent journal:
 ${journalContext}
 
-Weave the sky, their chart, and their recent moods into a single reading. End with one sharp instruction for the day, one sentence only.`,
+Weave the sky, their chart, and their recent moods into the headline, body, dos, and donts.`,
         },
       ],
     });
 
+    const parsed = parseReading(text);
+
     await context.supabase.from("daily_readings").insert({
       user_id: context.userId,
       reading_date: date,
-      content: text,
+      content: JSON.stringify(parsed),
     });
 
-    return { content: text, date };
+    return { content: parsed, date };
   });
