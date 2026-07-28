@@ -154,22 +154,41 @@ function Dashboard() {
                 Log your first mood or moment to give Aeterna context.
               </Link>
             ) : (
-              entries.slice(0, 4).map((e) => (
-                <Link key={e.id} to="/journal" className="block group">
-                  <div className="flex justify-between text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">
+              <>
+                <Link to="/journal" className="block group border border-border bg-surface p-6 hover:border-accent/40 transition-colors">
+                  <div className="flex justify-between text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
+                    <span>Most recent</span>
                     <span>
-                      {new Date(e.created_at).toLocaleDateString("en-US", {
+                      {new Date(entries[0].created_at).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
                       })}
+                      {entries[0].mood && <span className="text-accent ml-2">· {entries[0].mood}</span>}
                     </span>
-                    {e.mood && <span>{e.mood}</span>}
                   </div>
-                  <div className="text-lg font-serif italic text-stone-300 group-hover:text-accent transition-colors">
-                    {e.content.length > 70 ? e.content.slice(0, 70) + "…" : e.content}
-                  </div>
+                  <p className="font-serif italic text-xl text-stone-200 leading-snug group-hover:text-accent transition-colors">
+                    {entries[0].content.length > 220
+                      ? entries[0].content.slice(0, 220) + "…"
+                      : entries[0].content}
+                  </p>
                 </Link>
-              ))
+                {entries.slice(1, 4).map((e) => (
+                  <Link key={e.id} to="/journal" className="block group">
+                    <div className="flex justify-between text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">
+                      <span>
+                        {new Date(e.created_at).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </span>
+                      {e.mood && <span>{e.mood}</span>}
+                    </div>
+                    <div className="text-lg font-serif italic text-stone-300 group-hover:text-accent transition-colors">
+                      {e.content.length > 70 ? e.content.slice(0, 70) + "…" : e.content}
+                    </div>
+                  </Link>
+                ))}
+              </>
             )}
           </div>
         </section>
