@@ -7,7 +7,7 @@ import { AppNav } from "@/components/AppNav";
 export const Route = createFileRoute("/_authenticated/you")({
   head: () => ({
     meta: [
-      { title: "You — Aeterna" },
+      { title: "You — Aether" },
       { name: "description", content: "Your full natal chart — every planet, sign, and house." },
     ],
   }),

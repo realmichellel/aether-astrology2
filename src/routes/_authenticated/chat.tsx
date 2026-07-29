@@ -7,8 +7,8 @@ import { listChat, sendChat } from "@/lib/chat.functions";
 export const Route = createFileRoute("/_authenticated/chat")({
   head: () => ({
     meta: [
-      { title: "The Oracle — Aeterna" },
-      { name: "description", content: "Converse with Aeterna, your personal astrologer." },
+      { title: "The Oracle — Aether" },
+      { name: "description", content: "Converse with Aether, your personal astrologer." },
     ],
   }),
   component: ChatPage,

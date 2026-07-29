@@ -7,8 +7,8 @@ import { listJournal, addJournal } from "@/lib/journal.functions";
 export const Route = createFileRoute("/_authenticated/journal")({
   head: () => ({
     meta: [
-      { title: "Chronicles — Aeterna" },
-      { name: "description", content: "Log moods and moments. Aeterna reads them as context." },
+      { title: "Chronicles — Aether" },
+      { name: "description", content: "Log moods and moments. Aether reads them as context." },
     ],
   }),
   component: JournalPage,
@@ -59,7 +59,7 @@ function JournalPage() {
       <main className="max-w-4xl mx-auto px-8 py-12">
         <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-4">Chronicles</p>
         <h1 className="font-serif text-5xl font-light leading-tight mb-2">
-          The record <span className="italic">Aeterna reads.</span>
+          The record <span className="italic">Aether reads.</span>
         </h1>
         <p className="text-stone-400 max-w-lg mb-12">
           Note a mood, a dream, a decision. Recent entries feed into your daily reading and the Oracle's

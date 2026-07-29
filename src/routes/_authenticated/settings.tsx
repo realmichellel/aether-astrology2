@@ -7,8 +7,8 @@ import { AppNav } from "@/components/AppNav";
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
     meta: [
-      { title: "Settings — Aeterna" },
-      { name: "description", content: "Review or correct the birth details Aeterna reads your chart from." },
+      { title: "Settings — Aether" },
+      { name: "description", content: "Review or correct the birth details Aether reads your chart from." },
     ],
   }),
   component: SettingsPage,
@@ -63,7 +63,7 @@ function SettingsPage() {
           Correct the record, <span className="italic">if the sky was wrong.</span>
         </h1>
         <p className="text-stone-400 mb-12 max-w-lg">
-          Everything Aeterna reads — your sun, moon, rising, and every reading since — is computed
+          Everything Aether reads — your sun, moon, rising, and every reading since — is computed
           from what's below. Change it, and your chart recalculates from here on.
         </p>
 
@@ -75,7 +75,7 @@ function SettingsPage() {
               label="Name"
               value={form.full_name}
               onChange={(v) => setForm({ ...form, full_name: v })}
-              placeholder="What should Aeterna call you?"
+              placeholder="What should Aether call you?"
               required
             />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

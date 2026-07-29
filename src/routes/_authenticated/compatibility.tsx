@@ -7,7 +7,7 @@ import { generateCompatibility } from "@/lib/compatibility.functions";
 export const Route = createFileRoute("/_authenticated/compatibility")({
   head: () => ({
     meta: [
-      { title: "Synastry — Aeterna" },
+      { title: "Synastry — Aether" },
       { name: "description", content: "A synastry report between your chart and another's." },
     ],
   }),
@@ -80,7 +80,7 @@ function CompatibilityPage() {
           Two charts, <span className="italic">one sky.</span>
         </h1>
         <p className="text-stone-400 max-w-lg mb-12">
-          Enter another person's birth details. Aeterna will read their chart against yours and
+          Enter another person's birth details. Aether will read their chart against yours and
           return a synastry report — attraction, friction, and everything the sky says about you two.
         </p>
 

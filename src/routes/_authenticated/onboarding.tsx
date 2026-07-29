@@ -7,8 +7,8 @@ import { AppNav } from "@/components/AppNav";
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
     meta: [
-      { title: "Your birth chart — Aeterna" },
-      { name: "description", content: "Tell Aeterna when and where you were born." },
+      { title: "Your birth chart — Aether" },
+      { name: "description", content: "Tell Aether when and where you were born." },
     ],
   }),
   component: Onboarding,
@@ -51,7 +51,7 @@ function Onboarding() {
           When and where <span className="italic">did you arrive?</span>
         </h1>
         <p className="text-stone-400 mb-12 max-w-lg">
-          The sky at the moment of your birth is the map Aeterna reads from. All three fields below
+          The sky at the moment of your birth is the map Aether reads from. All three fields below
           are required — the exact time in particular is what fixes your rising sign and houses; an
           approximate time will place them in the wrong sign.
         </p>
@@ -61,7 +61,7 @@ function Onboarding() {
             label="Name"
             value={form.full_name}
             onChange={(v) => setForm({ ...form, full_name: v })}
-            placeholder="What should Aeterna call you?"
+            placeholder="What should Aether call you?"
             required
           />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
