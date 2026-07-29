@@ -56,10 +56,11 @@ ${journalCtx}`;
 
     const { text } = await generateText({
       model: gateway("openai/gpt-5.5"),
-      messages: [
-        { role: "system", content: systemMsg },
-        ...(history ?? []).map((m) => ({ role: m.role as "user" | "assistant", content: m.content })),
-      ],
+      system: systemMsg,
+      messages: (history ?? []).map((m) => ({
+        role: m.role as "user" | "assistant",
+        content: m.content,
+      })),
     });
 
     await supabase.from("chat_messages").insert({ user_id: userId, role: "assistant", content: text });
