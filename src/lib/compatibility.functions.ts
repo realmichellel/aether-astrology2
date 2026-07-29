@@ -58,15 +58,30 @@ function extractSign(summary: string | null, body: string): string {
   return m?.[1] ?? "Unknown";
 }
 
-function parseJson(text: string): unknown {
+type Report = {
+  overall_score: number;
+  dynamic_summary: string;
+  emotional_bond: { stars: number; text: string };
+  chemistry_and_attraction: { stars: number; text: string };
+  communication_style: { stars: number; text: string };
+  potential_friction_points: string[];
+  super_powers: string[];
+  crush_cheat_sheet: {
+    green_flags: string[];
+    red_flags: string[];
+    how_to_give_them_butterflies: string;
+  };
+};
+
+function parseJson(text: string): Report {
   const cleaned = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/```$/, "").trim();
   try {
-    return JSON.parse(cleaned);
+    return JSON.parse(cleaned) as Report;
   } catch {
     const start = cleaned.indexOf("{");
     const end = cleaned.lastIndexOf("}");
     if (start >= 0 && end > start) {
-      return JSON.parse(cleaned.slice(start, end + 1));
+      return JSON.parse(cleaned.slice(start, end + 1)) as Report;
     }
     throw new Error("The Oracle returned an unreadable report. Try again.");
   }
