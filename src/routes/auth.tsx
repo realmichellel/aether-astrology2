@@ -6,9 +6,9 @@ export const Route = createFileRoute("/auth")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Sign in — Aeterna" },
-      { name: "description", content: "Enter the observatory. Sign in or create an Aeterna account." },
-      { property: "og:title", content: "Sign in — Aeterna" },
+      { title: "Sign in — Aether" },
+      { name: "description", content: "Enter the observatory. Sign in or create an Aether account." },
+      { property: "og:title", content: "Sign in — Aether" },
       { property: "og:description", content: "Enter the observatory." },
     ],
   }),
@@ -75,7 +75,7 @@ function AuthPage() {
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <nav className="flex items-center justify-between px-8 py-6 border-b border-border">
         <Link to="/" className="text-xl font-serif italic tracking-widest text-accent">
-          AETERNA
+          AETHER
         </Link>
       </nav>
 

@@ -10,7 +10,7 @@ import { ZODIAC } from "@/lib/astrology";
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
-      { title: "Today — Aeterna" },
+      { title: "Today — Aether" },
       { name: "description", content: "Your daily reading and recent chronicle." },
     ],
   }),
@@ -184,7 +184,7 @@ function Dashboard() {
                 to="/journal"
                 className="block text-sm text-muted-foreground italic hover:text-accent transition-colors"
               >
-                Log your first mood or moment to give Aeterna context.
+                Log your first mood or moment to give Aether context.
               </Link>
             ) : (
               entries.slice(0, 4).map((e) => (
@@ -210,7 +210,7 @@ function Dashboard() {
 
       <footer className="py-12 border-t border-border">
         <div className="max-w-6xl mx-auto px-8 flex justify-between items-center text-[10px] uppercase tracking-widest text-muted-foreground">
-          <div>© Aeterna</div>
+          <div>© Aether</div>
           <div>An observatory for one</div>
         </div>
       </footer>

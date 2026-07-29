@@ -6,13 +6,13 @@ export const Route = createFileRoute("/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Aeterna — A quiet astrologer" },
+      { title: "Aether — A quiet astrologer" },
       {
         name: "description",
         content:
-          "Aeterna reads the sky as it moves over you — a personal AI astrologer trained on your natal chart, real planetary transits, and the record you keep of your own life.",
+          "Aether reads the sky as it moves over you — a personal AI astrologer trained on your natal chart, real planetary transits, and the record you keep of your own life.",
       },
-      { property: "og:title", content: "Aeterna — A quiet astrologer" },
+      { property: "og:title", content: "Aether — A quiet astrologer" },
       {
         property: "og:description",
         content:
@@ -41,7 +41,7 @@ function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-accent/30 selection:text-primary-foreground">
       <nav className="flex items-center justify-between px-8 py-6 border-b border-border">
-        <div className="text-xl font-serif italic tracking-widest text-accent">AETERNA</div>
+        <div className="text-xl font-serif italic tracking-widest text-accent">AETHER</div>
         <Link
           to="/auth"
           className="text-[10px] uppercase tracking-[0.2em] font-medium text-muted-foreground hover:text-foreground transition-colors"
@@ -60,7 +60,7 @@ function Landing() {
           <span className="italic">in the silent movements.</span>
         </h1>
         <p className="max-w-xl text-lg text-stone-400 leading-relaxed mb-14">
-          Aeterna reads the sky as it moves over you. A natal chart, the current
+          Aether reads the sky as it moves over you. A natal chart, the current
           transits, and the record you keep of your own life — synthesized into
           a daily reading, and a conversation you can return to.
         </p>
@@ -81,7 +81,7 @@ function Landing() {
           <FeatureBlock
             index="I"
             title="Natal chart"
-            body="Enter your birth date, time, and city. Aeterna computes your chart and grounds every reading in it."
+            body="Enter your birth date, time, and city. Aether computes your chart and grounds every reading in it."
           />
           <FeatureBlock
             index="II"
@@ -98,7 +98,7 @@ function Landing() {
 
       <footer className="py-12 border-t border-border">
         <div className="max-w-6xl mx-auto px-8 flex justify-between items-center text-[10px] uppercase tracking-widest text-muted-foreground">
-          <div>© Aeterna</div>
+          <div>© Aether</div>
           <div>An observatory for one</div>
         </div>
       </footer>

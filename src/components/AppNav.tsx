@@ -15,7 +15,7 @@ export function AppNav() {
         to="/dashboard"
         className="text-xl font-serif italic tracking-widest text-accent"
       >
-        AETERNA
+        AETHER
       </Link>
       <div className="flex items-center gap-8 text-[10px] uppercase tracking-[0.2em] font-medium">
         <Link to="/dashboard" className="text-muted-foreground hover:text-foreground transition-colors">

@@ -52,6 +52,41 @@ async function computePlacements(input: z.infer<typeof PartnerInput>): Promise<P
   };
 }
 
+function extractSign(summary: string | null, body: string): string {
+  if (!summary) return "Unknown";
+  const m = summary.match(new RegExp(`${body} in (\\w+)`));
+  return m?.[1] ?? "Unknown";
+}
+
+type Report = {
+  overall_score: number;
+  dynamic_summary: string;
+  emotional_bond: { stars: number; text: string };
+  chemistry_and_attraction: { stars: number; text: string };
+  communication_style: { stars: number; text: string };
+  potential_friction_points: string[];
+  super_powers: string[];
+  crush_cheat_sheet: {
+    green_flags: string[];
+    red_flags: string[];
+    how_to_give_them_butterflies: string;
+  };
+};
+
+function parseJson(text: string): Report {
+  const cleaned = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/```$/, "").trim();
+  try {
+    return JSON.parse(cleaned) as Report;
+  } catch {
+    const start = cleaned.indexOf("{");
+    const end = cleaned.lastIndexOf("}");
+    if (start >= 0 && end > start) {
+      return JSON.parse(cleaned.slice(start, end + 1)) as Report;
+    }
+    throw new Error("The Oracle returned an unreadable report. Try again.");
+  }
+}
+
 export const generateCompatibility = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => PartnerInput.parse(input))
@@ -68,7 +103,6 @@ export const generateCompatibility = createServerFn({ method: "POST" })
       sun: profile.sun_sign ?? "Unknown",
       moon: profile.moon_sign ?? "Unknown",
       rising: profile.rising_sign ?? "Unknown",
-      // Derive Venus/Mars/Mercury from chart_summary when possible.
       venus: extractSign(profile.chart_summary, "Venus"),
       mars: extractSign(profile.chart_summary, "Mars"),
       mercury: extractSign(profile.chart_summary, "Mercury"),
@@ -93,7 +127,7 @@ Output the response in clean JSON with exactly this shape:
   "dynamic_summary": string (2 short sentences summarizing their vibe),
   "emotional_bond": { "stars": number (0-5), "text": string (~150 words on Moon/Sun interactions) },
   "chemistry_and_attraction": { "stars": number (0-5), "text": string (~150 words on Venus/Mars interactions) },
-  "communication_style": string (~100 words on Mercury interactions),
+  "communication_style": { "stars": number (0-5), "text": string (~100 words on Mercury interactions) },
   "potential_friction_points": [string, string],
   "super_powers": [string, string],
   "crush_cheat_sheet": {
@@ -109,26 +143,77 @@ Output the response in clean JSON with exactly this shape:
       prompt,
     });
 
-    const reportJson = JSON.stringify(parseJson(text));
-    return { reportJson, person1, person2 };
+    const report = parseJson(text);
+
+    const { data: saved, error } = await context.supabase
+      .from("synastry_reports")
+      .insert({
+        user_id: context.userId,
+        partner_name: data.full_name,
+        partner_birth_date: data.birth_date,
+        partner_birth_time: data.birth_time,
+        partner_birth_place: data.birth_place,
+        person1,
+        person2,
+        report,
+        unlocked: false,
+      })
+      .select("id")
+      .single();
+    if (error) throw new Error(error.message);
+
+    return { id: saved.id, report, person1, person2, unlocked: false };
   });
 
-function extractSign(summary: string | null, body: string): string {
-  if (!summary) return "Unknown";
-  const m = summary.match(new RegExp(`${body} in (\\w+)`));
-  return m?.[1] ?? "Unknown";
-}
+export const listSynastryReports = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase
+      .from("synastry_reports")
+      .select("id, partner_name, unlocked, created_at, report")
+      .eq("user_id", context.userId)
+      .order("created_at", { ascending: false });
+    if (error) throw new Error(error.message);
+    return (data ?? []).map((r) => ({
+      id: r.id as string,
+      partner_name: r.partner_name as string,
+      unlocked: r.unlocked as boolean,
+      created_at: r.created_at as string,
+      overall_score: (r.report as { overall_score?: number })?.overall_score ?? 0,
+    }));
+  });
 
-function parseJson(text: string): unknown {
-  const cleaned = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/```$/, "").trim();
-  try {
-    return JSON.parse(cleaned);
-  } catch {
-    const start = cleaned.indexOf("{");
-    const end = cleaned.lastIndexOf("}");
-    if (start >= 0 && end > start) {
-      return JSON.parse(cleaned.slice(start, end + 1));
-    }
-    throw new Error("The Oracle returned an unreadable report. Try again.");
-  }
-}
+export const getSynastryReport = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: row, error } = await context.supabase
+      .from("synastry_reports")
+      .select("*")
+      .eq("user_id", context.userId)
+      .eq("id", data.id)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!row) throw new Error("Report not found.");
+    return {
+      id: row.id as string,
+      report: row.report as Report,
+      person1: row.person1 as Placements,
+      person2: row.person2 as Placements,
+      unlocked: row.unlocked as boolean,
+    };
+  });
+
+export const unlockSynastryReport = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    // NOTE: Free unlock for now. Stripe checkout ($3.99) can gate this later.
+    const { error } = await context.supabase
+      .from("synastry_reports")
+      .update({ unlocked: true })
+      .eq("user_id", context.userId)
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });

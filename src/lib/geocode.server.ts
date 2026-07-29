@@ -17,7 +17,7 @@ export async function geocodePlace(place: string): Promise<{ lat: number; lon: n
     headers: {
       // Replace with a real contact address before shipping — Nominatim will
       // block traffic that doesn't identify itself.
-      "User-Agent": "Aeterna/1.0 (astrology app; contact: support@aeterna.app)",
+      "User-Agent": "Aether/1.0 (astrology app; contact: support@aether.app)",
     },
   });
   if (!res.ok) return null;
