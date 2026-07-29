@@ -197,7 +197,7 @@ export const getSynastryReport = createServerFn({ method: "POST" })
     if (!row) throw new Error("Report not found.");
     return {
       id: row.id as string,
-      report: row.report as unknown,
+      report: row.report as Report,
       person1: row.person1 as Placements,
       person2: row.person2 as Placements,
       unlocked: row.unlocked as boolean,
