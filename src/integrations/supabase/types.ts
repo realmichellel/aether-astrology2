@@ -143,6 +143,48 @@ export type Database = {
         }
         Relationships: []
       }
+      synastry_reports: {
+        Row: {
+          created_at: string
+          id: string
+          partner_birth_date: string
+          partner_birth_place: string
+          partner_birth_time: string | null
+          partner_name: string
+          person1: Json
+          person2: Json
+          report: Json
+          unlocked: boolean
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          partner_birth_date: string
+          partner_birth_place: string
+          partner_birth_time?: string | null
+          partner_name: string
+          person1: Json
+          person2: Json
+          report: Json
+          unlocked?: boolean
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          partner_birth_date?: string
+          partner_birth_place?: string
+          partner_birth_time?: string | null
+          partner_name?: string
+          person1?: Json
+          person2?: Json
+          report?: Json
+          unlocked?: boolean
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
