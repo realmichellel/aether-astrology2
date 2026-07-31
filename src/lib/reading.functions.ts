@@ -119,8 +119,7 @@ export const getDailyReading = createServerFn({ method: "POST" })
       
       Writing rules for dos and donts:
       - Include both purely emotional or abstract advice (e.g. "Force clarity", "Find inner peace", "Move slowly"), 
-      as well as concrete and specific advice that anchor items in tangible physical objects, sensory details, mundane habits, pop culture/tech actions, or specific interactions (e.g. "sticky lip gloss", 
-      "iced espresso", "voicemails", "the group chat", "scrolling past 1 AM", "unmatching", "heavy denim", "second guessing a compliment", "buying green tea". BUT DO NOT OVERUSE THESE EXAMPLES.
+      as well as concrete and specific advice that anchor items in tangible physical objects, sensory details, mundane habits, pop culture/tech actions, or specific interactions (e.g., specific fabrics, beverages, digital habits, physical textures, or micro-interactions)
       - Try to mix categories across the items.
       - NO CONTRADICTIONS: Ensure none of the items under "Dos" contradict or overlap in meaning with items under "Don'ts" (e.g., do not say "Do: Text back fast" while also saying "Don't: Rush your replies").`,
         messages: [
