@@ -300,41 +300,39 @@ function ReportView({ data, onUnlock }: { data: Loaded; onUnlock: () => void }) 
       </div>
 
       <section className="border border-border bg-surface p-10">
-        <div className="text-[10px] uppercase tracking-widest text-accent mb-6">
-          Crush cheat sheet
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <h2 className="font-serif text-3xl md:text-4xl font-light mb-8">Crush cheat sheet</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
           <div>
-            <div className="text-xs uppercase tracking-widest text-emerald-400/80 mb-2">
+            <div className="text-[10px] uppercase tracking-[0.2em] text-emerald-400/80 mb-3">
               Green flags
             </div>
             <Veil locked={!unlocked}>
-              <ul className="space-y-2 text-stone-300">
+              <ul className="space-y-3 text-[15px] leading-relaxed text-stone-300">
                 {report.crush_cheat_sheet?.green_flags?.map((g, i) => (
-                  <li key={i} className="font-serif italic">· {g}</li>
+                  <li key={i} className="pl-4 border-l border-border">{g}</li>
                 ))}
               </ul>
             </Veil>
           </div>
           <div>
-            <div className="text-xs uppercase tracking-widest text-rose-400/80 mb-2">
+            <div className="text-[10px] uppercase tracking-[0.2em] text-rose-400/80 mb-3">
               Red flags
             </div>
             <Veil locked={!unlocked}>
-              <ul className="space-y-2 text-stone-300">
+              <ul className="space-y-3 text-[15px] leading-relaxed text-stone-300">
                 {report.crush_cheat_sheet?.red_flags?.map((r, i) => (
-                  <li key={i} className="font-serif italic">· {r}</li>
+                  <li key={i} className="pl-4 border-l border-border">{r}</li>
                 ))}
               </ul>
             </Veil>
           </div>
         </div>
-        <div>
-          <div className="text-[10px] uppercase tracking-widest text-accent mb-3">
+        <div className="pt-8 border-t border-border">
+          <div className="text-[10px] uppercase tracking-[0.2em] text-accent mb-3">
             How to give them butterflies
           </div>
           <Veil locked={!unlocked}>
-            <p className="font-serif italic text-xl text-stone-200 leading-relaxed">
+            <p className="text-[15px] md:text-base leading-[1.9] text-stone-300 max-w-2xl">
               {report.crush_cheat_sheet?.how_to_give_them_butterflies}
             </p>
           </Veil>
@@ -393,8 +391,8 @@ function Block({
 }) {
   return (
     <section className="border border-border bg-surface p-10">
-      <div className="flex items-baseline justify-between mb-4">
-        <div className="text-[10px] uppercase tracking-widest text-accent">{title}</div>
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6 pb-5 border-b border-border">
+        <h2 className="font-serif text-3xl md:text-4xl font-light leading-none">{title}</h2>
         {typeof stars === "number" &&
           (locked ? (
             <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
@@ -405,7 +403,9 @@ function Block({
           ))}
       </div>
       <Veil locked={!!locked}>
-        <p className="text-stone-300 leading-relaxed">{children}</p>
+        <p className="text-[15px] md:text-base leading-[1.9] text-stone-300 max-w-2xl">
+          {children}
+        </p>
       </Veil>
     </section>
   );
@@ -421,16 +421,21 @@ function ListBlock({
   locked?: boolean;
 }) {
   return (
-    <section className="border border-border bg-surface p-8">
-      <div className="text-[10px] uppercase tracking-widest text-accent mb-4">{title}</div>
+    <section className="border border-border bg-surface p-10 h-full">
+      <h2 className="font-serif text-2xl md:text-3xl font-light mb-6 pb-5 border-b border-border">
+        {title}
+      </h2>
       <Veil locked={!!locked}>
-        <ul className="space-y-3 text-stone-300 font-serif italic text-lg">
-          {items?.map((it, i) => <li key={i}>· {it}</li>)}
+        <ul className="space-y-4 text-[15px] leading-relaxed text-stone-300">
+          {items?.map((it, i) => (
+            <li key={i} className="pl-4 border-l border-border">{it}</li>
+          ))}
         </ul>
       </Veil>
     </section>
   );
 }
+
 
 
 function Stars({ n }: { n: number }) {
