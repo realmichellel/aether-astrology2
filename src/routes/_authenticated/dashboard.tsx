@@ -17,8 +17,12 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
 });
 
+// Swap this for your real feedback questionnaire link when it's ready.
+const FEEDBACK_URL = "https://forms.gle/";
+
 type Entry = { id: string; entry_date: string; mood: string | null; content: string; created_at: string };
 type Reading = { headline: string; body: string; dos: string[]; donts: string[] };
+
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -206,7 +210,25 @@ function Dashboard() {
             )}
           </div>
         </section>
+
+        <section className="border-t border-border pt-10 flex flex-col items-center text-center">
+          <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-3">
+            Tell us what the sky missed
+          </p>
+          <p className="text-sm text-stone-400 max-w-md mb-6">
+            Aether is young. A minute of your thoughts shapes what it becomes.
+          </p>
+          <a
+            href={FEEDBACK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="border border-accent/40 text-accent py-3 px-10 font-serif italic text-lg hover:bg-accent/10 transition-colors"
+          >
+            Leave feedback
+          </a>
+        </section>
       </main>
+
 
       <footer className="py-12 border-t border-border">
         <div className="max-w-6xl mx-auto px-8 flex justify-between items-center text-[10px] uppercase tracking-widest text-muted-foreground">

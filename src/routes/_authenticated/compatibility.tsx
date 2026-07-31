@@ -270,130 +270,168 @@ function ReportView({ data, onUnlock }: { data: Loaded; onUnlock: () => void }) 
         </div>
       </section>
 
-      <Gated unlocked={unlocked} onUnlock={onUnlock}>
-        <Block title="Emotional bond" stars={report.emotional_bond?.stars}>
-          {report.emotional_bond?.text}
-        </Block>
-        <Block title="Chemistry & attraction" stars={report.chemistry_and_attraction?.stars}>
-          {report.chemistry_and_attraction?.text}
-        </Block>
-        <Block title="Communication style" stars={report.communication_style?.stars}>
-          {report.communication_style?.text}
-        </Block>
+      {!unlocked && <UnlockCard onUnlock={onUnlock} />}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <ListBlock title="Potential friction" items={report.potential_friction_points} />
-          <ListBlock title="Super powers" items={report.super_powers} />
+      <Block title="Emotional bond" stars={report.emotional_bond?.stars} locked={!unlocked}>
+        {report.emotional_bond?.text}
+      </Block>
+      <Block
+        title="Chemistry & attraction"
+        stars={report.chemistry_and_attraction?.stars}
+        locked={!unlocked}
+      >
+        {report.chemistry_and_attraction?.text}
+      </Block>
+      <Block
+        title="Communication style"
+        stars={report.communication_style?.stars}
+        locked={!unlocked}
+      >
+        {report.communication_style?.text}
+      </Block>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <ListBlock
+          title="Potential friction"
+          items={report.potential_friction_points}
+          locked={!unlocked}
+        />
+        <ListBlock title="Super powers" items={report.super_powers} locked={!unlocked} />
+      </div>
+
+      <section className="border border-border bg-surface p-10">
+        <div className="text-[10px] uppercase tracking-widest text-accent mb-6">
+          Crush cheat sheet
         </div>
-
-        <section className="border border-border bg-surface p-10">
-          <div className="text-[10px] uppercase tracking-widest text-accent mb-6">
-            Crush cheat sheet
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <div>
-              <div className="text-xs uppercase tracking-widest text-emerald-400/80 mb-2">
-                Green flags
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+          <div>
+            <div className="text-xs uppercase tracking-widest text-emerald-400/80 mb-2">
+              Green flags
+            </div>
+            <Veil locked={!unlocked}>
               <ul className="space-y-2 text-stone-300">
                 {report.crush_cheat_sheet?.green_flags?.map((g, i) => (
                   <li key={i} className="font-serif italic">· {g}</li>
                 ))}
               </ul>
+            </Veil>
+          </div>
+          <div>
+            <div className="text-xs uppercase tracking-widest text-rose-400/80 mb-2">
+              Red flags
             </div>
-            <div>
-              <div className="text-xs uppercase tracking-widest text-rose-400/80 mb-2">
-                Red flags
-              </div>
+            <Veil locked={!unlocked}>
               <ul className="space-y-2 text-stone-300">
                 {report.crush_cheat_sheet?.red_flags?.map((r, i) => (
                   <li key={i} className="font-serif italic">· {r}</li>
                 ))}
               </ul>
-            </div>
+            </Veil>
           </div>
-          <div>
-            <div className="text-[10px] uppercase tracking-widest text-accent mb-3">
-              How to give them butterflies
-            </div>
+        </div>
+        <div>
+          <div className="text-[10px] uppercase tracking-widest text-accent mb-3">
+            How to give them butterflies
+          </div>
+          <Veil locked={!unlocked}>
             <p className="font-serif italic text-xl text-stone-200 leading-relaxed">
               {report.crush_cheat_sheet?.how_to_give_them_butterflies}
             </p>
-          </div>
-        </section>
-      </Gated>
+          </Veil>
+        </div>
+      </section>
     </div>
   );
 }
 
-function Gated({
-  unlocked,
-  onUnlock,
-  children,
-}: {
-  unlocked: boolean;
-  onUnlock: () => void;
-  children: React.ReactNode;
-}) {
-  if (unlocked) return <div className="space-y-12">{children}</div>;
+/** Blurs only the body content, so section titles stay readable while locked. */
+function Veil({ locked, children }: { locked: boolean; children: React.ReactNode }) {
+  if (!locked) return <>{children}</>;
   return (
     <div className="relative">
-      <div className="space-y-12 pointer-events-none select-none blur-md">{children}</div>
-      <div className="absolute inset-0 flex items-start justify-center pt-24">
-        <div className="border border-accent/40 bg-background/95 backdrop-blur-md p-10 max-w-md text-center shadow-2xl">
-          <div className="text-[10px] uppercase tracking-widest text-accent mb-4">
-            The rest is written
-          </div>
-          <h3 className="font-serif italic text-3xl mb-4">Unlock the full reading</h3>
-          <p className="text-sm text-stone-400 mb-6 leading-relaxed">
-            Emotional bond, chemistry, communication, friction, super powers, and the crush cheat
-            sheet — all yours for <span className="text-accent">$3.99</span>.
-          </p>
-          <button
-            onClick={onUnlock}
-            className="w-full bg-accent text-primary-foreground py-3 font-serif italic text-lg hover:bg-stone-100 transition-colors"
-          >
-            Unlock — free preview
-          </button>
-          <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-4">
-            Payment coming soon
-          </p>
-        </div>
-      </div>
+      <div className="blur-[6px] select-none pointer-events-none opacity-70">{children}</div>
+      <div className="absolute inset-0" aria-hidden />
     </div>
   );
 }
+
+function UnlockCard({ onUnlock }: { onUnlock: () => void }) {
+  return (
+    <section className="border border-accent/40 bg-surface p-8 text-center">
+      <div className="text-[10px] uppercase tracking-widest text-accent mb-3">
+        The rest is written
+      </div>
+      <h3 className="font-serif italic text-3xl mb-3">Unlock the full reading</h3>
+      <p className="text-sm text-stone-400 mb-6 leading-relaxed max-w-md mx-auto">
+        Emotional bond, chemistry, communication, friction, super powers, and the crush cheat sheet
+        — all yours for <span className="text-accent">$3.99</span>.
+      </p>
+      <button
+        onClick={onUnlock}
+        className="bg-accent text-primary-foreground py-3 px-10 font-serif italic text-lg hover:bg-stone-100 transition-colors"
+      >
+        Unlock — free preview
+      </button>
+      <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-4">
+        Payment coming soon
+      </p>
+    </section>
+  );
+}
+
 
 function Block({
   title,
   stars,
+  locked,
   children,
 }: {
   title: string;
   stars?: number;
+  locked?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <section className="border border-border bg-surface p-10">
       <div className="flex items-baseline justify-between mb-4">
         <div className="text-[10px] uppercase tracking-widest text-accent">{title}</div>
-        {typeof stars === "number" && <Stars n={stars} />}
+        {typeof stars === "number" &&
+          (locked ? (
+            <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
+              Locked
+            </span>
+          ) : (
+            <Stars n={stars} />
+          ))}
       </div>
-      <p className="text-stone-300 leading-relaxed">{children}</p>
+      <Veil locked={!!locked}>
+        <p className="text-stone-300 leading-relaxed">{children}</p>
+      </Veil>
     </section>
   );
 }
 
-function ListBlock({ title, items }: { title: string; items: string[] }) {
+function ListBlock({
+  title,
+  items,
+  locked,
+}: {
+  title: string;
+  items: string[];
+  locked?: boolean;
+}) {
   return (
     <section className="border border-border bg-surface p-8">
       <div className="text-[10px] uppercase tracking-widest text-accent mb-4">{title}</div>
-      <ul className="space-y-3 text-stone-300 font-serif italic text-lg">
-        {items?.map((it, i) => <li key={i}>· {it}</li>)}
-      </ul>
+      <Veil locked={!!locked}>
+        <ul className="space-y-3 text-stone-300 font-serif italic text-lg">
+          {items?.map((it, i) => <li key={i}>· {it}</li>)}
+        </ul>
+      </Veil>
     </section>
   );
 }
+
 
 function Stars({ n }: { n: number }) {
   const full = Math.round(Math.max(0, Math.min(5, n)));

@@ -77,7 +77,7 @@ function Landing() {
           </span>
         </div>
 
-        <div className="mt-32 grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-border pt-14">
+        <div className="mt-32 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 border-t border-border pt-14">
           <FeatureBlock
             index="I"
             title="Natal chart"
@@ -93,7 +93,13 @@ function Landing() {
             title="The Oracle"
             body="A conversational astrologer that remembers your placements. Ask it anything — a decision, a dream, a passing worry."
           />
+          <FeatureBlock
+            index="IV"
+            title="Synastry"
+            body="Read another person's chart against your own. Attraction, friction, communication, and a cheat sheet for the two of you."
+          />
         </div>
+
       </main>
 
       <footer className="py-12 border-t border-border">
