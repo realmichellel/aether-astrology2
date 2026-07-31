@@ -2,7 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { AppNav } from "@/components/AppNav";
-import { listChat, sendChat } from "@/lib/chat.functions";
+import {
+  listChat,
+  sendChat,
+  getOracleCredits,
+  purchaseOracleCredits,
+} from "@/lib/chat.functions";
 
 export const Route = createFileRoute("/_authenticated/chat")({
   head: () => ({
@@ -19,20 +24,35 @@ type Message = { id: string; role: string; content: string; created_at: string }
 function ChatPage() {
   const fetchMessages = useServerFn(listChat);
   const send = useServerFn(sendChat);
+  const fetchCredits = useServerFn(getOracleCredits);
+  const buyCredits = useServerFn(purchaseOracleCredits);
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [pending, setPending] = useState(false);
+  const [credits, setCredits] = useState<number | null>(null);
+  const [nextFree, setNextFree] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     fetchMessages().then((m) => setMessages(m as Message[]));
-  }, [fetchMessages]);
+    fetchCredits().then((c) => {
+      setCredits(c.credits);
+      setNextFree(c.next_free_at);
+    });
+  }, [fetchMessages, fetchCredits]);
+
+  async function purchase() {
+    const c = await buyCredits();
+    setCredits(c.credits);
+    setNextFree(c.next_free_at);
+  }
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, pending]);
+
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
