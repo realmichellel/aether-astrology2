@@ -58,6 +58,7 @@ function ChatPage() {
     e.preventDefault();
     const text = input.trim();
     if (!text || pending) return;
+    if (credits !== null && credits <= 0) return;
     setInput("");
     const optimistic: Message = {
       id: "temp-" + Date.now(),
@@ -68,7 +69,8 @@ function ChatPage() {
     setMessages((prev) => [...prev, optimistic]);
     setPending(true);
     try {
-      await send({ data: { content: text } });
+      const res = await send({ data: { content: text } });
+      if (typeof res?.credits === "number") setCredits(res.credits);
       const fresh = await fetchMessages();
       setMessages(fresh as Message[]);
     } catch (err) {
@@ -80,21 +82,65 @@ function ChatPage() {
     }
   }
 
+  const out = credits !== null && credits <= 0;
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <AppNav />
       <main className="flex-1 max-w-3xl w-full mx-auto px-8 py-10 flex flex-col">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="size-12 rounded-full border border-accent/30 grid place-items-center text-accent text-xl italic font-serif">
-            A
-          </div>
-          <div>
-            <div className="text-sm font-medium">The Oracle</div>
-            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              AI astrological synthesis
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+          <div className="flex items-center gap-4">
+            <div className="size-12 rounded-full border border-accent/30 grid place-items-center text-accent text-xl italic font-serif">
+              A
+            </div>
+            <div>
+              <div className="text-sm font-medium">The Oracle</div>
+              <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                AI astrological synthesis
+              </div>
             </div>
           </div>
+          <div className="text-right">
+            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+              Questions left
+            </div>
+            <div className="font-serif italic text-2xl text-accent">
+              {credits === null ? "—" : credits}
+            </div>
+            {nextFree && (
+              <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-1">
+                Free question{" "}
+                {new Date(nextFree).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                })}
+              </div>
+            )}
+          </div>
         </div>
+
+        {out && (
+          <div className="border border-accent/40 bg-surface p-8 mb-8 text-center">
+            <div className="text-[10px] uppercase tracking-widest text-accent mb-3">
+              The Oracle rests
+            </div>
+            <h3 className="font-serif italic text-3xl mb-3">Out of questions</h3>
+            <p className="text-sm text-stone-400 mb-6 max-w-md mx-auto leading-relaxed">
+              Five more questions for <span className="text-accent">$2</span>. One free question
+              arrives each week regardless.
+            </p>
+            <button
+              onClick={purchase}
+              className="bg-accent text-primary-foreground py-3 px-10 font-serif italic text-lg hover:bg-stone-100 transition-colors"
+            >
+              Add 5 questions — free preview
+            </button>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-4">
+              Payment coming soon
+            </p>
+          </div>
+        )}
+
 
         <div
           ref={scrollRef}
