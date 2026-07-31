@@ -17,8 +17,12 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
 });
 
+// Swap this for your real feedback questionnaire link when it's ready.
+const FEEDBACK_URL = "https://forms.gle/";
+
 type Entry = { id: string; entry_date: string; mood: string | null; content: string; created_at: string };
 type Reading = { headline: string; body: string; dos: string[]; donts: string[] };
+
 
 function Dashboard() {
   const navigate = useNavigate();
