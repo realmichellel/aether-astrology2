@@ -383,33 +383,55 @@ function UnlockCard({ onUnlock }: { onUnlock: () => void }) {
 function Block({
   title,
   stars,
+  locked,
   children,
 }: {
   title: string;
   stars?: number;
+  locked?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <section className="border border-border bg-surface p-10">
       <div className="flex items-baseline justify-between mb-4">
         <div className="text-[10px] uppercase tracking-widest text-accent">{title}</div>
-        {typeof stars === "number" && <Stars n={stars} />}
+        {typeof stars === "number" &&
+          (locked ? (
+            <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
+              Locked
+            </span>
+          ) : (
+            <Stars n={stars} />
+          ))}
       </div>
-      <p className="text-stone-300 leading-relaxed">{children}</p>
+      <Veil locked={!!locked}>
+        <p className="text-stone-300 leading-relaxed">{children}</p>
+      </Veil>
     </section>
   );
 }
 
-function ListBlock({ title, items }: { title: string; items: string[] }) {
+function ListBlock({
+  title,
+  items,
+  locked,
+}: {
+  title: string;
+  items: string[];
+  locked?: boolean;
+}) {
   return (
     <section className="border border-border bg-surface p-8">
       <div className="text-[10px] uppercase tracking-widest text-accent mb-4">{title}</div>
-      <ul className="space-y-3 text-stone-300 font-serif italic text-lg">
-        {items?.map((it, i) => <li key={i}>· {it}</li>)}
-      </ul>
+      <Veil locked={!!locked}>
+        <ul className="space-y-3 text-stone-300 font-serif italic text-lg">
+          {items?.map((it, i) => <li key={i}>· {it}</li>)}
+        </ul>
+      </Veil>
     </section>
   );
 }
+
 
 function Stars({ n }: { n: number }) {
   const full = Math.round(Math.max(0, Math.min(5, n)));
