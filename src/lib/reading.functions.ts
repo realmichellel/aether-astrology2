@@ -82,7 +82,7 @@ export const getDailyReading = createServerFn({ method: "POST" })
 
 
       const { text } = await generateText({
-        model: gateway("openai/gpt-5.5"),
+        model: gateway("google/gemini-3.6-flash"),
         frequencyPenalty: 0.6,
         
         system: `You are a modern astrologer writing a daily reading in the style of Co-Star Astrology.
