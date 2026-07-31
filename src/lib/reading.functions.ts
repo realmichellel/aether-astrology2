@@ -30,7 +30,20 @@ type ReadingPayload = { headline: string; body: string; dos: string[]; donts: st
 
 function parseReading(raw: string): ReadingPayload {
   try {
-    const parsed = JSON.parse(raw);
+    let cleaned = raw.trim();
+
+    // Remove leading ```json or ```
+    if (cleaned.startsWith("\x60\x60\x60")) {
+      cleaned = cleaned.replace(/^\x60\x60\x60(?:json)?\s*/i, "");
+    }
+    // Remove trailing ```
+    if (cleaned.endsWith("\x60\x60\x60")) {
+      cleaned = cleaned.replace(/\s*\x60\x60\x60$/i, "");
+    }
+
+    cleaned = cleaned.trim();
+    const parsed = JSON.parse(cleaned);
+    // const parsed = JSON.parse(raw);
     return {
       headline: typeof parsed.headline === "string" ? parsed.headline : "",
       body: typeof parsed.body === "string" ? parsed.body : "",
@@ -82,7 +95,7 @@ export const getDailyReading = createServerFn({ method: "POST" })
 
 
       const { text } = await generateText({
-        model: gateway("openai/gpt-5.5"),
+        model: gateway("google/gemini-3.6-flash"),
         
         system: `You are a modern astrologer writing a daily reading in the style of Co-Star Astrology.
       Tone Guidelines:
