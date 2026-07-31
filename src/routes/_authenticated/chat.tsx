@@ -189,18 +189,19 @@ function ChatPage() {
                 submit(e);
               }
             }}
-            placeholder="Ask the stars…"
+            placeholder={out ? "Out of questions…" : "Ask the stars…"}
             rows={2}
             className="flex-1 bg-transparent text-sm focus:outline-none italic resize-none placeholder:text-muted-foreground"
-            disabled={pending}
+            disabled={pending || out}
           />
           <button
             type="submit"
-            disabled={!input.trim() || pending}
+            disabled={!input.trim() || pending || out}
             className="text-accent uppercase text-[10px] font-bold tracking-widest px-4 py-2 border border-accent/30 hover:bg-accent/10 transition-colors disabled:opacity-30"
           >
             Send
           </button>
+
         </form>
       </main>
     </div>
