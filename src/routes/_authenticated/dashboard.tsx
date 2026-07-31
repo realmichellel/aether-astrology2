@@ -229,8 +229,6 @@ function Dashboard() {
           </a>
         </div>
       </footer>
-
-      </footer>
     </div>
   );
 }
