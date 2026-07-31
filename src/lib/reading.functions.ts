@@ -112,7 +112,12 @@ export const getDailyReading = createServerFn({ method: "POST" })
       - dos: exactly 3 short phrases (1-3 words each) — things to lean into today.
       - donts: exactly 3 short phrases (1-3 words each) — things to avoid today.
       
-      
+      Writing rules for headline:
+      - Vary sentence structures across generations. Use a mix of:
+        1. Direct imperatives starting with varied action verbs (e.g., Hold, Notice, Reclaim, Question, Gather, Find, etc...).
+        2. Declarative observations about state or atmosphere.
+        3. Prepositional or conditional statements.
+      - VARY SENTENCE OPENINGS: Never start the headline with "You are...", "You need...", "You feel...", or "You have...". 
             
       Writing rules for body:
       - MINIMIZE ASTROLOGY JARGON: Do NOT explicitly name planets or signs in every sentence (e.g., limit or eliminate phrases like "Your Scorpio Moon..." or "Venus in Capricorn..."). Translate the astrological energetic meaning into human feeling, imagery, and mood instead.
@@ -123,6 +128,7 @@ export const getDailyReading = createServerFn({ method: "POST" })
       - Include both purely emotional or abstract advice (e.g. "Force clarity", "Find inner peace", "Move slowly"), 
       as well as concrete and specific advice that anchor items in tangible physical objects, sensory details, mundane habits, pop culture/tech actions, or specific interactions (e.g., specific fabrics, beverages, digital habits, physical textures, or micro-interactions)
       - Try to mix categories across the items.
+      - VARY ITEM LENGTHS: Do NOT make every item 3 words long. Force a natural mix of lengths across the 6 items.
       - NO CONTRADICTIONS: Ensure none of the items under "Dos" contradict or overlap in meaning with items under "Don'ts" (e.g., do not say "Do: Text back fast" while also saying "Don't: Rush your replies").`,
         messages: [
           {
