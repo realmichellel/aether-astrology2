@@ -89,6 +89,33 @@ export type Database = {
         }
         Relationships: []
       }
+      oracle_credits: {
+        Row: {
+          created_at: string
+          credits: number
+          id: string
+          last_weekly_grant: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits?: number
+          id?: string
+          last_weekly_grant?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits?: number
+          id?: string
+          last_weekly_grant?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           birth_date: string
