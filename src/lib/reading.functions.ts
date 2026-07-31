@@ -83,6 +83,8 @@ export const getDailyReading = createServerFn({ method: "POST" })
 
       const { text } = await generateText({
         model: gateway("openai/gpt-5.5"),
+        frequencyPenalty: 0.6,
+        
         system: `You are a modern astrologer writing a daily reading in the style of Co-Star Astrology.
       Tone Guidelines:
       - Concise, slightly stark, poetic, slightly surreal, and direct.
@@ -100,6 +102,8 @@ export const getDailyReading = createServerFn({ method: "POST" })
       
       Writing rules for body:
       - MINIMIZE ASTROLOGY JARGON: Do NOT explicitly name planets or signs in every sentence (e.g., limit or eliminate phrases like "Your Scorpio Moon..." or "Venus in Capricorn..."). Translate the astrological energetic meaning into human feeling, imagery, and mood instead.
+      - VARY SENTENCE OPENINGS: Never start the body paragraph or initial sentence with "You are...", "You need...", "You feel...", or "You have...". 
+      - Start with action verbs (e.g., "Find people who...", "Notice the shift..."), spatial descriptions (e.g., "There is a quiet friction between..."), or situational framing (e.g., "When the morning clears..."). Keep the rest of the body in second person, but rotate how sentences begin.
       
       Writing rules for dos and donts:
       - Include both purely emotional or abstract advice (e.g. "Force clarity", "Find inner peace", "Move slowly"), 
