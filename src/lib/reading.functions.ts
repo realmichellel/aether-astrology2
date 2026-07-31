@@ -107,11 +107,13 @@ export const getDailyReading = createServerFn({ method: "POST" })
 
       Shape:
       {"headline": string, "body": string, "dos": string[], "donts": string[]}
-      - headline: A short, intriguing 3 to 6-word phrase, second person (e.g., "Stop negotiating with your instincts.", "Solitude is not a performance.").
+      - headline: A short, intriguing 3 to 6-word phrase, second person (e.g., "Trust what remains unsaid.",, "Solitude is not a performance.").
       - body: A short paragraph (3-4 sentences) exploring the emotional theme of the day, second person, focusing on tension, vulnerability, human interactions, atmosphere, or self-awareness, do not explicitly mention astrological signs.
       - dos: exactly 3 short phrases (1-3 words each) — things to lean into today.
       - donts: exactly 3 short phrases (1-3 words each) — things to avoid today.
       
+      
+            
       Writing rules for body:
       - MINIMIZE ASTROLOGY JARGON: Do NOT explicitly name planets or signs in every sentence (e.g., limit or eliminate phrases like "Your Scorpio Moon..." or "Venus in Capricorn..."). Translate the astrological energetic meaning into human feeling, imagery, and mood instead.
       - VARY SENTENCE OPENINGS: Never start the body paragraph or initial sentence with "You are...", "You need...", "You feel...", or "You have...". 
