@@ -228,11 +228,11 @@ function Dashboard() {
       </main>
 
       <footer className="py-12 border-t border-border">
-        <div className="max-w-6xl mx-auto px-8 flex justify-between items-center text-[10px] uppercase tracking-widest text-muted-foreground">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8 flex justify-between items-center text-[10px] uppercase tracking-widest text-muted-foreground">
           <div>© Aether</div>
           <div>An observatory for one</div>
         </div>
-        <div className="max-w-6xl mx-auto px-8 mt-8">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8 mt-8">
           <a
             href={FEEDBACK_URL}
             target="_blank"

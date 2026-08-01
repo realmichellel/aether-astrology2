@@ -157,7 +157,7 @@ function ChatPage() {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-4 sm:gap-8">
             <button
               onClick={() => setCheckoutOpen(true)}
               className="border border-accent/40 text-accent px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-accent/10 transition-colors"
