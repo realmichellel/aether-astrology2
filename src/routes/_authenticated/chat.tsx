@@ -106,6 +106,7 @@ function ChatPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
+      <PaymentTestModeBanner />
       <AppNav />
       <main className="flex-1 max-w-3xl w-full mx-auto px-8 py-10 flex flex-col">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
@@ -120,24 +121,58 @@ function ChatPage() {
               </div>
             </div>
           </div>
-          <div className="text-right">
-            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              Questions left
-            </div>
-            <div className="font-serif italic text-2xl text-accent">
-              {credits === null ? "—" : credits}
-            </div>
-            {nextFree && (
-              <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-1">
-                Free question{" "}
-                {new Date(nextFree).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                })}
+          <div className="flex items-center gap-8">
+            <div className="text-right">
+              <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                Questions left
               </div>
-            )}
+              <div className="font-serif italic text-2xl text-accent">
+                {credits === null ? "—" : credits}
+              </div>
+              {nextFree && (
+                <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-1">
+                  Free question{" "}
+                  {new Date(nextFree).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </div>
+              )}
+            </div>
+            <button
+              onClick={() => setCheckoutOpen(true)}
+              className="border border-accent/40 text-accent px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-accent/10 transition-colors"
+            >
+              Add 10 questions — $3.99
+            </button>
           </div>
         </div>
+
+        {settling && (
+          <div className="border border-accent/30 bg-surface p-4 mb-8 text-[10px] uppercase tracking-[0.2em] text-accent text-center">
+            Confirming your purchase…
+          </div>
+        )}
+
+        {checkoutOpen && (
+          <div className="fixed inset-0 z-50 bg-background/95 overflow-y-auto">
+            <div className="max-w-3xl mx-auto px-6 py-10">
+              <div className="flex items-baseline justify-between mb-6">
+                <h3 className="font-serif italic text-3xl">Ten questions</h3>
+                <button
+                  onClick={() => setCheckoutOpen(false)}
+                  className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-accent"
+                >
+                  Close
+                </button>
+              </div>
+              <StripeEmbeddedCheckout
+                priceId={ORACLE_PACK_PRICE_ID}
+                returnUrl={`${window.location.origin}/chat?checkout=success`}
+              />
+            </div>
+          </div>
+        )}
 
         {out && (
           <div className="border border-accent/40 bg-surface p-8 mb-8 text-center">
@@ -146,20 +181,19 @@ function ChatPage() {
             </div>
             <h3 className="font-serif italic text-3xl mb-3">Out of questions</h3>
             <p className="text-sm text-stone-400 mb-6 max-w-md mx-auto leading-relaxed">
-              Five more questions for <span className="text-accent">$2</span>. One free question
+              Ten more questions for <span className="text-accent">$3.99</span>. One free question
               arrives each week regardless.
             </p>
             <button
-              onClick={purchase}
+              onClick={() => setCheckoutOpen(true)}
               className="bg-accent text-primary-foreground py-3 px-10 font-serif italic text-lg hover:bg-stone-100 transition-colors"
             >
-              Add 5 questions — free preview
+              Add 10 questions
             </button>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-4">
-              Payment coming soon
-            </p>
           </div>
         )}
+
+
 
 
         <div
