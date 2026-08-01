@@ -1,38 +1,49 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createClient } from "@supabase/supabase-js";
 import { type StripeEnv, verifyWebhook } from "@/lib/stripe.server";
 
 const ORACLE_PACK_PRICE_ID = "oracle_10_pack";
 const ORACLE_PACK_QUESTIONS = 10;
 const SYNASTRY_UNLOCK_PRICE_ID = "synastry_unlock";
 
-function getSupabase() {
-  return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-}
-
 async function grantOracleCredits(userId: string, amount: number) {
-  const supabase = getSupabase();
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const today = new Date().toISOString().slice(0, 10);
-  const { data: existing } = await supabase
+  const { data: existing, error: readError } = await supabaseAdmin
     .from("oracle_credits")
     .select("credits")
     .eq("user_id", userId)
     .maybeSingle();
+  if (readError) throw new Error(`Could not read Oracle credits: ${readError.message}`);
 
   if (!existing) {
-    await supabase
+    const { error } = await supabaseAdmin
       .from("oracle_credits")
       .insert({ user_id: userId, credits: amount, last_weekly_grant: today });
+    if (error) throw new Error(`Could not create Oracle credits: ${error.message}`);
     return;
   }
 
-  await supabase
+  const { error } = await supabaseAdmin
     .from("oracle_credits")
     .update({
       credits: (existing.credits as number) + amount,
       updated_at: new Date().toISOString(),
     })
     .eq("user_id", userId);
+  if (error) throw new Error(`Could not grant Oracle credits: ${error.message}`);
+}
+
+async function unlockSynastryReport(userId: string, reportId: string) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin
+    .from("synastry_reports")
+    .update({ unlocked: true })
+    .eq("user_id", userId)
+    .eq("id", reportId)
+    .select("id")
+    .maybeSingle();
+  if (error) throw new Error(`Could not unlock synastry report: ${error.message}`);
+  if (!data) throw new Error("Could not unlock synastry report: report not found");
 }
 
 async function handleWebhook(req: Request, env: StripeEnv) {
@@ -52,11 +63,7 @@ async function handleWebhook(req: Request, env: StripeEnv) {
       if (priceId === ORACLE_PACK_PRICE_ID) {
         await grantOracleCredits(userId, ORACLE_PACK_QUESTIONS);
       } else if (priceId === SYNASTRY_UNLOCK_PRICE_ID && session.metadata?.reportId) {
-        await getSupabase()
-          .from("synastry_reports")
-          .update({ unlocked: true })
-          .eq("user_id", userId)
-          .eq("id", session.metadata.reportId);
+        await unlockSynastryReport(userId, session.metadata.reportId);
       }
       break;
     }
