@@ -6,8 +6,10 @@ import {
   generateCompatibility,
   listSynastryReports,
   getSynastryReport,
-  unlockSynastryReport,
 } from "@/lib/compatibility.functions";
+import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
+import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
+import { SYNASTRY_UNLOCK_PRICE_ID } from "@/lib/stripe";
 
 export const Route = createFileRoute("/_authenticated/compatibility")({
   head: () => ({
@@ -64,7 +66,6 @@ function CompatibilityPage() {
   const run = useServerFn(generateCompatibility);
   const listAll = useServerFn(listSynastryReports);
   const loadOne = useServerFn(getSynastryReport);
-  const unlockFn = useServerFn(unlockSynastryReport);
 
   const [form, setForm] = useState({
     full_name: "",
@@ -77,6 +78,8 @@ function CompatibilityPage() {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [active, setActive] = useState<Loaded | null>(null);
   const [showForm, setShowForm] = useState(true);
+  const [checkoutId, setCheckoutId] = useState<string | null>(null);
+  const [settling, setSettling] = useState(false);
 
   async function refreshHistory() {
     const items = await listAll();
@@ -123,16 +126,70 @@ function CompatibilityPage() {
     setShowForm(false);
   }
 
-  async function unlock() {
+  function unlock() {
     if (!active) return;
-    await unlockFn({ data: { id: active.id } });
-    setActive({ ...active, unlocked: true });
-    await refreshHistory();
+    setCheckoutId(active.id);
   }
+
+  // After returning from checkout, poll briefly while the unlock settles.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const reportId = params.get("report");
+    if (params.get("checkout") !== "success" || !reportId) return;
+    window.history.replaceState({}, "", window.location.pathname);
+    setSettling(true);
+    let tries = 0;
+    const timer = setInterval(async () => {
+      tries += 1;
+      const r = await loadOne({ data: { id: reportId } });
+      if (r.unlocked || tries >= 10) {
+        clearInterval(timer);
+        setSettling(false);
+        setActive({
+          id: r.id,
+          report: r.report as Report,
+          person1: r.person1,
+          person2: r.person2,
+          unlocked: r.unlocked,
+        });
+        setShowForm(false);
+        await refreshHistory();
+      }
+    }, 2000);
+    return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <PaymentTestModeBanner />
       <AppNav />
+      {settling && (
+        <div className="border-b border-accent/30 bg-surface px-4 py-3 text-center text-[10px] uppercase tracking-[0.2em] text-accent">
+          Confirming your purchase…
+        </div>
+      )}
+      {checkoutId && (
+        <div className="fixed inset-0 z-50 bg-background/95 overflow-y-auto">
+          <div className="max-w-3xl mx-auto px-6 py-10">
+            <div className="flex items-baseline justify-between mb-6">
+              <h3 className="font-serif italic text-3xl">Unlock the full reading</h3>
+              <button
+                onClick={() => setCheckoutId(null)}
+                className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-accent"
+              >
+                Close
+              </button>
+            </div>
+            <StripeEmbeddedCheckout
+              priceId={SYNASTRY_UNLOCK_PRICE_ID}
+              reportId={checkoutId}
+              returnUrl={`${window.location.origin}/compatibility?checkout=success&report=${checkoutId}`}
+            />
+          </div>
+        </div>
+      )}
       <main className="max-w-6xl mx-auto px-8 py-12 grid grid-cols-1 md:grid-cols-[1fr_260px] gap-10">
         <div>
           <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-4">Synastry</p>
@@ -368,11 +425,8 @@ function UnlockCard({ onUnlock }: { onUnlock: () => void }) {
         onClick={onUnlock}
         className="bg-accent text-primary-foreground py-3 px-10 font-serif italic text-lg hover:bg-stone-100 transition-colors"
       >
-        Unlock — free preview
+        Unlock — $3.99
       </button>
-      <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-4">
-        Payment coming soon
-      </p>
     </section>
   );
 }

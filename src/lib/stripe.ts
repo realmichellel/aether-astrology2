@@ -29,3 +29,5 @@ export function getStripeEnvironment(): StripeEnv {
 /** The 10-question Oracle pack. */
 export const ORACLE_PACK_PRICE_ID = "oracle_10_pack";
 export const ORACLE_PACK_QUESTIONS = 10;
+
+export const SYNASTRY_UNLOCK_PRICE_ID = "synastry_unlock";
