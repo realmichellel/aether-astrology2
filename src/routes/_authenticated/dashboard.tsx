@@ -79,11 +79,11 @@ function Dashboard() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <AppNav />
-      <main className="max-w-6xl mx-auto px-8 py-12">
-        <section className="mb-16 flex flex-wrap items-end justify-between gap-6 border-b border-border pb-10">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-4">{today}</p>
-            <h1 className="font-serif text-5xl md:text-6xl font-light leading-tight">
+      <main className="max-w-6xl mx-auto px-5 py-8 sm:px-8 sm:py-12">
+        <section className="mb-12 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 border-b border-border pb-8 sm:mb-16 sm:flex sm:flex-wrap sm:justify-between sm:gap-6 sm:pb-10">
+          <div className="min-w-0">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-3 sm:mb-4">{today}</p>
+            <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl font-light leading-tight">
               {profile?.full_name ? (
                 <>
                   Welcome back, <span className="italic">{profile.full_name}.</span>
@@ -94,17 +94,18 @@ function Dashboard() {
             </h1>
           </div>
           {profile && (
-            <div className="text-right">
+            <div className="text-right shrink-0">
               <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">
                 Sun in
               </div>
-              <div className="font-serif italic text-2xl text-accent">
+              <div className="font-serif italic text-xl sm:text-2xl text-accent whitespace-nowrap">
                 <span className="mr-2">{glyph}</span>
                 {profile.sun_sign}
               </div>
             </div>
           )}
         </section>
+
 
         <section className="mb-24">
           <div className="p-10 bg-surface border border-border">
