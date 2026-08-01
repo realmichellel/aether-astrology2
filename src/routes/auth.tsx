@@ -84,7 +84,7 @@ function AuthPage() {
           <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-6">
             {mode === "signin" ? "Return" : "Begin"}
           </p>
-          <h1 className="font-serif text-5xl font-light italic mb-10">
+          <h1 className="font-serif text-3xl sm:text-5xl font-light italic mb-10">
             {mode === "signin" ? "Enter the observatory." : "Open an account."}
           </h1>
 

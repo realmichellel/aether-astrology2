@@ -44,13 +44,13 @@ function YouPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <AppNav />
-      <main className="max-w-3xl mx-auto px-8 py-20">
+      <main className="max-w-3xl mx-auto px-5 py-12 sm:px-8 sm:py-20">
         <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-6">Your natal chart</p>
-        <h1 className="font-serif text-5xl font-light leading-tight mb-4">
+        <h1 className="font-serif text-3xl sm:text-5xl font-light leading-tight mb-4">
           The sky at <span className="italic">your arrival.</span>
         </h1>
         {data?.profile?.full_name && (
-          <p className="text-stone-400 mb-12">
+          <p className="text-sm sm:text-base text-stone-400 mb-12">
             {data.profile.full_name} · {data.profile.birth_date}
             {data.profile.birth_time ? ` · ${data.profile.birth_time}` : ""} · {data.profile.birth_place}
           </p>
@@ -110,9 +110,9 @@ function ChartTable({ chart }: { chart: NonNullable<NonNullable<ChartData>["char
     <div className="border border-border">
       {/* Header */}
       <div className="grid grid-cols-[1.2fr_2fr_1fr] text-[10px] uppercase tracking-[0.2em] text-muted-foreground border-b border-border">
-        <div className="px-6 py-2">Body</div>
-        <div className="px-6 py-2 border-l border-border/40">Sign</div>
-        <div className="px-6 py-2 text-right border-l border-border/40">House</div>
+        <div className="px-4 sm:px-6 py-2">Body</div>
+        <div className="px-4 sm:px-6 py-2 border-l border-border/40">Sign</div>
+        <div className="px-4 sm:px-6 py-2 text-right border-l border-border/40">House</div>
       </div>
 
       {/* Rows */}
@@ -135,14 +135,14 @@ function ChartTable({ chart }: { chart: NonNullable<NonNullable<ChartData>["char
         return (
           <div key={i} className="grid grid-cols-[1.2fr_2fr_1fr] items-stretch">
             {/* Body Column: Always shown, no horizontal border */}
-            <div className="flex items-center gap-3 px-6 py-2.5">
+            <div className="flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2.5">
               <span className="text-accent text-base w-5">{p.symbol}</span>
               <span className="text-[11px] uppercase tracking-[0.2em]">{p.body}</span>
             </div>
 
             {/* Sign Column: Only show text if it's NOT a repeat of the row above */}
             <div
-              className={`font-serif italic text-lg px-6 py-2.5 flex items-center border-l border-border/40 ${
+              className={`font-serif italic text-base sm:text-lg px-4 sm:px-6 py-2.5 flex items-center border-l border-border/40 ${
                 showSignBorder ? "border-b border-border/40" : ""
               }`}
             >
@@ -151,7 +151,7 @@ function ChartTable({ chart }: { chart: NonNullable<NonNullable<ChartData>["char
 
             {/* House Column: Only show text if it's NOT a repeat of the row above */}
             <div
-              className={`text-right font-serif text-xl text-stone-400 px-6 py-2.5 flex items-center justify-end border-l border-border/40 ${
+              className={`text-right font-serif text-lg sm:text-xl text-stone-400 px-4 sm:px-6 py-2.5 flex items-center justify-end border-l border-border/40 ${
                 showHouseBorder ? "border-b border-border/40" : ""
               }`}
             >

@@ -81,12 +81,12 @@ function Landing() {
         <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-8">
           A personal astrologer
         </p>
-        <h1 className="font-serif text-6xl md:text-7xl font-light leading-[1.05] mb-10 max-w-3xl">
+        <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl font-light leading-[1.05] mb-10 max-w-3xl">
           Your fate is written
           <br />
           <span className="italic">in the silent movements.</span>
         </h1>
-        <p className="max-w-xl text-lg text-stone-400 leading-relaxed mb-14">
+        <p className="max-w-xl text-base sm:text-lg text-stone-400 leading-relaxed mb-14">
           Aether reads the sky as it moves over you. A natal chart, the current
           transits, and the record you keep of your own life — synthesized into
           a daily reading, and a conversation you can return to.

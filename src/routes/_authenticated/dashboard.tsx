@@ -79,11 +79,11 @@ function Dashboard() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <AppNav />
-      <main className="max-w-6xl mx-auto px-8 py-12">
-        <section className="mb-16 flex flex-wrap items-end justify-between gap-6 border-b border-border pb-10">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-4">{today}</p>
-            <h1 className="font-serif text-5xl md:text-6xl font-light leading-tight">
+      <main className="max-w-6xl mx-auto px-5 py-8 sm:px-8 sm:py-12">
+        <section className="mb-12 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 border-b border-border pb-8 sm:mb-16 sm:flex sm:flex-wrap sm:justify-between sm:gap-6 sm:pb-10">
+          <div className="min-w-0">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-3 sm:mb-4">{today}</p>
+            <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl font-light leading-tight">
               {profile?.full_name ? (
                 <>
                   Welcome back, <span className="italic">{profile.full_name}.</span>
@@ -94,17 +94,18 @@ function Dashboard() {
             </h1>
           </div>
           {profile && (
-            <div className="text-right">
+            <div className="text-right shrink-0">
               <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">
                 Sun in
               </div>
-              <div className="font-serif italic text-2xl text-accent">
+              <div className="font-serif italic text-xl sm:text-2xl text-accent whitespace-nowrap">
                 <span className="mr-2">{glyph}</span>
                 {profile.sun_sign}
               </div>
             </div>
           )}
         </section>
+
 
         <section className="mb-24">
           <div className="p-10 bg-surface border border-border">
@@ -113,17 +114,17 @@ function Dashboard() {
             </div>
 
             {loading ? (
-              <div className="font-serif italic text-3xl text-stone-500">
+              <div className="font-serif italic text-2xl sm:text-3xl text-stone-500">
                 Consulting the ephemeris…
               </div>
             ) : error ? (
               <div className="text-destructive-foreground">{error}</div>
             ) : reading ? (
               <>
-                <h2 className="font-serif text-2xl md:text-3xl font-semibold leading-snug text-stone-100 mb-4">
+                <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-semibold leading-snug text-stone-100 mb-4">
                   {reading.headline}
                 </h2>
-                <p className="text-base md:text-lg font-light leading-relaxed text-stone-400 mb-8">
+                <p className="text-sm sm:text-base md:text-lg font-light leading-relaxed text-stone-400 mb-8">
                   {reading.body}
                 </p>
                 {(reading.dos.length > 0 || reading.donts.length > 0) && (
@@ -134,7 +135,7 @@ function Dashboard() {
                       </div>
                       <ul className="space-y-2">
                         {reading.dos.map((item, i) => (
-                          <li key={i} className="font-serif text-lg md:text-xl text-stone-200">
+                          <li key={i} className="font-serif text-base sm:text-lg md:text-xl text-stone-200">
                             {item}
                           </li>    
                         ))}
@@ -146,7 +147,7 @@ function Dashboard() {
                       </div>
                       <ul className="space-y-2">
                         {reading.donts.map((item, i) => (
-                          <li key={i} className="font-serif text-lg md:text-xl text-stone-200">
+                          <li key={i} className="font-serif text-base sm:text-lg md:text-xl text-stone-200">
                             {item}
                           </li>
                         ))}
@@ -188,7 +189,7 @@ function Dashboard() {
 
           <div className="space-y-4">
             <div className="flex justify-between items-end border-b border-border pb-4">
-              <h3 className="font-serif text-3xl italic">Chronicles</h3>
+              <h3 className="font-serif text-2xl sm:text-3xl italic">Chronicles</h3>
               <Link
                 to="/journal"
                 className="text-[10px] uppercase tracking-widest text-accent font-bold hover:text-stone-100"
@@ -215,7 +216,7 @@ function Dashboard() {
                     </span>
                     {e.mood && <span>{e.mood}</span>}
                   </div>
-                  <div className="text-lg font-serif italic text-stone-300 group-hover:text-accent transition-colors">
+                  <div className="text-base sm:text-lg font-serif italic text-stone-300 group-hover:text-accent transition-colors">
                     {e.content.length > 70 ? e.content.slice(0, 70) + "…" : e.content}
                   </div>
                 </Link>
@@ -227,11 +228,11 @@ function Dashboard() {
       </main>
 
       <footer className="py-12 border-t border-border">
-        <div className="max-w-6xl mx-auto px-8 flex justify-between items-center text-[10px] uppercase tracking-widest text-muted-foreground">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8 flex justify-between items-center text-[10px] uppercase tracking-widest text-muted-foreground">
           <div>© Aether</div>
           <div>An observatory for one</div>
         </div>
-        <div className="max-w-6xl mx-auto px-8 mt-8">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8 mt-8">
           <a
             href={FEEDBACK_URL}
             target="_blank"

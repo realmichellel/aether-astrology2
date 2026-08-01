@@ -217,10 +217,10 @@ function CompatibilityPage() {
           </div>
         </div>
       )}
-      <main className="max-w-6xl mx-auto px-8 py-12 grid grid-cols-1 md:grid-cols-[1fr_260px] gap-10">
+      <main className="max-w-6xl mx-auto px-5 py-8 sm:px-8 sm:py-12 grid grid-cols-1 md:grid-cols-[1fr_260px] gap-10">
         <div>
           <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-4">Synastry</p>
-          <h1 className="font-serif text-5xl font-light leading-tight mb-4">
+          <h1 className="font-serif text-3xl sm:text-5xl font-light leading-tight mb-4">
             Two charts, <span className="italic">one sky.</span>
           </h1>
           <p className="text-stone-400 max-w-lg mb-10">
@@ -339,7 +339,7 @@ function ReportView({ data, onUnlock }: { data: Loaded; onUnlock: () => void }) 
           Overall resonance
         </div>
         <div className="font-serif text-7xl italic text-accent mb-4">{report.overall_score}%</div>
-        <p className="font-serif italic text-2xl text-stone-200 max-w-2xl mx-auto">
+        <p className="font-serif italic text-lg sm:text-2xl text-stone-200 max-w-2xl mx-auto">
           {report.dynamic_summary}
         </p>
         <div className="flex justify-center gap-12 mt-8 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
@@ -384,7 +384,7 @@ function ReportView({ data, onUnlock }: { data: Loaded; onUnlock: () => void }) 
       </div>
 
       <section className="border border-border bg-surface p-10">
-        <h2 className="font-serif text-3xl md:text-4xl font-light mb-8">Crush cheat sheet</h2>
+        <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-light mb-8">Crush cheat sheet</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
           <div>
             <div className="text-[10px] uppercase tracking-[0.2em] text-emerald-400/80 mb-3">
@@ -416,7 +416,7 @@ function ReportView({ data, onUnlock }: { data: Loaded; onUnlock: () => void }) 
             How to give them butterflies
           </div>
           <Veil locked={!unlocked}>
-            <p className="text-[15px] md:text-base leading-[1.9] text-stone-300 max-w-2xl">
+            <p className="text-sm sm:text-base leading-[1.85] text-stone-300 max-w-2xl">
               {report.crush_cheat_sheet?.how_to_give_them_butterflies}
             </p>
           </Veil>
@@ -473,7 +473,7 @@ function Block({
   return (
     <section className="border border-border bg-surface p-10">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6 pb-5 border-b border-border">
-        <h2 className="font-serif text-3xl md:text-4xl font-light leading-none">{title}</h2>
+        <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-light leading-none">{title}</h2>
         {typeof stars === "number" &&
           (locked ? (
             <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
@@ -484,7 +484,7 @@ function Block({
           ))}
       </div>
       <Veil locked={!!locked}>
-        <p className="text-[15px] md:text-base leading-[1.9] text-stone-300 max-w-2xl">
+        <p className="text-sm sm:text-base leading-[1.85] text-stone-300 max-w-2xl">
           {children}
         </p>
       </Veil>
@@ -503,7 +503,7 @@ function ListBlock({
 }) {
   return (
     <section className="border border-border bg-surface p-10 h-full">
-      <h2 className="font-serif text-2xl md:text-3xl font-light mb-6 pb-5 border-b border-border">
+      <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-light mb-6 pb-5 border-b border-border">
         {title}
       </h2>
       <Veil locked={!!locked}>
