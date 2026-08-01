@@ -66,8 +66,8 @@ const CATEGORY_BODIES = {
 export type SynastryCategory = keyof typeof CATEGORY_BODIES;
 
 export function aspectsForCategory(hits: AspectHit[], category: SynastryCategory): AspectHit[] {
-  const bodies = CATEGORY_BODIES[category];
-  return hits.filter((h) => bodies.includes(h.body1 as any) && bodies.includes(h.body2 as any));
+  const bodies = CATEGORY_BODIES[category] as readonly string[];
+  return hits.filter((h) => bodies.includes(h.body1) && bodies.includes(h.body2));
 }
 
 /** Same weighting as scoreFromAspects, rescaled to a 0-5 star baseline. */
