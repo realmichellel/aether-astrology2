@@ -217,10 +217,10 @@ function CompatibilityPage() {
           </div>
         </div>
       )}
-      <main className="max-w-6xl mx-auto px-8 py-12 grid grid-cols-1 md:grid-cols-[1fr_260px] gap-10">
+      <main className="max-w-6xl mx-auto px-5 py-8 sm:px-8 sm:py-12 grid grid-cols-1 md:grid-cols-[1fr_260px] gap-10">
         <div>
           <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-4">Synastry</p>
-          <h1 className="font-serif text-5xl font-light leading-tight mb-4">
+          <h1 className="font-serif text-3xl sm:text-5xl font-light leading-tight mb-4">
             Two charts, <span className="italic">one sky.</span>
           </h1>
           <p className="text-stone-400 max-w-lg mb-10">

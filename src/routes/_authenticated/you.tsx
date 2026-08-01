@@ -44,9 +44,9 @@ function YouPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <AppNav />
-      <main className="max-w-3xl mx-auto px-8 py-20">
+      <main className="max-w-3xl mx-auto px-5 py-12 sm:px-8 sm:py-20">
         <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-6">Your natal chart</p>
-        <h1 className="font-serif text-5xl font-light leading-tight mb-4">
+        <h1 className="font-serif text-3xl sm:text-5xl font-light leading-tight mb-4">
           The sky at <span className="italic">your arrival.</span>
         </h1>
         {data?.profile?.full_name && (

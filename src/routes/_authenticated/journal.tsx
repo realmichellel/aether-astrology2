@@ -68,9 +68,9 @@ function JournalPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <AppNav />
-      <main className="max-w-4xl mx-auto px-8 py-12">
+      <main className="max-w-4xl mx-auto px-5 py-8 sm:px-8 sm:py-12">
         <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-4">Chronicles</p>
-        <h1 className="font-serif text-5xl font-light leading-tight mb-2">
+        <h1 className="font-serif text-3xl sm:text-5xl font-light leading-tight mb-2">
           The record <span className="italic">Aether reads.</span>
         </h1>
         <p className="text-stone-400 max-w-lg mb-12">

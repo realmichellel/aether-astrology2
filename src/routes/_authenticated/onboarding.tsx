@@ -57,9 +57,9 @@ function Onboarding() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <AppNav />
-      <main className="max-w-2xl mx-auto px-8 py-20">
+      <main className="max-w-2xl mx-auto px-5 py-12 sm:px-8 sm:py-20">
         <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-6">The natal configuration</p>
-        <h1 className="font-serif text-5xl font-light leading-tight mb-4">
+        <h1 className="font-serif text-3xl sm:text-5xl font-light leading-tight mb-4">
           When and where <span className="italic">did you arrive?</span>
         </h1>
         <p className="text-stone-400 mb-12 max-w-lg">

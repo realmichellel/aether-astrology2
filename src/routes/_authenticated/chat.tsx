@@ -144,7 +144,7 @@ function ChatPage() {
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <PaymentTestModeBanner />
       <AppNav />
-      <main className="flex-1 max-w-3xl w-full mx-auto px-8 py-10 flex flex-col">
+      <main className="flex-1 max-w-3xl w-full mx-auto px-5 py-8 sm:px-8 sm:py-10 flex flex-col">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-4">
             <div className="size-12 rounded-full border border-accent/30 grid place-items-center text-accent text-xl italic font-serif">
