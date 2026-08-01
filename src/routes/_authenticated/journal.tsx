@@ -8,9 +8,21 @@ export const Route = createFileRoute("/_authenticated/journal")({
   head: () => ({
     meta: [
       { title: "Chronicles — Aether" },
-      { name: "description", content: "Log moods and moments. Aether reads them as context." },
+      {
+        name: "description",
+        content:
+          "Log the moods and moments of your days. Aether reads your chronicles as context for every daily reading it writes.",
+      },
+      { property: "og:title", content: "Chronicles — Aether" },
+      {
+        property: "og:description",
+        content: "Your record of moods and moments, read back into every daily astrological reading.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+
   component: JournalPage,
 });
 

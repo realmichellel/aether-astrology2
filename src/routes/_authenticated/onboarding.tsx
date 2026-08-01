@@ -8,9 +8,21 @@ export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
     meta: [
       { title: "Your birth chart — Aether" },
-      { name: "description", content: "Tell Aether when and where you were born." },
+      {
+        name: "description",
+        content:
+          "Enter your birth date, time, and city so Aether can calculate your full natal chart and begin your daily readings.",
+      },
+      { property: "og:title", content: "Your birth chart — Aether" },
+      {
+        property: "og:description",
+        content: "Tell Aether when and where you arrived, and it will compute your natal chart.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+
   component: Onboarding,
 });
 
