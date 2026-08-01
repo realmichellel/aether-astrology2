@@ -107,7 +107,7 @@ function Dashboard() {
         </section>
 
 
-        <section className="mb-24">
+        <section className="mb-12 sm:mb-16">
           <div className="p-10 bg-surface border border-border">
             <div className="text-[10px] uppercase tracking-widest text-accent mb-6">
               Today's resonance
@@ -160,7 +160,7 @@ function Dashboard() {
           </div>
         </section>
 
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 sm:mb-16">
           <Link
             to="/chat"
             className="group border border-border p-1 hover:border-accent/40 transition-colors"
@@ -232,7 +232,15 @@ function Dashboard() {
           <div>© Aether</div>
           <div>An observatory for one</div>
         </div>
-        <div className="max-w-6xl mx-auto px-5 sm:px-8 mt-8">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8 mt-6 flex flex-wrap gap-x-6 gap-y-2 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+          <Link to="/terms" className="hover:text-accent transition-colors">
+            Terms of Service
+          </Link>
+          <Link to="/privacy" className="hover:text-accent transition-colors">
+            Privacy Policy
+          </Link>
+        </div>
+        <div className="max-w-6xl mx-auto px-5 sm:px-8 mt-6">
           <a
             href={FEEDBACK_URL}
             target="_blank"
@@ -241,8 +249,18 @@ function Dashboard() {
           >
             Feedback
           </a>
+          <p className="mt-3 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+            Support:{" "}
+            <a
+              href="mailto:support@aetherhoroscope.com"
+              className="text-accent hover:text-stone-100 transition-colors normal-case tracking-normal"
+            >
+              support@aetherhoroscope.com
+            </a>
+          </p>
         </div>
       </footer>
+
     </div>
   );
 }

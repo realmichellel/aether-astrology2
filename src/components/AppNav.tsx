@@ -11,12 +11,20 @@ export function AppNav() {
 
   return (
     <nav className="flex flex-col gap-3 px-5 py-5 border-b border-border sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-6">
-      <Link
-        to="/dashboard"
-        className="text-xl font-serif italic tracking-widest text-accent"
-      >
-        AETHER
-      </Link>
+      <div className="flex items-center justify-between gap-4">
+        <Link
+          to="/dashboard"
+          className="text-xl font-serif italic tracking-widest text-accent"
+        >
+          AETHER
+        </Link>
+        <button
+          onClick={signOut}
+          className="text-[10px] uppercase tracking-[0.15em] font-medium text-muted-foreground hover:text-accent transition-colors sm:hidden"
+        >
+          Sign out
+        </button>
+      </div>
       <div className="flex items-center gap-5 overflow-x-auto text-[10px] uppercase tracking-[0.15em] font-medium sm:gap-8 sm:tracking-[0.2em] [&>*]:shrink-0">
         <Link to="/dashboard" className="text-muted-foreground hover:text-foreground transition-colors">
           Today
@@ -35,11 +43,12 @@ export function AppNav() {
         </Link>
         <button
           onClick={signOut}
-          className="text-muted-foreground hover:text-accent transition-colors"
+          className="hidden text-muted-foreground hover:text-accent transition-colors sm:inline"
         >
           Sign out
         </button>
       </div>
     </nav>
   );
+
 }
