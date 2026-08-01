@@ -1,13 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { AppNav } from "@/components/AppNav";
-import {
-  listChat,
-  sendChat,
-  getOracleCredits,
-  purchaseOracleCredits,
-} from "@/lib/chat.functions";
+import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
+import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
+import { ORACLE_PACK_PRICE_ID } from "@/lib/stripe";
+import { listChat, sendChat, getOracleCredits } from "@/lib/chat.functions";
 
 export const Route = createFileRoute("/_authenticated/chat")({
   head: () => ({
@@ -25,33 +23,55 @@ function ChatPage() {
   const fetchMessages = useServerFn(listChat);
   const send = useServerFn(sendChat);
   const fetchCredits = useServerFn(getOracleCredits);
-  const buyCredits = useServerFn(purchaseOracleCredits);
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [pending, setPending] = useState(false);
   const [credits, setCredits] = useState<number | null>(null);
   const [nextFree, setNextFree] = useState<string | null>(null);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [settling, setSettling] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
-    fetchMessages().then((m) => setMessages(m as Message[]));
-    fetchCredits().then((c) => {
-      setCredits(c.credits);
-      setNextFree(c.next_free_at);
-    });
-  }, [fetchMessages, fetchCredits]);
-
-  async function purchase() {
-    const c = await buyCredits();
+  const refreshCredits = useCallback(async () => {
+    const c = await fetchCredits();
     setCredits(c.credits);
     setNextFree(c.next_free_at);
-  }
+    return c.credits;
+  }, [fetchCredits]);
+
+  useEffect(() => {
+    fetchMessages().then((m) => setMessages(m as Message[]));
+    refreshCredits();
+  }, [fetchMessages, refreshCredits]);
+
+  // After returning from checkout, poll briefly while the purchase settles.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("checkout") !== "success") return;
+    window.history.replaceState({}, "", window.location.pathname);
+    setSettling(true);
+    let tries = 0;
+    const before = credits;
+    const timer = setInterval(async () => {
+      tries += 1;
+      const now = await refreshCredits();
+      if ((before !== null && now > before) || tries >= 10) {
+        clearInterval(timer);
+        setSettling(false);
+      }
+    }, 2000);
+    return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, pending]);
+
+
 
 
   async function submit(e: React.FormEvent) {
@@ -86,6 +106,7 @@ function ChatPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
+      <PaymentTestModeBanner />
       <AppNav />
       <main className="flex-1 max-w-3xl w-full mx-auto px-8 py-10 flex flex-col">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
@@ -100,24 +121,58 @@ function ChatPage() {
               </div>
             </div>
           </div>
-          <div className="text-right">
-            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              Questions left
-            </div>
-            <div className="font-serif italic text-2xl text-accent">
-              {credits === null ? "—" : credits}
-            </div>
-            {nextFree && (
-              <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-1">
-                Free question{" "}
-                {new Date(nextFree).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                })}
+          <div className="flex items-center gap-8">
+            <div className="text-right">
+              <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                Questions left
               </div>
-            )}
+              <div className="font-serif italic text-2xl text-accent">
+                {credits === null ? "—" : credits}
+              </div>
+              {nextFree && (
+                <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-1">
+                  Free question{" "}
+                  {new Date(nextFree).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </div>
+              )}
+            </div>
+            <button
+              onClick={() => setCheckoutOpen(true)}
+              className="border border-accent/40 text-accent px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-accent/10 transition-colors"
+            >
+              Add 10 questions — $3.99
+            </button>
           </div>
         </div>
+
+        {settling && (
+          <div className="border border-accent/30 bg-surface p-4 mb-8 text-[10px] uppercase tracking-[0.2em] text-accent text-center">
+            Confirming your purchase…
+          </div>
+        )}
+
+        {checkoutOpen && (
+          <div className="fixed inset-0 z-50 bg-background/95 overflow-y-auto">
+            <div className="max-w-3xl mx-auto px-6 py-10">
+              <div className="flex items-baseline justify-between mb-6">
+                <h3 className="font-serif italic text-3xl">Ten questions</h3>
+                <button
+                  onClick={() => setCheckoutOpen(false)}
+                  className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-accent"
+                >
+                  Close
+                </button>
+              </div>
+              <StripeEmbeddedCheckout
+                priceId={ORACLE_PACK_PRICE_ID}
+                returnUrl={`${window.location.origin}/chat?checkout=success`}
+              />
+            </div>
+          </div>
+        )}
 
         {out && (
           <div className="border border-accent/40 bg-surface p-8 mb-8 text-center">
@@ -126,20 +181,19 @@ function ChatPage() {
             </div>
             <h3 className="font-serif italic text-3xl mb-3">Out of questions</h3>
             <p className="text-sm text-stone-400 mb-6 max-w-md mx-auto leading-relaxed">
-              Five more questions for <span className="text-accent">$2</span>. One free question
+              Ten more questions for <span className="text-accent">$3.99</span>. One free question
               arrives each week regardless.
             </p>
             <button
-              onClick={purchase}
+              onClick={() => setCheckoutOpen(true)}
               className="bg-accent text-primary-foreground py-3 px-10 font-serif italic text-lg hover:bg-stone-100 transition-colors"
             >
-              Add 5 questions — free preview
+              Add 10 questions
             </button>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-4">
-              Payment coming soon
-            </p>
           </div>
         )}
+
+
 
 
         <div
