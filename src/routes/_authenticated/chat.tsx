@@ -11,9 +11,22 @@ export const Route = createFileRoute("/_authenticated/chat")({
   head: () => ({
     meta: [
       { title: "The Oracle — Aether" },
-      { name: "description", content: "Converse with Aether, your personal astrologer." },
+      {
+        name: "description",
+        content:
+          "Converse with The Oracle, your personal AI astrologer trained on your natal chart and the movements of the current sky.",
+      },
+      { property: "og:title", content: "The Oracle — Aether" },
+      {
+        property: "og:description",
+        content:
+          "Ask about a decision, a dream, or a passing worry — The Oracle knows your chart and the current sky.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+
   component: ChatPage,
 });
 

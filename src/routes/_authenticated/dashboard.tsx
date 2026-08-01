@@ -11,9 +11,22 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title: "Today — Aether" },
-      { name: "description", content: "Your daily reading and recent chronicle." },
+      {
+        name: "description",
+        content:
+          "View today's personalized astrological reading and revisit your recent chronicles inside Aether, your quiet AI astrologer.",
+      },
+      { property: "og:title", content: "Today — Aether" },
+      {
+        property: "og:description",
+        content:
+          "Your daily reading, drawn from your natal chart, the current transits, and the notes you keep.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+
   component: Dashboard,
 });
 

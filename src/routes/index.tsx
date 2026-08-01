@@ -19,11 +19,38 @@ export const Route = createFileRoute("/")({
           "A personal AI astrologer trained on your natal chart, real planetary transits, and your own chronicle.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://aetherhoroscope.com/" },
       { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [{ rel: "canonical", href: "https://aetherhoroscope.com/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebSite",
+              name: "Aether",
+              url: "https://aetherhoroscope.com/",
+              description:
+                "A personal AI astrologer trained on your natal chart, real planetary transits, and your own chronicle.",
+            },
+            {
+              "@type": "Organization",
+              name: "Aether",
+              url: "https://aetherhoroscope.com/",
+              description:
+                "Aether is an AI astrology service offering natal charts, daily readings, a conversational astrologer, and synastry reports.",
+            },
+          ],
+        }),
+      },
     ],
   }),
   component: Landing,
 });
+
 
 function Landing() {
   const navigate = useNavigate();
