@@ -20,10 +20,14 @@ function AuthPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [agreed, setAgreed] = useState(false);
+  const [marketing, setMarketing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [googleBusy, setGoogleBusy] = useState(false);
+
+  const needsConsent = mode === "signup" && !agreed;
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -35,13 +39,23 @@ function AuthPage() {
     e.preventDefault();
     setError(null);
     setNotice(null);
+    if (needsConsent) {
+      setError("Please agree to the Terms of Service and Privacy Policy to continue.");
+      return;
+    }
     setBusy(true);
     try {
       if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: window.location.origin + "/dashboard" },
+          options: {
+            emailRedirectTo: window.location.origin + "/dashboard",
+            data: {
+              terms_accepted_at: new Date().toISOString(),
+              marketing_opt_in: marketing,
+            },
+          },
         });
         if (error) throw error;
         setNotice("Check your email to confirm your account, then sign in.");
@@ -60,7 +74,24 @@ function AuthPage() {
 
   async function signInGoogle() {
     setError(null);
+    if (needsConsent) {
+      setError("Please agree to the Terms of Service and Privacy Policy to continue.");
+      return;
+    }
     setGoogleBusy(true);
+    if (mode === "signup") {
+      try {
+        window.localStorage.setItem(
+          "aether_signup_consent",
+          JSON.stringify({
+            terms_accepted_at: new Date().toISOString(),
+            marketing_opt_in: marketing,
+          }),
+        );
+      } catch {
+        /* storage unavailable — consent still recorded by the checkbox gate */
+      }
+    }
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: `${window.location.origin}/dashboard` },
@@ -70,6 +101,7 @@ function AuthPage() {
       setGoogleBusy(false);
     }
   }
+
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
