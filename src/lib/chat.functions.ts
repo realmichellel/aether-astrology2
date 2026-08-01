@@ -85,7 +85,7 @@ export const sendChat = createServerFn({ method: "POST" })
 
     const balance = await ensureCredits(context);
     if (balance.credits <= 0) {
-      throw new Error("You're out of Oracle questions. Unlock 5 more, or wait for your free weekly question.");
+      throw new Error("You're out of Oracle questions. Unlock 10 more, or wait for your free weekly question.");
     }
     const { error: spendError } = await supabase
       .from("oracle_credits")

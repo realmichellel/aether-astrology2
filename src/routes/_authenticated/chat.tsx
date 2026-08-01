@@ -1,13 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { AppNav } from "@/components/AppNav";
-import {
-  listChat,
-  sendChat,
-  getOracleCredits,
-  purchaseOracleCredits,
-} from "@/lib/chat.functions";
+import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
+import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
+import { ORACLE_PACK_PRICE_ID } from "@/lib/stripe";
+import { listChat, sendChat, getOracleCredits } from "@/lib/chat.functions";
 
 export const Route = createFileRoute("/_authenticated/chat")({
   head: () => ({
@@ -25,33 +23,55 @@ function ChatPage() {
   const fetchMessages = useServerFn(listChat);
   const send = useServerFn(sendChat);
   const fetchCredits = useServerFn(getOracleCredits);
-  const buyCredits = useServerFn(purchaseOracleCredits);
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [pending, setPending] = useState(false);
   const [credits, setCredits] = useState<number | null>(null);
   const [nextFree, setNextFree] = useState<string | null>(null);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [settling, setSettling] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
-    fetchMessages().then((m) => setMessages(m as Message[]));
-    fetchCredits().then((c) => {
-      setCredits(c.credits);
-      setNextFree(c.next_free_at);
-    });
-  }, [fetchMessages, fetchCredits]);
-
-  async function purchase() {
-    const c = await buyCredits();
+  const refreshCredits = useCallback(async () => {
+    const c = await fetchCredits();
     setCredits(c.credits);
     setNextFree(c.next_free_at);
-  }
+    return c.credits;
+  }, [fetchCredits]);
+
+  useEffect(() => {
+    fetchMessages().then((m) => setMessages(m as Message[]));
+    refreshCredits();
+  }, [fetchMessages, refreshCredits]);
+
+  // After returning from checkout, poll briefly while the purchase settles.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("checkout") !== "success") return;
+    window.history.replaceState({}, "", window.location.pathname);
+    setSettling(true);
+    let tries = 0;
+    const before = credits;
+    const timer = setInterval(async () => {
+      tries += 1;
+      const now = await refreshCredits();
+      if ((before !== null && now > before) || tries >= 10) {
+        clearInterval(timer);
+        setSettling(false);
+      }
+    }, 2000);
+    return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, pending]);
+
+
 
 
   async function submit(e: React.FormEvent) {
