@@ -135,6 +135,12 @@ function ChatPage() {
             </div>
           </div>
           <div className="flex items-center gap-8">
+            <button
+              onClick={() => setCheckoutOpen(true)}
+              className="border border-accent/40 text-accent px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-accent/10 transition-colors"
+            >
+              Add 10 questions — $3.99
+            </button>
             <div className="text-right">
               <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                 Questions left
@@ -152,13 +158,8 @@ function ChatPage() {
                 </div>
               )}
             </div>
-            <button
-              onClick={() => setCheckoutOpen(true)}
-              className="border border-accent/40 text-accent px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-accent/10 transition-colors"
-            >
-              Add 10 questions — $3.99
-            </button>
           </div>
+
         </div>
 
         {settling && (
