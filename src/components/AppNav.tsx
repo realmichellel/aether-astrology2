@@ -10,14 +10,14 @@ export function AppNav() {
   }
 
   return (
-    <nav className="flex items-center justify-between px-8 py-6 border-b border-border">
+    <nav className="flex flex-col gap-3 px-5 py-5 border-b border-border sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-6">
       <Link
         to="/dashboard"
         className="text-xl font-serif italic tracking-widest text-accent"
       >
         AETHER
       </Link>
-      <div className="flex items-center gap-8 text-[10px] uppercase tracking-[0.2em] font-medium">
+      <div className="flex items-center gap-5 overflow-x-auto text-[10px] uppercase tracking-[0.15em] font-medium sm:gap-8 sm:tracking-[0.2em] [&>*]:shrink-0">
         <Link to="/dashboard" className="text-muted-foreground hover:text-foreground transition-colors">
           Today
         </Link>
