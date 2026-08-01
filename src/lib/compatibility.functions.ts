@@ -5,8 +5,9 @@ import { z } from "zod";
 import { createLovableAiGatewayProvider } from "./ai-gateway.server";
 import { geocodePlace } from "./geocode.server";
 import { resolveTimeZone, localWallTimeToUtc } from "./timezone";
-import { computeBirthChart } from "./birth-chart";
+import { computeBirthChart, type PlanetPlacement } from "./birth-chart";
 import { sunSignFor } from "./astrology";
+import { computeAspects, scoreFromAspects, buildCategoryContext } from "./synastry";
 
 const PartnerInput = z.object({
   full_name: z.string().min(1).max(120),
@@ -25,7 +26,12 @@ type Placements = {
   mercury: string;
 };
 
-async function computePlacements(input: z.infer<typeof PartnerInput>): Promise<Placements> {
+// computePlacements now also returns the raw planet longitudes, since the
+// summarized sign-name Placements alone can't support aspect calculation —
+// aspects are derived from the actual degree separation between planets.
+async function computePlacements(
+  input: z.infer<typeof PartnerInput>,
+): Promise<{ placements: Placements; planets: PlanetPlacement[] }> {
   const coords = await geocodePlace(input.birth_place);
   if (!coords) {
     throw new Error(
@@ -41,7 +47,7 @@ async function computePlacements(input: z.infer<typeof PartnerInput>): Promise<P
     timeIsKnown: true,
   });
   const get = (body: string) => chart.planets.find((p) => p.body === body)?.name ?? "Unknown";
-  return {
+  const placements: Placements = {
     name: input.full_name,
     sun: get("Sun") !== "Unknown" ? get("Sun") : sunSignFor(input.birth_date).name,
     moon: get("Moon"),
@@ -50,6 +56,7 @@ async function computePlacements(input: z.infer<typeof PartnerInput>): Promise<P
     mars: get("Mars"),
     mercury: get("Mercury"),
   };
+  return { placements, planets: chart.planets };
 }
 
 function extractSign(summary: string | null, body: string): string {
@@ -61,9 +68,9 @@ function extractSign(summary: string | null, body: string): string {
 type Report = {
   overall_score: number;
   dynamic_summary: string;
-  emotional_bond: { stars: number; text: string };
-  chemistry_and_attraction: { stars: number; text: string };
-  communication_style: { stars: number; text: string };
+  emotional_bond: { text: string; stars: number };
+  chemistry_and_attraction: { text: string; stars: number };
+  communication_style: { text: string; stars: number };
   potential_friction_points: string[];
   super_powers: string[];
   crush_cheat_sheet: {
@@ -98,6 +105,27 @@ export const generateCompatibility = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!profile) throw new Error("Set up your own natal chart first.");
 
+    // Aspect calculation needs person1's real planetary longitudes, not just
+    // the sign names stored on the profile row — so the chart is recomputed
+    // here from the stored birth data rather than parsed from chart_summary.
+    if (!profile.birth_lat || !profile.birth_lng || !profile.timezone || !profile.birth_time) {
+      throw new Error(
+        "Your own chart is missing precise birth data — add your birth time and place in Settings first.",
+      );
+    }
+
+    const { utc: person1Utc } = localWallTimeToUtc(
+      profile.birth_date,
+      profile.birth_time,
+      profile.timezone,
+    );
+    const person1Chart = computeBirthChart({
+      utcDate: person1Utc,
+      latitude: Number(profile.birth_lat),
+      longitude: Number(profile.birth_lng),
+      timeIsKnown: true,
+    });
+
     const person1: Placements = {
       name: profile.full_name ?? "You",
       sun: profile.sun_sign ?? "Unknown",
@@ -108,7 +136,20 @@ export const generateCompatibility = createServerFn({ method: "POST" })
       mercury: extractSign(profile.chart_summary, "Mercury"),
     };
 
-    const person2 = await computePlacements(data);
+    const { placements: person2, planets: person2Planets } = await computePlacements(data);
+
+    const aspects = computeAspects(person1Chart.planets, person2Planets);
+    const overallBaseline = scoreFromAspects(aspects);
+
+    const emotionalCtx = buildCategoryContext(aspects, "emotional_bond");
+    const chemistryCtx = buildCategoryContext(aspects, "chemistry_and_attraction");
+    const commCtx = buildCategoryContext(aspects, "communication_style");
+
+    const overallAspectSummary =
+      aspects
+        .slice(0, 8)
+        .map((a) => `${a.body1}-${a.body2} ${a.aspect} (orb ${a.orb.toFixed(1)}°, ${a.nature})`)
+        .join("; ") || "No major aspects within orb.";
 
     const key = process.env.LOVABLE_API_KEY;
     if (!key) throw new Error("Missing LOVABLE_API_KEY");
@@ -121,13 +162,43 @@ export const generateCompatibility = createServerFn({ method: "POST" })
 - Person 1: ${person1.name} (Sun: ${person1.sun}, Moon: ${person1.moon}, Rising: ${person1.rising}, Venus: ${person1.venus}, Mars: ${person1.mars}, Mercury: ${person1.mercury})
 - Person 2: ${person2.name} (Sun: ${person2.sun}, Moon: ${person2.moon}, Rising: ${person2.rising}, Venus: ${person2.venus}, Mars: ${person2.mars}, Mercury: ${person2.mercury})
 
+Computed aspects, overall and per domain (this is the real astrological basis
+for every score below — weight it heavily rather than defaulting to a "safe"
+middle value):
+
+Overall: ${overallAspectSummary}
+Overall baseline score: ${overallBaseline}/100 (loose anchor, not a hard rule).
+
+Emotional bond (Sun/Moon aspects): ${emotionalCtx.summary}
+Emotional bond baseline: ${emotionalCtx.baselineStars}/5 stars.
+
+Chemistry & attraction (Venus/Mars aspects): ${chemistryCtx.summary}
+Chemistry baseline: ${chemistryCtx.baselineStars}/5 stars.
+
+Communication style (Mercury aspects): ${commCtx.summary}
+Communication baseline: ${commCtx.baselineStars}/5 stars.
+
+Calibration rules — USE THE FULL RANGE on every score below, and do not let
+scores cluster near the middle regardless of the aspects:
+- overall_score: below 50 for mostly square/opposition charts, 90+ only for
+  charts with several tight trines/sextiles. Reserve 70-85 for genuinely
+  mixed pairings, not as a default.
+- Each of the three star ratings (emotional_bond, chemistry_and_attraction,
+  communication_style) should independently reflect ONLY its own domain's
+  aspects. It is normal and expected for one category to score low (1-2)
+  while another scores high (4-5) in the same report — do not average them
+  toward a similar middling number.
+- For each category, write the "text" reasoning FIRST, then derive the
+  "stars" number from what you just wrote — don't decide the number before
+  reasoning about the aspects.
+
 Output the response in clean JSON with exactly this shape:
 {
   "overall_score": number (0-100),
   "dynamic_summary": string (2 short sentences summarizing their vibe),
-  "emotional_bond": { "stars": number (0-5), "text": string (~150 words on Moon/Sun interactions) },
-  "chemistry_and_attraction": { "stars": number (0-5), "text": string (~150 words on Venus/Mars interactions) },
-  "communication_style": { "stars": number (0-5), "text": string (~100 words on Mercury interactions) },
+  "emotional_bond": { "text": string (~150 words on Moon/Sun interactions), "stars": number (0-5, in 0.5 increments) },
+  "chemistry_and_attraction": { "text": string (~150 words on Venus/Mars interactions), "stars": number (0-5, in 0.5 increments) },
+  "communication_style": { "text": string (~100 words on Mercury interactions), "stars": number (0-5, in 0.5 increments) },
   "potential_friction_points": [string, string],
   "super_powers": [string, string],
   "crush_cheat_sheet": {
@@ -141,6 +212,7 @@ Output the response in clean JSON with exactly this shape:
       model: gateway("openai/gpt-5.5"),
       system,
       prompt,
+      temperature: 1.0,
     });
 
     const report = parseJson(text);
