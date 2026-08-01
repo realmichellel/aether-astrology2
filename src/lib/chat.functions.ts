@@ -63,19 +63,6 @@ export const getOracleCredits = createServerFn({ method: "GET" })
     return { credits: row.credits, next_free_at: nextGrantIso(row.last_weekly_grant) };
   });
 
-/** Free stand-in for the $2 / 5-question Stripe pack. */
-export const purchaseOracleCredits = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    const row = await ensureCredits(context);
-    const credits = row.credits + 5;
-    const { error } = await context.supabase
-      .from("oracle_credits")
-      .update({ credits, updated_at: new Date().toISOString() })
-      .eq("user_id", context.userId);
-    if (error) throw new Error(error.message);
-    return { credits, next_free_at: nextGrantIso(row.last_weekly_grant) };
-  });
 
 export const listChat = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
