@@ -56,7 +56,9 @@ function nextGrantIso(lastGrant: string) {
   return new Date(new Date(lastGrant + "T00:00:00Z").getTime() + WEEK_MS).toISOString();
 }
 
-export const getOracleCredits = createServerFn({ method: "GET" })
+// POST prevents browsers and intermediaries from serving a stale balance while
+// the checkout webhook is updating this row.
+export const getOracleCredits = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const row = await ensureCredits(context);

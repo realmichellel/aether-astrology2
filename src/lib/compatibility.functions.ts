@@ -255,6 +255,8 @@ export const listSynastryReports = createServerFn({ method: "GET" })
     }));
   });
 
+// Keep this as POST so checkout settlement polling always reaches the database
+// instead of reusing a cached locked report.
 export const getSynastryReport = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))

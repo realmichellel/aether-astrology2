@@ -44,6 +44,7 @@ function ChatPage() {
   const [nextFree, setNextFree] = useState<string | null>(null);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [settling, setSettling] = useState(false);
+  const [settlementNotice, setSettlementNotice] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -59,24 +60,46 @@ function ChatPage() {
     refreshCredits();
   }, [fetchMessages, refreshCredits]);
 
-  // After returning from checkout, poll briefly while the purchase settles.
+  // After returning from checkout, poll while the webhook grants the credits.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     if (params.get("checkout") !== "success") return;
+    const before = Number(params.get("before"));
+    const previousCredits = Number.isFinite(before) ? before : null;
     window.history.replaceState({}, "", window.location.pathname);
     setSettling(true);
+    setCheckoutOpen(false);
     let tries = 0;
-    const before = credits;
-    const timer = setInterval(async () => {
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    const poll = async () => {
       tries += 1;
-      const now = await refreshCredits();
-      if ((before !== null && now > before) || tries >= 10) {
-        clearInterval(timer);
-        setSettling(false);
+      try {
+        const now = await refreshCredits();
+        if (cancelled) return;
+        if (previousCredits === null || now > previousCredits) {
+          setSettling(false);
+          setSettlementNotice("Purchase confirmed. Your questions are ready.");
+          return;
+        }
+      } catch {
+        // A transient request failure should not leave the settlement UI stuck.
       }
-    }, 2000);
-    return () => clearInterval(timer);
+      if (tries >= 30) {
+        setSettling(false);
+        setSettlementNotice("Payment received. Refresh shortly if your questions are still updating.");
+        return;
+      }
+      timer = setTimeout(poll, 2000);
+    };
+
+    void poll();
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -168,6 +191,12 @@ function ChatPage() {
           </div>
         )}
 
+        {settlementNotice && !settling && (
+          <div className="border border-accent/30 bg-surface p-4 mb-8 text-[10px] uppercase tracking-[0.2em] text-accent text-center">
+            {settlementNotice}
+          </div>
+        )}
+
         {checkoutOpen && (
           <div className="fixed inset-0 z-50 bg-background/95 overflow-y-auto">
             <div className="max-w-3xl mx-auto px-6 py-10">
@@ -182,7 +211,7 @@ function ChatPage() {
               </div>
               <StripeEmbeddedCheckout
                 priceId={ORACLE_PACK_PRICE_ID}
-                returnUrl={`${window.location.origin}/chat?checkout=success`}
+                returnUrl={`${window.location.origin}/chat?checkout=success&before=${credits ?? 0}&session_id={CHECKOUT_SESSION_ID}`}
               />
             </div>
           </div>
