@@ -246,7 +246,7 @@ function ChatPage() {
           {messages.length === 0 && !pending && (
             <div className="h-full flex items-center justify-center text-center py-16">
               <div>
-                <p className="font-serif italic text-2xl text-stone-400 mb-2">
+                <p className="font-serif italic text-xl sm:text-2xl text-stone-400 mb-2">
                   What would you like to know?
                 </p>
                 <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">

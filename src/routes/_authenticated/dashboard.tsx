@@ -114,17 +114,17 @@ function Dashboard() {
             </div>
 
             {loading ? (
-              <div className="font-serif italic text-3xl text-stone-500">
+              <div className="font-serif italic text-2xl sm:text-3xl text-stone-500">
                 Consulting the ephemeris…
               </div>
             ) : error ? (
               <div className="text-destructive-foreground">{error}</div>
             ) : reading ? (
               <>
-                <h2 className="font-serif text-2xl md:text-3xl font-semibold leading-snug text-stone-100 mb-4">
+                <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-semibold leading-snug text-stone-100 mb-4">
                   {reading.headline}
                 </h2>
-                <p className="text-base md:text-lg font-light leading-relaxed text-stone-400 mb-8">
+                <p className="text-sm sm:text-base md:text-lg font-light leading-relaxed text-stone-400 mb-8">
                   {reading.body}
                 </p>
                 {(reading.dos.length > 0 || reading.donts.length > 0) && (
@@ -135,7 +135,7 @@ function Dashboard() {
                       </div>
                       <ul className="space-y-2">
                         {reading.dos.map((item, i) => (
-                          <li key={i} className="font-serif text-lg md:text-xl text-stone-200">
+                          <li key={i} className="font-serif text-base sm:text-lg md:text-xl text-stone-200">
                             {item}
                           </li>    
                         ))}
@@ -147,7 +147,7 @@ function Dashboard() {
                       </div>
                       <ul className="space-y-2">
                         {reading.donts.map((item, i) => (
-                          <li key={i} className="font-serif text-lg md:text-xl text-stone-200">
+                          <li key={i} className="font-serif text-base sm:text-lg md:text-xl text-stone-200">
                             {item}
                           </li>
                         ))}
@@ -189,7 +189,7 @@ function Dashboard() {
 
           <div className="space-y-4">
             <div className="flex justify-between items-end border-b border-border pb-4">
-              <h3 className="font-serif text-3xl italic">Chronicles</h3>
+              <h3 className="font-serif text-2xl sm:text-3xl italic">Chronicles</h3>
               <Link
                 to="/journal"
                 className="text-[10px] uppercase tracking-widest text-accent font-bold hover:text-stone-100"
@@ -216,7 +216,7 @@ function Dashboard() {
                     </span>
                     {e.mood && <span>{e.mood}</span>}
                   </div>
-                  <div className="text-lg font-serif italic text-stone-300 group-hover:text-accent transition-colors">
+                  <div className="text-base sm:text-lg font-serif italic text-stone-300 group-hover:text-accent transition-colors">
                     {e.content.length > 70 ? e.content.slice(0, 70) + "…" : e.content}
                   </div>
                 </Link>

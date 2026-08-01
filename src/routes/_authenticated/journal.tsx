@@ -73,7 +73,7 @@ function JournalPage() {
         <h1 className="font-serif text-3xl sm:text-5xl font-light leading-tight mb-2">
           The record <span className="italic">Aether reads.</span>
         </h1>
-        <p className="text-stone-400 max-w-lg mb-12">
+        <p className="text-sm sm:text-base text-stone-400 max-w-lg mb-12">
           Note a mood, a dream, a decision. Recent entries feed into your daily reading and the Oracle's
           replies.
         </p>
