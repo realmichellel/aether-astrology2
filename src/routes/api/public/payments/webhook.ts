@@ -4,6 +4,7 @@ import { type StripeEnv, verifyWebhook } from "@/lib/stripe.server";
 
 const ORACLE_PACK_PRICE_ID = "oracle_10_pack";
 const ORACLE_PACK_QUESTIONS = 10;
+const SYNASTRY_UNLOCK_PRICE_ID = "synastry_unlock";
 
 function getSupabase() {
   return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
@@ -50,6 +51,12 @@ async function handleWebhook(req: Request, env: StripeEnv) {
       }
       if (priceId === ORACLE_PACK_PRICE_ID) {
         await grantOracleCredits(userId, ORACLE_PACK_QUESTIONS);
+      } else if (priceId === SYNASTRY_UNLOCK_PRICE_ID && session.metadata?.reportId) {
+        await getSupabase()
+          .from("synastry_reports")
+          .update({ unlocked: true })
+          .eq("user_id", userId)
+          .eq("id", session.metadata.reportId);
       }
       break;
     }

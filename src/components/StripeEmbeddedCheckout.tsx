@@ -5,15 +5,17 @@ import { createOracleCheckout } from "@/lib/payments.functions";
 interface Props {
   priceId: string;
   returnUrl?: string;
+  reportId?: string;
 }
 
-export function StripeEmbeddedCheckout({ priceId, returnUrl }: Props) {
+export function StripeEmbeddedCheckout({ priceId, returnUrl, reportId }: Props) {
   const fetchClientSecret = async (): Promise<string> => {
     const result = await createOracleCheckout({
       data: {
         priceId,
         returnUrl: returnUrl || window.location.href,
         environment: getStripeEnvironment(),
+        ...(reportId && { reportId }),
       },
     });
     if ("error" in result) throw new Error(result.error);

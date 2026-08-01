@@ -44,10 +44,20 @@ async function resolveOrCreateCustomer(
 
 export const createOracleCheckout = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { priceId: string; returnUrl: string; environment: StripeEnv }) => {
-    if (!/^[a-zA-Z0-9_-]+$/.test(data.priceId)) throw new Error("Invalid priceId");
-    return data;
-  })
+  .inputValidator(
+    (data: {
+      priceId: string;
+      returnUrl: string;
+      environment: StripeEnv;
+      reportId?: string;
+    }) => {
+      if (!/^[a-zA-Z0-9_-]+$/.test(data.priceId)) throw new Error("Invalid priceId");
+      if (data.reportId && !/^[a-zA-Z0-9-]+$/.test(data.reportId)) {
+        throw new Error("Invalid reportId");
+      }
+      return data;
+    },
+  )
   .handler(async ({ data, context }): Promise<CheckoutSessionResult> => {
     try {
       const { userId, supabase } = context;
@@ -78,7 +88,12 @@ export const createOracleCheckout = createServerFn({ method: "POST" })
         customer: customerId,
         payment_intent_data: { description: product.name },
         managed_payments: { enabled: true },
-        metadata: { userId, priceId: data.priceId, managed_payments: "true" },
+        metadata: {
+          userId,
+          priceId: data.priceId,
+          managed_payments: "true",
+          ...(data.reportId && { reportId: data.reportId }),
+        },
       } as Stripe.Checkout.SessionCreateParams);
 
       return { clientSecret: session.client_secret ?? "" };
