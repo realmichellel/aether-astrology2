@@ -80,6 +80,7 @@ function CompatibilityPage() {
   const [showForm, setShowForm] = useState(true);
   const [checkoutId, setCheckoutId] = useState<string | null>(null);
   const [settling, setSettling] = useState(false);
+  const [settlementNotice, setSettlementNotice] = useState<string | null>(null);
 
   async function refreshHistory() {
     const items = await listAll();
@@ -131,7 +132,7 @@ function CompatibilityPage() {
     setCheckoutId(active.id);
   }
 
-  // After returning from checkout, poll briefly while the unlock settles.
+  // After returning from checkout, poll while the webhook unlocks the report.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
@@ -139,25 +140,46 @@ function CompatibilityPage() {
     if (params.get("checkout") !== "success" || !reportId) return;
     window.history.replaceState({}, "", window.location.pathname);
     setSettling(true);
+    setCheckoutId(null);
     let tries = 0;
-    const timer = setInterval(async () => {
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    const poll = async () => {
       tries += 1;
-      const r = await loadOne({ data: { id: reportId } });
-      if (r.unlocked || tries >= 10) {
-        clearInterval(timer);
-        setSettling(false);
-        setActive({
-          id: r.id,
-          report: r.report as Report,
-          person1: r.person1,
-          person2: r.person2,
-          unlocked: r.unlocked,
-        });
-        setShowForm(false);
-        await refreshHistory();
+      try {
+        const r = await loadOne({ data: { id: reportId } });
+        if (cancelled) return;
+        if (r.unlocked) {
+          setSettling(false);
+          setSettlementNotice("Purchase confirmed. Your full reading is unlocked.");
+          setActive({
+            id: r.id,
+            report: r.report as Report,
+            person1: r.person1,
+            person2: r.person2,
+            unlocked: true,
+          });
+          setShowForm(false);
+          await refreshHistory();
+          return;
+        }
+      } catch {
+        // Retry transient failures without leaving the confirmation UI stuck.
       }
-    }, 2000);
-    return () => clearInterval(timer);
+      if (tries >= 30) {
+        setSettling(false);
+        setSettlementNotice("Payment received. Refresh shortly if the full reading is still updating.");
+        return;
+      }
+      timer = setTimeout(poll, 2000);
+    };
+
+    void poll();
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -168,6 +190,11 @@ function CompatibilityPage() {
       {settling && (
         <div className="border-b border-accent/30 bg-surface px-4 py-3 text-center text-[10px] uppercase tracking-[0.2em] text-accent">
           Confirming your purchase…
+        </div>
+      )}
+      {settlementNotice && !settling && (
+        <div className="border-b border-accent/30 bg-surface px-4 py-3 text-center text-[10px] uppercase tracking-[0.2em] text-accent">
+          {settlementNotice}
         </div>
       )}
       {checkoutId && (
