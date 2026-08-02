@@ -9,7 +9,8 @@ import {
 } from "@/lib/compatibility.functions";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
-import { SYNASTRY_UNLOCK_PRICE_ID } from "@/lib/stripe";
+import { SYNASTRY_UNLOCK_PRICE_ID, getStripeEnvironment } from "@/lib/stripe";
+import { claimCheckout } from "@/lib/claim.functions";
 
 export const Route = createFileRoute("/_authenticated/compatibility")({
   head: () => ({
