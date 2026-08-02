@@ -10,7 +10,11 @@ export const Route = createFileRoute("/auth")({
       { name: "description", content: "Enter the observatory. Sign in or create an Aether account." },
       { property: "og:title", content: "Sign in — Aether" },
       { property: "og:description", content: "Enter the observatory." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://aetherhoroscope.com/auth" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://aetherhoroscope.com/auth" }],
   }),
   component: AuthPage,
 });
