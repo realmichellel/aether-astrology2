@@ -10,7 +10,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Aether reads the sky as it moves over you — a personal AI astrologer trained on your natal chart, real planetary transits, and the record you keep of your own life.",
+          "A personal AI astrologer reading your natal chart, live planetary transits, and the journal you keep of your own life.",
       },
       { property: "og:title", content: "Aether — A quiet astrologer" },
       {

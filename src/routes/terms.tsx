@@ -16,8 +16,10 @@ export const Route = createFileRoute("/terms")({
         content: "How Aether's AI-generated readings may be used, who may register, and liability limits.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://aetherhoroscope.com/terms" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://aetherhoroscope.com/terms" }],
   }),
   component: Terms,
 });
