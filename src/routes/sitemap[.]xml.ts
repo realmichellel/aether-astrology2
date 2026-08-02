@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
+import { SIGN_CONTENT } from "@/lib/zodiac-content";
+
 
 const BASE_URL = "https://aetherhoroscope.com";
 
