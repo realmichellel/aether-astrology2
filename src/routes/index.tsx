@@ -104,7 +104,11 @@ function Landing() {
           </span>
         </div>
 
-        <div className="mt-32 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 border-t border-border pt-14">
+        <h2 className="mt-32 border-t border-border pt-14 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+          What Aether gives you
+        </h2>
+
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <FeatureBlock
             index="I"
             title="Natal chart"
