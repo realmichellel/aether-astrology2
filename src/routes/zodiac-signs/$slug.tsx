@@ -110,7 +110,7 @@ function SignPage() {
           <div>
             <h2 className="text-[10px] uppercase tracking-[0.2em] text-accent mb-4">Strengths</h2>
             <ul className="space-y-2">
-              {sign.strengths.map((s) => (
+              {sign.strengths.map((s: string) => (
                 <li key={s} className="font-serif text-lg text-stone-200">
                   {s}
                 </li>
@@ -120,7 +120,7 @@ function SignPage() {
           <div>
             <h2 className="text-[10px] uppercase tracking-[0.2em] text-accent mb-4">Challenges</h2>
             <ul className="space-y-2">
-              {sign.challenges.map((s) => (
+              {sign.challenges.map((s: string) => (
                 <li key={s} className="font-serif text-lg text-stone-200">
                   {s}
                 </li>
