@@ -4,8 +4,9 @@ import { useServerFn } from "@tanstack/react-start";
 import { AppNav } from "@/components/AppNav";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
-import { ORACLE_PACK_PRICE_ID } from "@/lib/stripe";
+import { ORACLE_PACK_PRICE_ID, getStripeEnvironment } from "@/lib/stripe";
 import { listChat, sendChat, getOracleCredits } from "@/lib/chat.functions";
+import { claimCheckout } from "@/lib/claim.functions";
 
 export const Route = createFileRoute("/_authenticated/chat")({
   head: () => ({
