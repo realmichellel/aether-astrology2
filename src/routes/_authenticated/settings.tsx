@@ -153,7 +153,24 @@ function SettingsPage() {
             </div>
           </form>
         )}
+
+        <section className="mt-16 pt-10 border-t border-border">
+          <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-4">Email</p>
+          <label className="flex items-start gap-3 text-xs sm:text-sm font-light leading-relaxed text-stone-400 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={marketing}
+              onChange={(e) => toggleMarketing(e.target.checked)}
+              className="mt-1 size-4 shrink-0 accent-[#C2A378]"
+            />
+            <span>Send me promotional offers and astrology updates by email.</span>
+          </label>
+          {marketingSaved && (
+            <p className="text-xs text-accent mt-3">Preference saved.</p>
+          )}
+        </section>
       </main>
+
     </div>
   );
 }
