@@ -37,6 +37,7 @@ function ChatPage() {
   const fetchMessages = useServerFn(listChat);
   const send = useServerFn(sendChat);
   const fetchCredits = useServerFn(getOracleCredits);
+  const claim = useServerFn(claimCheckout);
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
