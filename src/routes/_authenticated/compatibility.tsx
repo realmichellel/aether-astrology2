@@ -132,11 +132,13 @@ function CompatibilityPage() {
     setCheckoutId(active.id);
   }
 
-  // After returning from checkout, poll while the webhook unlocks the report.
+  // After returning from checkout, claim the purchase directly (self-healing if
+  // the Stripe webhook fails), then poll until the unlock is visible.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const reportId = params.get("report");
+    const sessionId = params.get("session_id");
     if (params.get("checkout") !== "success" || !reportId) return;
     window.history.replaceState({}, "", window.location.pathname);
     setSettling(true);
@@ -144,6 +146,10 @@ function CompatibilityPage() {
     let tries = 0;
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
+
+    if (sessionId) {
+      void claim({ data: { sessionId, environment: getStripeEnvironment() } }).catch(() => {});
+    }
 
     const poll = async () => {
       tries += 1;
