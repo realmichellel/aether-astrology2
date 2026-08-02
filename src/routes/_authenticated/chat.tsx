@@ -4,8 +4,9 @@ import { useServerFn } from "@tanstack/react-start";
 import { AppNav } from "@/components/AppNav";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
-import { ORACLE_PACK_PRICE_ID } from "@/lib/stripe";
+import { ORACLE_PACK_PRICE_ID, getStripeEnvironment } from "@/lib/stripe";
 import { listChat, sendChat, getOracleCredits } from "@/lib/chat.functions";
+import { claimCheckout } from "@/lib/claim.functions";
 
 export const Route = createFileRoute("/_authenticated/chat")({
   head: () => ({
@@ -36,6 +37,7 @@ function ChatPage() {
   const fetchMessages = useServerFn(listChat);
   const send = useServerFn(sendChat);
   const fetchCredits = useServerFn(getOracleCredits);
+  const claim = useServerFn(claimCheckout);
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -60,12 +62,14 @@ function ChatPage() {
     refreshCredits();
   }, [fetchMessages, refreshCredits]);
 
-  // After returning from checkout, poll while the webhook grants the credits.
+  // After returning from checkout, claim the purchase directly (self-healing if
+  // the Stripe webhook fails), then poll until the credits appear.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     if (params.get("checkout") !== "success") return;
     const before = Number(params.get("before"));
+    const sessionId = params.get("session_id");
     const previousCredits = Number.isFinite(before) ? before : null;
     window.history.replaceState({}, "", window.location.pathname);
     setSettling(true);
@@ -73,6 +77,10 @@ function ChatPage() {
     let tries = 0;
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
+
+    if (sessionId) {
+      void claim({ data: { sessionId, environment: getStripeEnvironment() } }).catch(() => {});
+    }
 
     const poll = async () => {
       tries += 1;

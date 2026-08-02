@@ -9,7 +9,8 @@ import {
 } from "@/lib/compatibility.functions";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
-import { SYNASTRY_UNLOCK_PRICE_ID } from "@/lib/stripe";
+import { SYNASTRY_UNLOCK_PRICE_ID, getStripeEnvironment } from "@/lib/stripe";
+import { claimCheckout } from "@/lib/claim.functions";
 
 export const Route = createFileRoute("/_authenticated/compatibility")({
   head: () => ({
@@ -66,6 +67,7 @@ function CompatibilityPage() {
   const run = useServerFn(generateCompatibility);
   const listAll = useServerFn(listSynastryReports);
   const loadOne = useServerFn(getSynastryReport);
+  const claim = useServerFn(claimCheckout);
 
   const [form, setForm] = useState({
     full_name: "",
@@ -132,11 +134,13 @@ function CompatibilityPage() {
     setCheckoutId(active.id);
   }
 
-  // After returning from checkout, poll while the webhook unlocks the report.
+  // After returning from checkout, claim the purchase directly (self-healing if
+  // the Stripe webhook fails), then poll until the unlock is visible.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const reportId = params.get("report");
+    const sessionId = params.get("session_id");
     if (params.get("checkout") !== "success" || !reportId) return;
     window.history.replaceState({}, "", window.location.pathname);
     setSettling(true);
@@ -144,6 +148,10 @@ function CompatibilityPage() {
     let tries = 0;
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
+
+    if (sessionId) {
+      void claim({ data: { sessionId, environment: getStripeEnvironment() } }).catch(() => {});
+    }
 
     const poll = async () => {
       tries += 1;
@@ -212,7 +220,7 @@ function CompatibilityPage() {
             <StripeEmbeddedCheckout
               priceId={SYNASTRY_UNLOCK_PRICE_ID}
               reportId={checkoutId}
-              returnUrl={`${window.location.origin}/compatibility?checkout=success&report=${checkoutId}`}
+              returnUrl={`${window.location.origin}/compatibility?checkout=success&report=${checkoutId}&session_id={CHECKOUT_SESSION_ID}`}
             />
           </div>
         </div>
