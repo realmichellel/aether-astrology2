@@ -220,7 +220,7 @@ function CompatibilityPage() {
             <StripeEmbeddedCheckout
               priceId={SYNASTRY_UNLOCK_PRICE_ID}
               reportId={checkoutId}
-              returnUrl={`${window.location.origin}/compatibility?checkout=success&report=${checkoutId}`}
+              returnUrl={`${window.location.origin}/compatibility?checkout=success&report=${checkoutId}&session_id={CHECKOUT_SESSION_ID}`}
             />
           </div>
         </div>
