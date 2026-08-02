@@ -19,12 +19,16 @@ function SettingsPage() {
   const navigate = useNavigate();
   const load = useServerFn(getProfile);
   const save = useServerFn(saveProfile);
+  const loadPrefs = useServerFn(getEmailPreferences);
+  const savePrefs = useServerFn(setMarketingOptIn);
 
   const [form, setForm] = useState({ full_name: "", birth_date: "", birth_time: "", birth_place: "" });
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [marketing, setMarketing] = useState(false);
+  const [marketingSaved, setMarketingSaved] = useState(false);
 
   useEffect(() => {
     load().then((p) => {
@@ -39,6 +43,24 @@ function SettingsPage() {
       setLoading(false);
     });
   }, [load]);
+
+  useEffect(() => {
+    loadPrefs()
+      .then((prefs) => setMarketing(Boolean(prefs?.marketing_opt_in)))
+      .catch(() => undefined);
+  }, [loadPrefs]);
+
+  async function toggleMarketing(next: boolean) {
+    setMarketing(next);
+    setMarketingSaved(false);
+    try {
+      await savePrefs({ data: { marketing_opt_in: next } });
+      setMarketingSaved(true);
+    } catch {
+      setMarketing(!next);
+    }
+  }
+
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
