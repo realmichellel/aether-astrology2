@@ -116,6 +116,30 @@ export type Database = {
         }
         Relationships: []
       }
+      processed_payments: {
+        Row: {
+          created_at: string
+          id: string
+          price_id: string | null
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          price_id?: string | null
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          price_id?: string | null
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           birth_date: string
