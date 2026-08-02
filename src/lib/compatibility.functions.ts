@@ -178,10 +178,10 @@ Chemistry baseline: ${chemistryCtx.baselineStars}/5 stars.
 Communication style (Mercury aspects): ${commCtx.summary}
 Communication baseline: ${commCtx.baselineStars}/5 stars.
 
-Calibration rules — USE THE FULL RANGE on every score below, and do not let
+Calibration rules — USE THE SPECIFIED RANGE on every score below, and do not let
 scores cluster near the middle regardless of the aspects:
-- overall_score: below 50 for mostly square/opposition charts, 90+ only for
-  charts with several tight trines/sextiles. Reserve 70-85 for genuinely
+- overall_score: always above 50. below 65 for mostly square/opposition charts, 90+ only for
+  charts with several tight trines/sextiles. Reserve 75-85 for genuinely
   mixed pairings, not as a default.
 - Each of the three star ratings (emotional_bond, chemistry_and_attraction,
   communication_style) should independently reflect ONLY its own domain's
