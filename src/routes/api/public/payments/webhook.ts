@@ -60,6 +60,17 @@ async function handleWebhook(req: Request, env: StripeEnv) {
         console.error("Checkout session without userId metadata");
         break;
       }
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { error: claimError } = await supabaseAdmin.from("processed_payments").insert({
+        user_id: userId,
+        session_id: session.id,
+        price_id: priceId ?? null,
+      });
+      if (claimError) {
+        // Already applied (by an earlier delivery or the client-side claim).
+        if (claimError.code === "23505") break;
+        throw new Error(`Could not record payment: ${claimError.message}`);
+      }
       if (priceId === ORACLE_PACK_PRICE_ID) {
         await grantOracleCredits(userId, ORACLE_PACK_QUESTIONS);
       } else if (priceId === SYNASTRY_UNLOCK_PRICE_ID && session.metadata?.reportId) {
