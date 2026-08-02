@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { getProfile, saveProfile } from "@/lib/profile.functions";
+import { getEmailPreferences, setMarketingOptIn } from "@/lib/consent.functions";
 import { AppNav } from "@/components/AppNav";
 
 export const Route = createFileRoute("/_authenticated/settings")({
