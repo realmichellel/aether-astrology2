@@ -62,12 +62,14 @@ function ChatPage() {
     refreshCredits();
   }, [fetchMessages, refreshCredits]);
 
-  // After returning from checkout, poll while the webhook grants the credits.
+  // After returning from checkout, claim the purchase directly (self-healing if
+  // the Stripe webhook fails), then poll until the credits appear.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     if (params.get("checkout") !== "success") return;
     const before = Number(params.get("before"));
+    const sessionId = params.get("session_id");
     const previousCredits = Number.isFinite(before) ? before : null;
     window.history.replaceState({}, "", window.location.pathname);
     setSettling(true);
@@ -75,6 +77,10 @@ function ChatPage() {
     let tries = 0;
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
+
+    if (sessionId) {
+      void claim({ data: { sessionId, environment: getStripeEnvironment() } }).catch(() => {});
+    }
 
     const poll = async () => {
       tries += 1;
