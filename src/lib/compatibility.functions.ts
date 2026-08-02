@@ -178,7 +178,7 @@ Chemistry baseline: ${chemistryCtx.baselineStars}/5 stars.
 Communication style (Mercury aspects): ${commCtx.summary}
 Communication baseline: ${commCtx.baselineStars}/5 stars.
 
-Calibration rules — USE THE SPECIFIED RANGE on every score below, and do not let
+Calibration and content rules — USE THE SPECIFIED RANGE on every score below, and do not let
 scores cluster near the middle regardless of the aspects:
 - overall_score: always above 50. below 65 for mostly square/opposition charts, 90+ only for
   charts with several tight trines/sextiles. Reserve 75-85 for genuinely
@@ -188,10 +188,17 @@ scores cluster near the middle regardless of the aspects:
   aspects. It is normal and expected for one category to score low (1-2)
   while another scores high (4-5) in the same report — do not average them
   toward a similar middling number.
+- "potential_friction_points" & "super_powers": High-level relationship dynamics (e.g., core themes of growth vs conflict).
+- "crush_cheat_sheet": focus on **behavioral & actionable tips**, NOT repeating the astrological placements.
+     * green_flags: Specific high-vibe behavioral habits they bring out in each other.
+     * red_flags: Specific relational pitfalls or triggers to watch out for.
+     * how_to_give_them_butterflies: specific, creative, real-world romantic gestures or scenario tailored to their combined Venus/Mars/Moon dynamic.
 - For each category, write the "text" reasoning FIRST, then derive the
   "stars" number from what you just wrote — don't decide the number before
   reasoning about the aspects.
 
+   
+     
 Output the response in clean JSON with exactly this shape:
 {
   "overall_score": number (0-100),
