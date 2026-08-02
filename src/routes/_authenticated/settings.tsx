@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { getProfile, saveProfile } from "@/lib/profile.functions";
-import { getEmailPreferences, setMarketingOptIn } from "@/lib/consent.functions";
+
 import { AppNav } from "@/components/AppNav";
 
 export const Route = createFileRoute("/_authenticated/settings")({
@@ -19,16 +19,12 @@ function SettingsPage() {
   const navigate = useNavigate();
   const load = useServerFn(getProfile);
   const save = useServerFn(saveProfile);
-  const loadPrefs = useServerFn(getEmailPreferences);
-  const savePrefs = useServerFn(setMarketingOptIn);
 
   const [form, setForm] = useState({ full_name: "", birth_date: "", birth_time: "", birth_place: "" });
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
-  const [marketing, setMarketing] = useState(false);
-  const [marketingSaved, setMarketingSaved] = useState(false);
 
   useEffect(() => {
     load().then((p) => {
@@ -44,22 +40,6 @@ function SettingsPage() {
     });
   }, [load]);
 
-  useEffect(() => {
-    loadPrefs()
-      .then((prefs) => setMarketing(Boolean(prefs?.marketing_opt_in)))
-      .catch(() => undefined);
-  }, [loadPrefs]);
-
-  async function toggleMarketing(next: boolean) {
-    setMarketing(next);
-    setMarketingSaved(false);
-    try {
-      await savePrefs({ data: { marketing_opt_in: next } });
-      setMarketingSaved(true);
-    } catch {
-      setMarketing(!next);
-    }
-  }
 
 
   async function submit(e: React.FormEvent) {
@@ -154,21 +134,6 @@ function SettingsPage() {
           </form>
         )}
 
-        <section className="mt-16 pt-10 border-t border-border">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-4">Email</p>
-          <label className="flex items-start gap-3 text-xs sm:text-sm font-light leading-relaxed text-stone-400 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={marketing}
-              onChange={(e) => toggleMarketing(e.target.checked)}
-              className="mt-1 size-4 shrink-0 accent-[#C2A378]"
-            />
-            <span>Send me promotional offers and astrology updates by email.</span>
-          </label>
-          {marketingSaved && (
-            <p className="text-xs text-accent mt-3">Preference saved.</p>
-          )}
-        </section>
       </main>
 
     </div>
