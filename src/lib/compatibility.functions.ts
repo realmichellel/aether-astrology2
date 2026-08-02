@@ -201,11 +201,11 @@ scores cluster near the middle regardless of the aspects:
      
 Output the response in clean JSON with exactly this shape:
 {
-  "overall_score": number (0-100),
+  "overall_score": number (50-100),
   "dynamic_summary": string (2 short sentences summarizing their vibe),
-  "emotional_bond": { "text": string (~150 words on Moon/Sun interactions), "stars": number (0-5, in 0.5 increments) },
-  "chemistry_and_attraction": { "text": string (~150 words on Venus/Mars interactions), "stars": number (0-5, in 0.5 increments) },
-  "communication_style": { "text": string (~100 words on Mercury interactions), "stars": number (0-5, in 0.5 increments) },
+  "emotional_bond": { "text": string (~150 words on Moon/Sun interactions), "stars": number (1-5, in 0.5 increments) },
+  "chemistry_and_attraction": { "text": string (~150 words on Venus/Mars interactions), "stars": number (1-5, in 0.5 increments) },
+  "communication_style": { "text": string (~100 words on Mercury interactions), "stars": number (1-5, in 0.5 increments) },
   "potential_friction_points": [string, string],
   "super_powers": [string, string],
   "crush_cheat_sheet": {
