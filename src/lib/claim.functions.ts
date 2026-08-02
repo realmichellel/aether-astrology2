@@ -34,21 +34,34 @@ export const claimCheckout = createServerFn({ method: "POST" })
       if (session.metadata?.["userId"] !== userId) {
         return { status: "error", error: "This purchase belongs to another account." };
       }
+      // Checkout must have finished. `no_payment_required` (100%-off promo,
+      // zero total) is final and still fulfills; only `unpaid` waits.
       if (session.payment_status === "unpaid") return { status: "pending" };
+      if (session.status !== "complete") return { status: "pending" };
 
-      // Idempotency guard: unique on session_id.
-      const { error: claimError } = await supabase.from("processed_payments").insert({
-        user_id: userId,
-        session_id: session.id,
-        price_id: session.metadata?.["priceId"] ?? null,
-      });
-      if (claimError) {
-        // Duplicate key -> another call (or the webhook) already applied it.
-        if (claimError.code === "23505") return { status: "already" };
-        return { status: "error", error: claimError.message };
-      }
+      // Pre-check the idempotency lock. The lock row is written AFTER the grant
+      // succeeds, so a failed grant never swallows the purchase.
+      const { data: alreadyClaimed, error: lockReadError } = await supabase
+        .from("processed_payments")
+        .select("id")
+        .eq("session_id", session.id)
+        .maybeSingle();
+      if (lockReadError) return { status: "error", error: lockReadError.message };
+      if (alreadyClaimed) return { status: "already" };
 
       const priceId = session.metadata?.["priceId"];
+
+      const recordClaim = async (): Promise<ClaimResult> => {
+        const { error } = await supabase.from("processed_payments").insert({
+          user_id: userId,
+          session_id: session.id,
+          price_id: priceId ?? null,
+        });
+        // Duplicate key -> the webhook applied it concurrently; entitlement
+        // writes are additive-once per session, so treat as done.
+        if (error && error.code !== "23505") return { status: "error", error: error.message };
+        return { status: "applied" };
+      };
 
       if (priceId === ORACLE_PACK_PRICE_ID) {
         const { data: existing, error: readError } = await supabase
