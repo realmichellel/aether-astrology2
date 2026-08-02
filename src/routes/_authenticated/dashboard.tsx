@@ -6,7 +6,7 @@ import { getProfile } from "@/lib/profile.functions";
 import { getDailyReading } from "@/lib/reading.functions";
 import { listJournal } from "@/lib/journal.functions";
 import { ZODIAC } from "@/lib/astrology";
-import { useConsentSync } from "@/hooks/useConsentSync";
+
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -40,7 +40,7 @@ type Reading = { headline: string; body: string; dos: string[]; donts: string[] 
 
 function Dashboard() {
   const navigate = useNavigate();
-  useConsentSync();
+  
   const loadProfile = useServerFn(getProfile);
   const loadReading = useServerFn(getDailyReading);
   const loadEntries = useServerFn(listJournal);
