@@ -62,6 +62,42 @@ export type Database = {
         }
         Relationships: []
       }
+      email_preferences: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          marketing_opt_in: boolean
+          opted_in_at: string | null
+          opted_out_at: string | null
+          terms_accepted_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          marketing_opt_in?: boolean
+          opted_in_at?: string | null
+          opted_out_at?: string | null
+          terms_accepted_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          marketing_opt_in?: boolean
+          opted_in_at?: string | null
+          opted_out_at?: string | null
+          terms_accepted_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       journal_entries: {
         Row: {
           content: string
