@@ -67,6 +67,7 @@ function CompatibilityPage() {
   const run = useServerFn(generateCompatibility);
   const listAll = useServerFn(listSynastryReports);
   const loadOne = useServerFn(getSynastryReport);
+  const claim = useServerFn(claimCheckout);
 
   const [form, setForm] = useState({
     full_name: "",
