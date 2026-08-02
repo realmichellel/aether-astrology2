@@ -53,7 +53,9 @@ async function handleWebhook(req: Request, env: StripeEnv) {
     case "checkout.session.completed":
     case "checkout.session.async_payment_succeeded": {
       const session = event.data.object;
+      // `no_payment_required` (100%-off promo) still fulfills; only `unpaid` waits.
       if (session.payment_status === "unpaid") break;
+      if (session.status !== "complete") break;
       const userId = session.metadata?.userId;
       const priceId = session.metadata?.priceId;
       if (!userId) {
@@ -71,10 +73,17 @@ async function handleWebhook(req: Request, env: StripeEnv) {
         if (claimError.code === "23505") break;
         throw new Error(`Could not record payment: ${claimError.message}`);
       }
-      if (priceId === ORACLE_PACK_PRICE_ID) {
-        await grantOracleCredits(userId, ORACLE_PACK_QUESTIONS);
-      } else if (priceId === SYNASTRY_UNLOCK_PRICE_ID && session.metadata?.reportId) {
-        await unlockSynastryReport(userId, session.metadata.reportId);
+      try {
+        if (priceId === ORACLE_PACK_PRICE_ID) {
+          await grantOracleCredits(userId, ORACLE_PACK_QUESTIONS);
+        } else if (priceId === SYNASTRY_UNLOCK_PRICE_ID && session.metadata?.reportId) {
+          await unlockSynastryReport(userId, session.metadata.reportId);
+        }
+      } catch (grantError) {
+        // Release the idempotency lock so Stripe's retry can apply the grant
+        // instead of the purchase being silently swallowed.
+        await supabaseAdmin.from("processed_payments").delete().eq("session_id", session.id);
+        throw grantError;
       }
       break;
     }
