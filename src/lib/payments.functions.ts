@@ -86,6 +86,7 @@ export const createOracleCheckout = createServerFn({ method: "POST" })
         ui_mode: "embedded_page",
         return_url: data.returnUrl,
         customer: customerId,
+        allow_promotion_codes: true,
         payment_intent_data: { description: product.name },
         managed_payments: { enabled: true },
         metadata: {
