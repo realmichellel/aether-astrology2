@@ -6,6 +6,7 @@ import { getProfile } from "@/lib/profile.functions";
 import { getDailyReading } from "@/lib/reading.functions";
 import { listJournal } from "@/lib/journal.functions";
 import { ZODIAC } from "@/lib/astrology";
+import { useConsentSync } from "@/hooks/useConsentSync";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
