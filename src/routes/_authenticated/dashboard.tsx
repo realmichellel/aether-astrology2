@@ -40,6 +40,7 @@ type Reading = { headline: string; body: string; dos: string[]; donts: string[] 
 
 function Dashboard() {
   const navigate = useNavigate();
+  useConsentSync();
   const loadProfile = useServerFn(getProfile);
   const loadReading = useServerFn(getDailyReading);
   const loadEntries = useServerFn(listJournal);
