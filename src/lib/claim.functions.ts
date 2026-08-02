@@ -88,7 +88,7 @@ export const claimCheckout = createServerFn({ method: "POST" })
             .eq("user_id", userId);
           if (error) return { status: "error", error: error.message };
         }
-        return { status: "applied" };
+        return await recordClaim();
       }
 
       if (priceId === SYNASTRY_UNLOCK_PRICE_ID) {
@@ -100,7 +100,7 @@ export const claimCheckout = createServerFn({ method: "POST" })
           .eq("user_id", userId)
           .eq("id", reportId);
         if (error) return { status: "error", error: error.message };
-        return { status: "applied" };
+        return await recordClaim();
       }
 
       return { status: "error", error: "Unknown purchase type." };
