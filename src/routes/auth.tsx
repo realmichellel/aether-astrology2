@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
-  head: () => ({
+
     meta: [
       { title: "Sign in — Aether" },
       { name: "description", content: "Enter the observatory. Sign in or create an Aether account." },
