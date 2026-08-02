@@ -16,8 +16,10 @@ export const Route = createFileRoute("/privacy")({
         content: "How Aether handles your account information, astrological data, and chat logs.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://aetherhoroscope.com/privacy" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://aetherhoroscope.com/privacy" }],
   }),
   component: Privacy,
 });

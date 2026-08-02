@@ -10,7 +10,7 @@ export const Route = createFileRoute("/zodiac-signs/")({
       {
         name: "description",
         content:
-          "A clear guide to all 12 zodiac signs — dates, element, modality, ruling planet, strengths, and challenges — and how each placement shapes an astrology reading.",
+          "A clear guide to all 12 zodiac signs: dates, element, modality, ruling planet, strengths, and challenges for every placement.",
       },
       { property: "og:title", content: "The 12 Zodiac Signs: Dates, Traits & Meanings" },
       {
