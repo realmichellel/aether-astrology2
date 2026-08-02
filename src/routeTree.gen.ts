@@ -15,6 +15,8 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ZodiacSignsIndexRouteImport } from './routes/zodiac-signs/index'
+import { Route as ZodiacSignsSlugRouteImport } from './routes/zodiac-signs/$slug'
 import { Route as AuthenticatedYouRouteImport } from './routes/_authenticated/you'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
@@ -51,6 +53,16 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ZodiacSignsIndexRoute = ZodiacSignsIndexRouteImport.update({
+  id: '/zodiac-signs/',
+  path: '/zodiac-signs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ZodiacSignsSlugRoute = ZodiacSignsSlugRouteImport.update({
+  id: '/zodiac-signs/$slug',
+  path: '/zodiac-signs/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedYouRoute = AuthenticatedYouRouteImport.update({
@@ -109,6 +121,8 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/you': typeof AuthenticatedYouRoute
+  '/zodiac-signs/$slug': typeof ZodiacSignsSlugRoute
+  '/zodiac-signs/': typeof ZodiacSignsIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -124,6 +138,8 @@ export interface FileRoutesByTo {
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/you': typeof AuthenticatedYouRoute
+  '/zodiac-signs/$slug': typeof ZodiacSignsSlugRoute
+  '/zodiac-signs': typeof ZodiacSignsIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
@@ -141,6 +157,8 @@ export interface FileRoutesById {
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/you': typeof AuthenticatedYouRoute
+  '/zodiac-signs/$slug': typeof ZodiacSignsSlugRoute
+  '/zodiac-signs/': typeof ZodiacSignsIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
@@ -158,6 +176,8 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/settings'
     | '/you'
+    | '/zodiac-signs/$slug'
+    | '/zodiac-signs/'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -173,6 +193,8 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/settings'
     | '/you'
+    | '/zodiac-signs/$slug'
+    | '/zodiac-signs'
     | '/api/public/payments/webhook'
   id:
     | '__root__'
@@ -189,6 +211,8 @@ export interface FileRouteTypes {
     | '/_authenticated/onboarding'
     | '/_authenticated/settings'
     | '/_authenticated/you'
+    | '/zodiac-signs/$slug'
+    | '/zodiac-signs/'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -199,6 +223,8 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
+  ZodiacSignsSlugRoute: typeof ZodiacSignsSlugRoute
+  ZodiacSignsIndexRoute: typeof ZodiacSignsIndexRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
@@ -244,6 +270,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/zodiac-signs/': {
+      id: '/zodiac-signs/'
+      path: '/zodiac-signs'
+      fullPath: '/zodiac-signs/'
+      preLoaderRoute: typeof ZodiacSignsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/zodiac-signs/$slug': {
+      id: '/zodiac-signs/$slug'
+      path: '/zodiac-signs/$slug'
+      fullPath: '/zodiac-signs/$slug'
+      preLoaderRoute: typeof ZodiacSignsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/you': {
@@ -335,18 +375,10 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
+  ZodiacSignsSlugRoute: ZodiacSignsSlugRoute,
+  ZodiacSignsIndexRoute: ZodiacSignsIndexRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

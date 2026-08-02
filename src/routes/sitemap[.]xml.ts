@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
+import { SIGN_CONTENT } from "@/lib/zodiac-content";
+
 
 const BASE_URL = "https://aetherhoroscope.com";
 
@@ -18,8 +20,14 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/auth", changefreq: "monthly", priority: "0.5" },
           { path: "/terms", changefreq: "yearly", priority: "0.3" },
           { path: "/privacy", changefreq: "yearly", priority: "0.3" },
-
+          { path: "/zodiac-signs", changefreq: "monthly", priority: "0.8" },
+          ...SIGN_CONTENT.map((s) => ({
+            path: `/zodiac-signs/${s.slug}`,
+            changefreq: "monthly" as const,
+            priority: "0.7",
+          })),
         ];
+
 
         const urls = entries.map((e) =>
           [
