@@ -11,6 +11,15 @@ export const Route = createFileRoute("/_authenticated/settings")({
     meta: [
       { title: "Settings — Aether" },
       { name: "description", content: "Review or correct the birth details Aether reads your chart from." },
+      { property: "og:title", content: "Settings — Aether" },
+      {
+        property: "og:description",
+        content: "Review or correct the birth details Aether reads your chart from.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "robots", content: "noindex" },
+
     ],
   }),
   component: SettingsPage,
