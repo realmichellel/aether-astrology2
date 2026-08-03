@@ -36,6 +36,7 @@ function JournalPage() {
 
   const [entries, setEntries] = useState<Entry[]>([]);
   const [mood, setMood] = useState<string>(MOODS[0]);
+  const [customMood, setCustomMood] = useState("");
   const [content, setContent] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -57,6 +58,8 @@ function JournalPage() {
     try {
       await add({ data: { mood, content: content.trim() } });
       setContent("");
+      setCustomMood("");
+      setMood(MOODS[0]);
       await refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
@@ -71,7 +74,7 @@ function JournalPage() {
       <main className="max-w-4xl mx-auto px-5 py-8 sm:px-8 sm:py-12">
         <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-4">Chronicles</p>
         <h1 className="font-serif text-3xl sm:text-5xl font-light leading-tight mb-2">
-          The record <span className="italic">Aether reads.</span>
+          Where the <span className="italic">days go.</span>
         </h1>
         <p className="text-sm sm:text-base text-stone-400 max-w-lg mb-12">
           Note a mood, a dream, a decision. Recent entries feed into your daily reading and the Oracle's
@@ -88,7 +91,10 @@ function JournalPage() {
                 <button
                   type="button"
                   key={m}
-                  onClick={() => setMood(m)}
+                  onClick={() => {
+                    setMood(m);
+                    setCustomMood("");
+                  }}
                   className={`text-[10px] uppercase tracking-[0.2em] px-3 py-2 border transition-colors ${
                     mood === m
                       ? "border-accent text-accent bg-accent/10"
@@ -98,6 +104,23 @@ function JournalPage() {
                   {m}
                 </button>
               ))}
+              <input
+                type="text"
+                value={customMood}
+                maxLength={40}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setCustomMood(v);
+                  if (v.trim()) setMood(v.trim());
+                  else setMood(MOODS[0]);
+                }}
+                placeholder="Your own"
+                className={`text-[10px] uppercase tracking-[0.2em] px-3 py-2 border bg-transparent w-28 focus:outline-none transition-colors placeholder:normal-case placeholder:tracking-normal placeholder:text-stone-600 ${
+                  customMood.trim()
+                    ? "border-accent text-accent bg-accent/10"
+                    : "border-border text-muted-foreground focus:border-accent"
+                }`}
+              />
             </div>
           </div>
 

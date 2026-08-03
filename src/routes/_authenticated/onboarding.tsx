@@ -122,7 +122,7 @@ function Onboarding() {
             disabled={busy}
             className="w-full bg-accent text-primary-foreground py-4 font-serif italic text-lg hover:bg-stone-100 transition-colors disabled:opacity-50"
           >
-            {busy ? "Reading the sky…" : "Calculate alignment"}
+            {busy ? "Building your chart…" : "Calculate alignment"}
           </button>
         </form>
       </main>

@@ -82,14 +82,13 @@ function Landing() {
           A personal astrologer
         </p>
         <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl font-light leading-[1.05] mb-10 max-w-3xl">
-          Your fate is written
+          The sky keeps moving.
           <br />
-          <span className="italic">in the silent movements.</span>
+          <span className="italic">So do you.</span>
         </h1>
         <p className="max-w-xl text-base sm:text-lg text-stone-400 leading-relaxed mb-14">
-          Aether reads the sky as it moves over you. A natal chart, the current
-          transits, and the record you keep of your own life — synthesized into
-          a daily reading, and a conversation you can return to.
+          Your birth chart, today&rsquo;s transits, and the notes you keep about your own life — read
+          together, once a day.
         </p>
 
         <div className="flex flex-wrap items-center gap-6">
@@ -100,7 +99,7 @@ function Landing() {
             Enter the observatory
           </Link>
           <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            Free while in early orbit
+            Free to start
           </span>
         </div>
 

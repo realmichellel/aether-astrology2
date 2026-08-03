@@ -161,7 +161,7 @@ function ChatPage() {
             <div>
               <div className="text-sm font-medium">The Oracle</div>
               <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                AI astrological synthesis
+                Your personal astrologist
               </div>
             </div>
           </div>
@@ -230,7 +230,7 @@ function ChatPage() {
             <div className="text-[10px] uppercase tracking-widest text-accent mb-3">
               The Oracle rests
             </div>
-            <h3 className="font-serif italic text-3xl mb-3">Out of questions</h3>
+            <h3 className="font-serif italic text-3xl mb-3">No questions left</h3>
             <p className="text-sm text-stone-400 mb-6 max-w-md mx-auto leading-relaxed">
               Ten more questions for <span className="text-accent">$3.99</span>. One free question
               arrives each week regardless.
@@ -279,7 +279,7 @@ function ChatPage() {
           ))}
 
           {pending && (
-            <div className="text-sm italic text-stone-500 animate-pulse">Consulting the sky…</div>
+            <div className="text-sm italic text-stone-500 animate-pulse">Thinking…</div>
           )}
         </div>
 
@@ -294,7 +294,7 @@ function ChatPage() {
                 submit(e);
               }
             }}
-            placeholder={out ? "Out of questions…" : "Ask the stars…"}
+            placeholder={out ? "No questions left…" : "Ask anything"}
             rows={2}
             className="flex-1 bg-transparent text-sm focus:outline-none italic resize-none placeholder:text-muted-foreground"
             disabled={pending || out}

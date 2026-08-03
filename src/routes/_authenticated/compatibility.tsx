@@ -281,7 +281,7 @@ function CompatibilityPage() {
                   disabled={busy}
                   className="bg-accent text-primary-foreground py-3 px-8 font-serif italic text-lg hover:bg-stone-100 transition-colors disabled:opacity-40"
                 >
-                  {busy ? "Reading the two skies…" : "Generate synastry"}
+                  {busy ? "Comparing charts…" : "Generate synastry"}
                 </button>
               </div>
             </form>
