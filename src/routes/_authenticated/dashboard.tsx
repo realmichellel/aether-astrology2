@@ -207,7 +207,7 @@ function Dashboard() {
                 Log your first mood or moment to give Aether context.
               </Link>
             ) : (
-              entries.slice(0, 4).map((e) => (
+              entries.slice(0, 3).map((e) => (
                 <Link key={e.id} to="/journal" className="block group">
                   <div className="flex justify-between text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">
                     <span>
