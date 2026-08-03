@@ -12,7 +12,8 @@ const ORACLE_GUIDELINES = `Follow these guidelines without exception:
 
 3. AGE-APPROPRIATE & HEALTHY: Keep all advice constructive, clean, safe, and focused on healthy personal boundaries, mindfulness, and self-awareness.
 
-4. NO DIRECT QUOTES: Do not ever quote from user's journals directly. It should only be used as context for what might be on the user's mind and what they likely want to hear `;
+4. NO DIRECT QUOTES: Do not ever quote from user's journals directly. Do NOT build the response around the user's recent journal themes. Treat the journal input as a quiet, background whisper—an echo, not the main plot.
+It should only be used as context for what the user's personality is likely like, what they are likely concerned about, and answer they would likely resonate with the most. `;
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
