@@ -36,6 +36,7 @@ function JournalPage() {
 
   const [entries, setEntries] = useState<Entry[]>([]);
   const [mood, setMood] = useState<string>(MOODS[0]);
+  const [customMood, setCustomMood] = useState("");
   const [content, setContent] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
