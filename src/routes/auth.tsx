@@ -252,12 +252,19 @@ function Field({
   onChange: (v: string) => void;
   placeholder?: string;
 }) {
+  const id = useId();
   return (
     <div>
-      <label className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2 block">
+      <label
+        htmlFor={id}
+        className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2 block"
+      >
         {label}
       </label>
       <input
+        id={id}
+        name={type === "password" ? "password" : "email"}
+        autoComplete={type === "password" ? "current-password" : "email"}
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
