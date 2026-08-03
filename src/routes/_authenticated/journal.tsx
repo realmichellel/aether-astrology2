@@ -71,7 +71,7 @@ function JournalPage() {
       <main className="max-w-4xl mx-auto px-5 py-8 sm:px-8 sm:py-12">
         <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-4">Chronicles</p>
         <h1 className="font-serif text-3xl sm:text-5xl font-light leading-tight mb-2">
-          The record <span className="italic">Aether reads.</span>
+          Where the <span className="italic">days go.</span>
         </h1>
         <p className="text-sm sm:text-base text-stone-400 max-w-lg mb-12">
           Note a mood, a dream, a decision. Recent entries feed into your daily reading and the Oracle's
