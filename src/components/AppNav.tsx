@@ -52,6 +52,7 @@ export function AppNav() {
         </button>
       </div>
     </nav>
+    </>
   );
 
 }
