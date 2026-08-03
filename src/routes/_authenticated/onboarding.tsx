@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { getProfile, saveProfile } from "@/lib/profile.functions";
 import { AppNav } from "@/components/AppNav";
+import { CityCombobox } from "@/components/CityCombobox";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
@@ -32,6 +33,7 @@ function Onboarding() {
   const save = useServerFn(saveProfile);
 
   const [form, setForm] = useState({ full_name: "", birth_date: "", birth_time: "", birth_place: "" });
+  const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,9 +46,13 @@ function Onboarding() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    if (!coords) {
+      setError("Choose your city of birth from the dropdown list.");
+      return;
+    }
     setBusy(true);
     try {
-      await save({ data: form });
+      await save({ data: { ...form, birth_lat: coords.lat, birth_lng: coords.lon } });
       navigate({ to: "/dashboard", replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
@@ -92,13 +98,14 @@ function Onboarding() {
               required
             />
           </div>
-          <Field
-            label="City of birth"
+          <CityCombobox
             value={form.birth_place}
-            onChange={(v) => setForm({ ...form, birth_place: v })}
-            placeholder="e.g. Casablanca, Morocco"
-            required
+            onSelect={(o) => {
+              setForm((f) => ({ ...f, birth_place: o?.label ?? "" }));
+              setCoords(o ? { lat: o.lat, lon: o.lon } : null);
+            }}
           />
+
           <p className="text-xs text-muted-foreground -mt-2">
             Don't know your exact birth time? Check your birth certificate or ask family — it's the
             one detail we can't approximate our way around.

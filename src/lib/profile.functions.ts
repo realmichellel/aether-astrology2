@@ -11,6 +11,10 @@ const ProfileInput = z.object({
   birth_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   birth_time: z.string().regex(/^\d{2}:\d{2}$/, "Birth time is required (HH:MM)."),
   birth_place: z.string().min(1).max(200),
+  // Supplied by the city picker. When present we trust these exact
+  // coordinates instead of re-geocoding the label.
+  birth_lat: z.number().min(-90).max(90).optional(),
+  birth_lng: z.number().min(-180).max(180).optional(),
 });
 
 export const getProfile = createServerFn({ method: "GET" })
@@ -54,15 +58,17 @@ export const saveProfile = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const sun = sunSignFor(data.birth_date);
 
-    // A full chart is now a requirement of saving a profile at all, not a
-    // best-effort bonus — so geocoding/timezone/chart failures throw instead
-    // of silently producing a profile with blank chart fields. The most
-    // likely real-world failure is an unrecognized/ambiguous birth_place;
-    // that error message is what the user actually needs to see and fix.
-    const coords = await geocodePlace(data.birth_place);
+    // Coordinates come from the city picker. If a client somehow submits a
+    // bare label we fall back to geocoding it, and refuse the save when the
+    // place can't be resolved — an unlocatable birth place means an
+    // unknowable chart, not a chart with blank fields.
+    const coords =
+      data.birth_lat != null && data.birth_lng != null
+        ? { lat: data.birth_lat, lon: data.birth_lng }
+        : await geocodePlace(data.birth_place);
     if (!coords) {
       throw new Error(
-        `Couldn't locate "${data.birth_place}". Try adding a country or region (e.g. "Springfield, Illinois, USA").`,
+        `Couldn't locate "${data.birth_place}". Pick a city from the dropdown list so Aether has exact coordinates.`,
       );
     }
 

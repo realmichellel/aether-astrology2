@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { getProfile, saveProfile } from "@/lib/profile.functions";
+import { CityCombobox } from "@/components/CityCombobox";
 
 import { AppNav } from "@/components/AppNav";
 
@@ -21,6 +22,7 @@ function SettingsPage() {
   const save = useServerFn(saveProfile);
 
   const [form, setForm] = useState({ full_name: "", birth_date: "", birth_time: "", birth_place: "" });
+  const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +37,9 @@ function SettingsPage() {
           birth_time: p.birth_time ?? "",
           birth_place: p.birth_place ?? "",
         });
+        if (p.birth_lat != null && p.birth_lng != null) {
+          setCoords({ lat: Number(p.birth_lat), lon: Number(p.birth_lng) });
+        }
       }
       setLoading(false);
     });
@@ -46,9 +51,13 @@ function SettingsPage() {
     e.preventDefault();
     setError(null);
     setSaved(false);
+    if (!coords) {
+      setError("Choose your city of birth from the dropdown list.");
+      return;
+    }
     setBusy(true);
     try {
-      await save({ data: form });
+      await save({ data: { ...form, birth_lat: coords.lat, birth_lng: coords.lon } });
       setSaved(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
@@ -96,13 +105,14 @@ function SettingsPage() {
                 type="time"
               />
             </div>
-            <Field
-              label="City of birth"
+            <CityCombobox
               value={form.birth_place}
-              onChange={(v) => setForm({ ...form, birth_place: v })}
-              placeholder="e.g. Casablanca, Morocco"
-              required
+              onSelect={(o) => {
+                setForm((f) => ({ ...f, birth_place: o?.label ?? "" }));
+                setCoords(o ? { lat: o.lat, lon: o.lon } : null);
+              }}
             />
+
 
             {error && (
               <p className="text-sm text-destructive-foreground bg-destructive/20 border border-destructive/40 px-4 py-2">

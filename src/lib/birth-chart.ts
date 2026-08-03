@@ -16,11 +16,12 @@ import { signFromEclipticLongitude, type SignPlacement } from "./zodiac";
 
 export interface PlanetPlacement extends SignPlacement {
   body: string;
+  house?: number | null;
 }
 
 export interface BirthChart {
-  ascendant: SignPlacement | null; // null if birth time unknown
-  midheaven: SignPlacement | null;
+  ascendant: (SignPlacement & { house?: number }) | null; // null if birth time unknown
+  midheaven: (SignPlacement & { house?: number }) | null;
   planets: PlanetPlacement[];
   houses: { house: number; sign: string; cuspLongitude: number }[] | null;
 }
@@ -85,7 +86,7 @@ function ascendantMidheaven(time: Astronomy.AstroTime, latitudeDeg: number, long
   const ascX = -(Math.sin(epsR) * Math.tan(latR) + Math.cos(epsR) * Math.sin(ramcR));
   const ascendantLongitude = (toDeg(Math.atan2(ascY, ascX)) + 360) % 360;
 
-  return { ascendantLongitude, midheavenLongitude };
+  return { ascendantLongitude, midheavenLongitude, ramc };
 }
 
 export function computeBirthChart({
@@ -106,16 +107,123 @@ export function computeBirthChart({
     return { ascendant: null, midheaven: null, planets, houses: null };
   }
 
-  const { ascendantLongitude, midheavenLongitude } = ascendantMidheaven(time, latitude, longitude);
-  const ascendant = signFromEclipticLongitude(ascendantLongitude);
-  const midheaven = signFromEclipticLongitude(midheavenLongitude);
+  const { ascendantLongitude, midheavenLongitude, ramc } = ascendantMidheaven(
+    time,
+    latitude,
+    longitude,
+  );
+  const eps = meanObliquityDeg(time);
 
-  const ascSignIndex = Math.floor(ascendantLongitude / 30);
-  const houses = Array.from({ length: 12 }, (_, i) => {
-    const signIndex = (ascSignIndex + i) % 12;
-    const cuspLongitude = signIndex * 30;
-    return { house: i + 1, cuspLongitude, sign: signFromEclipticLongitude(cuspLongitude).name };
-  });
+  const cusps = placidusCusps(ramc, eps, latitude, ascendantLongitude, midheavenLongitude);
+
+  const houses = cusps.map((cuspLongitude, i) => ({
+    house: i + 1,
+    cuspLongitude,
+    sign: signFromEclipticLongitude(cuspLongitude).name,
+  }));
+
+  const ascendant = { ...signFromEclipticLongitude(ascendantLongitude), house: 1 };
+  const midheaven = { ...signFromEclipticLongitude(midheavenLongitude), house: 10 };
+
+  for (const p of planets) {
+    p.house = houseForLongitude(p.longitude, cusps);
+  }
 
   return { ascendant, midheaven, planets, houses };
+}
+
+/** Which house a given ecliptic longitude falls in, given 12 ordered cusps. */
+function houseForLongitude(longitude: number, cusps: number[]): number {
+  const lon = ((longitude % 360) + 360) % 360;
+  for (let i = 0; i < 12; i++) {
+    const start = cusps[i];
+    const end = cusps[(i + 1) % 12];
+    const span = (((end - start) % 360) + 360) % 360;
+    const offset = (((lon - start) % 360) + 360) % 360;
+    if (offset < span) return i + 1;
+  }
+  return 1;
+}
+
+/**
+ * Placidus house cusps.
+ *
+ * Placidus divides each body's diurnal and nocturnal semi-arcs into three
+ * equal parts in *time*, rather than dividing the ecliptic or the equator in
+ * space. Cusps 10 (MC) and 1 (Asc) are exact; 11, 12, 2, 3 are found by
+ * iterating on the ascensional difference until the hour angle of the
+ * candidate ecliptic point matches the required fraction of its own semi-arc.
+ * The remaining six cusps are the exact oppositions.
+ *
+ * Placidus is undefined inside the polar circles (a point can have no rising
+ * time at all); there we fall back to whole-sign cusps from the ascendant so
+ * the chart still renders rather than producing NaNs.
+ */
+function placidusCusps(
+  ramc: number,
+  epsDeg: number,
+  latDeg: number,
+  ascLongitude: number,
+  mcLongitude: number,
+): number[] {
+  const epsR = toRad(epsDeg);
+  const latR = toRad(latDeg);
+
+  if (Math.abs(latDeg) >= 66) return wholeSignFallback(ascLongitude);
+
+  // Ecliptic longitude of the point on the ecliptic with the given right ascension.
+  const lonFromRA = (raDeg: number) => {
+    const raR = toRad(raDeg);
+    return (toDeg(Math.atan2(Math.sin(raR), Math.cos(raR) * Math.cos(epsR))) + 360) % 360;
+  };
+
+  // offsetDeg: base RA offset from RAMC; adFactor: multiple of the ascensional
+  // difference to add (derived from the semi-arc thirds).
+  const solve = (offsetDeg: number, adFactor: number): number | null => {
+    let ra = ramc + offsetDeg;
+    let lon = lonFromRA(ra);
+    for (let i = 0; i < 30; i++) {
+      const decl = Math.asin(Math.sin(epsR) * Math.sin(toRad(lon)));
+      const t = Math.tan(latR) * Math.tan(decl);
+      if (Math.abs(t) > 1) return null; // circumpolar — Placidus undefined here
+      const ad = toDeg(Math.asin(t));
+      const next = ramc + offsetDeg + adFactor * ad;
+      const nextLon = lonFromRA(next);
+      const converged = Math.abs(((nextLon - lon + 540) % 360) - 180) < 1e-9;
+      ra = next;
+      lon = nextLon;
+      if (converged) break;
+    }
+    return lon;
+  };
+
+  const c11 = solve(30, 1 / 3);
+  const c12 = solve(60, 2 / 3);
+  const c2 = solve(120, 2 / 3);
+  const c3 = solve(150, 1 / 3);
+
+  if (c11 == null || c12 == null || c2 == null || c3 == null) {
+    return wholeSignFallback(ascLongitude);
+  }
+
+  const norm = (d: number) => ((d % 360) + 360) % 360;
+  return [
+    norm(ascLongitude),
+    norm(c2),
+    norm(c3),
+    norm(mcLongitude + 180),
+    norm(c11 + 180),
+    norm(c12 + 180),
+    norm(ascLongitude + 180),
+    norm(c2 + 180),
+    norm(c3 + 180),
+    norm(mcLongitude),
+    norm(c11),
+    norm(c12),
+  ];
+}
+
+function wholeSignFallback(ascLongitude: number): number[] {
+  const ascSignIndex = Math.floor((((ascLongitude % 360) + 360) % 360) / 30);
+  return Array.from({ length: 12 }, (_, i) => ((ascSignIndex + i) % 12) * 30);
 }

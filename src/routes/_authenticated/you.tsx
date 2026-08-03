@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { getBirthChart } from "@/lib/profile.functions";
 import { AppNav } from "@/components/AppNav";
+import { placementInsight } from "@/lib/placement-meanings";
 
 export const Route = createFileRoute("/_authenticated/you")({
   head: () => ({
@@ -63,7 +64,10 @@ function YouPage() {
             No chart yet. Add your birth details in Settings to see your full natal chart.
           </p>
         ) : (
-          <ChartTable chart={data.chart} />
+          <>
+            <ChartTable chart={data.chart} />
+            <PlacementNotes chart={data.chart} />
+          </>
         )}
 
         <div className="mt-12">
@@ -79,7 +83,9 @@ function YouPage() {
   );
 }
 
-function ChartTable({ chart }: { chart: NonNullable<NonNullable<ChartData>["chart"]> }) {
+type Chart = NonNullable<NonNullable<ChartData>["chart"]>;
+
+function buildPlacements(chart: Chart) {
   const ascSign = chart.ascendant?.name;
   const mcSign = chart.midheaven?.name;
 
@@ -92,19 +98,66 @@ function ChartTable({ chart }: { chart: NonNullable<NonNullable<ChartData>["char
   const placements: Array<{ body: string; symbol: string; sign: string; house: number | null }> = [];
 
   if (ascSign) placements.push({ body: "Rising", symbol: "↑", sign: ascSign, house: 1 });
-  if (mcSign) placements.push({ body: "Midheaven", symbol: "⊤", sign: mcSign, house: (chart.midheaven as any)?.house ?? 10 });
+  if (mcSign)
+    placements.push({
+      body: "Midheaven",
+      symbol: "⊤",
+      sign: mcSign,
+      house: chart.midheaven?.house ?? 10,
+    });
 
   for (const p of chart.planets) {
     placements.push({
       body: p.body,
       symbol: PLANET_SYMBOLS[p.body] ?? "•",
       sign: p.name,
-      house: (p as any).house ?? houseOf(p.name),
+      house: p.house ?? houseOf(p.name),
     });
   }
 
-  // Sort by house number
   placements.sort((a, b) => (a.house ?? 99) - (b.house ?? 99));
+  return placements;
+}
+
+function PlacementNotes({ chart }: { chart: Chart }) {
+  const placements = buildPlacements(chart);
+
+  return (
+    <section className="mt-16">
+      <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-6">What it means</p>
+      <h2 className="font-serif text-2xl sm:text-4xl font-light leading-tight mb-10">
+        Each placement, <span className="italic">read closely.</span>
+      </h2>
+
+      <div className="divide-y divide-border/60 border-t border-border/60">
+        {placements.map((p) => {
+          const insight = placementInsight(p.body, p.sign, p.house);
+          if (!insight) return null;
+          return (
+            <article key={`${p.body}-${p.sign}`} className="py-7">
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-3">
+                <span className="text-accent text-base">{p.symbol}</span>
+                <h3 className="text-[11px] uppercase tracking-[0.2em]">
+                  {p.body} in {p.sign}
+                </h3>
+                <span className="text-[10px] uppercase tracking-[0.2em] text-accent">
+                  {insight.significance}
+                </span>
+              </div>
+              <p className="text-sm sm:text-base font-light leading-relaxed text-stone-400">
+                {insight.text}
+              </p>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function ChartTable({ chart }: { chart: Chart }) {
+  const placements = buildPlacements(chart);
+
 
   return (
     <div className="border border-border">
