@@ -105,6 +105,10 @@ function CompatibilityPage() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    if (form.birth_lat == null || form.birth_lng == null) {
+      setError("Pick a city from the dropdown list so Aether has exact coordinates.");
+      return;
+    }
     setBusy(true);
     try {
       const r = await run({ data: form });
@@ -302,7 +306,7 @@ function CompatibilityPage() {
               onClick={() => {
                 setActive(null);
                 setShowForm(true);
-                setForm({ full_name: "", birth_date: "", birth_time: "", birth_place: "" });
+                setForm({ full_name: "", birth_date: "", birth_time: "", birth_place: "", birth_lat: undefined, birth_lng: undefined });
               }}
               className="text-[10px] uppercase tracking-[0.2em] text-accent mb-8 hover:text-stone-100"
             >
