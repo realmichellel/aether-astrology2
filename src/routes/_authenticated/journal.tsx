@@ -77,8 +77,7 @@ function JournalPage() {
           Where the <span className="italic">days go.</span>
         </h1>
         <p className="text-sm sm:text-base text-stone-400 max-w-lg mb-12">
-          Note a mood, a dream, a decision. Recent entries feed into your daily reading and the Oracle's
-          replies.
+          Note a mood, a dream, a decision.
         </p>
 
         <form onSubmit={submit} className="border border-border p-6 bg-surface mb-16 space-y-6">
