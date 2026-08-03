@@ -100,7 +100,7 @@ function Landing() {
             Enter the observatory
           </Link>
           <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            Free while in early orbit
+            Free to start
           </span>
         </div>
 

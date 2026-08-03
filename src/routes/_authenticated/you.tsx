@@ -58,7 +58,7 @@ function YouPage() {
         )}
 
         {loading ? (
-          <p className="text-stone-500 italic">Reading the sky…</p>
+          <p className="text-stone-500 italic">Loading your chart…</p>
         ) : !data?.chart ? (
           <p className="text-stone-500 italic">
             No chart yet. Add your birth details in Settings to see your full natal chart.

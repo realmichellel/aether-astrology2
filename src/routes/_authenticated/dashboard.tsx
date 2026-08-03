@@ -117,7 +117,7 @@ function Dashboard() {
 
             {loading ? (
               <div className="font-serif italic text-2xl sm:text-3xl text-stone-500">
-                Consulting the ephemeris…
+                Reading today.s sky…
               </div>
             ) : error ? (
               <div className="text-destructive-foreground">{error}</div>
