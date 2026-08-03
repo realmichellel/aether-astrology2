@@ -58,6 +58,8 @@ function JournalPage() {
     try {
       await add({ data: { mood, content: content.trim() } });
       setContent("");
+      setCustomMood("");
+      setMood(MOODS[0]);
       await refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
