@@ -27,3 +27,45 @@ export async function geocodePlace(place: string): Promise<{ lat: number; lon: n
 
   return { lat: parseFloat(results[0].lat), lon: parseFloat(results[0].lon) };
 }
+
+/**
+ * Typeahead search for cities/towns. Restricted to populated places so users
+ * can only pick a real, geocoded location — free-text birth places (and the
+ * silently-wrong charts they produce) are no longer possible.
+ */
+export async function searchPlaces(
+  query: string,
+): Promise<Array<{ label: string; lat: number; lon: number }>> {
+  const url =
+    `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=8&addressdetails=1` +
+    `&featureType=city&accept-language=en&q=${encodeURIComponent(query)}`;
+
+  const res = await fetch(url, {
+    headers: {
+      "User-Agent": "Aether/1.0 (astrology app; contact: support@aetherhoroscope.com)",
+    },
+  });
+  if (!res.ok) return [];
+
+  const results = (await res.json()) as Array<{
+    display_name: string;
+    name?: string;
+    lat: string;
+    lon: string;
+    address?: Record<string, string>;
+  }>;
+
+  const seen = new Set<string>();
+  const out: Array<{ label: string; lat: number; lon: number }> = [];
+  for (const r of results) {
+    const a = r.address ?? {};
+    const city = r.name || a.city || a.town || a.village || a.municipality;
+    const region = a.state || a.region || a.county;
+    const country = a.country;
+    const label = [city, region, country].filter(Boolean).join(", ") || r.display_name;
+    if (seen.has(label)) continue;
+    seen.add(label);
+    out.push({ label, lat: parseFloat(r.lat), lon: parseFloat(r.lon) });
+  }
+  return out;
+}
