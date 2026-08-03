@@ -8,8 +8,16 @@ import { placementInsight } from "@/lib/placement-meanings";
 export const Route = createFileRoute("/_authenticated/you")({
   head: () => ({
     meta: [
-      { title: "You — Aether" },
       { name: "description", content: "Your full natal chart — every planet, sign, and house." },
+      { property: "og:title", content: "You — Aether" },
+      {
+        property: "og:description",
+        content: "Your full natal chart — every planet, sign, and house.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "robots", content: "noindex" },
+
     ],
   }),
   component: YouPage,
