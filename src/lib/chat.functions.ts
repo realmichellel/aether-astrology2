@@ -10,7 +10,9 @@ const ORACLE_GUIDELINES = `Follow these guidelines without exception:
 
 2. NON-DETERMINISTIC GUIDANCE: Frame astrological themes as archetypes, cosmic moods, or prompts for personal growth and emotional reflection—never as fixed fortune-telling, unavoidable fate, or hard predictions of future events.
 
-3. AGE-APPROPRIATE & HEALTHY: Keep all advice constructive, clean, safe, and focused on healthy personal boundaries, mindfulness, and self-awareness.`;
+3. AGE-APPROPRIATE & HEALTHY: Keep all advice constructive, clean, safe, and focused on healthy personal boundaries, mindfulness, and self-awareness.
+
+4. NO DIRECT QUOTES: Do not ever quote from user's journals directly. It should only be used as context for what might be on the user's mind and what they likely want to hear `;
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
