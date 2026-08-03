@@ -136,10 +136,13 @@ export const getDailyReading = createServerFn({ method: "POST" })
             content: `Generate today's reading (${date}) for ${profile.full_name}.
       Sun: ${profile.sun_sign}. Born ${profile.birth_date} in ${profile.birth_place}.
       Sky today: ${planetarySnapshot(date)}.
-      Recent journal:
+      
+      Recent journal (weight lightly, 30% influence maximum):
       ${journalContext}
       
-      Weave the sky, their chart, and their recent moods into the headline, body, dos, and donts.`,
+      Weave the sky, their chart, and their recent moods into the headline, body, dos, and donts. 
+      Do NOT build the whole reading around the user's recent journal themes. Treat the journal input as a quiet, background whisper—an echo, not the main plot.
+Blend it with unrelated abstract elements. The reading should feel slightly surprising, unpredictable, and detached, rather than a direct psychological analysis of their entry.`,
           },
         ],
       });
