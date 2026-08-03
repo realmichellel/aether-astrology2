@@ -14,6 +14,8 @@ const PartnerInput = z.object({
   birth_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   birth_time: z.string().regex(/^\d{2}:\d{2}$/, "Birth time is required (HH:MM)."),
   birth_place: z.string().min(1).max(200),
+  birth_lat: z.number().min(-90).max(90).optional(),
+  birth_lng: z.number().min(-180).max(180).optional(),
 });
 
 type Placements = {
@@ -32,10 +34,13 @@ type Placements = {
 async function computePlacements(
   input: z.infer<typeof PartnerInput>,
 ): Promise<{ placements: Placements; planets: PlanetPlacement[] }> {
-  const coords = await geocodePlace(input.birth_place);
+  const coords =
+    input.birth_lat != null && input.birth_lng != null
+      ? { lat: input.birth_lat, lon: input.birth_lng }
+      : await geocodePlace(input.birth_place);
   if (!coords) {
     throw new Error(
-      `Couldn't locate "${input.birth_place}". Try adding a country or region (e.g. "Springfield, Illinois, USA").`,
+      `Couldn't locate "${input.birth_place}". Pick a city from the dropdown list so Aether has exact coordinates.`,
     );
   }
   const timezone = resolveTimeZone(coords.lat, coords.lon);

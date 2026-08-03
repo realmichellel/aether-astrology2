@@ -11,6 +11,7 @@ import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
 import { SYNASTRY_UNLOCK_PRICE_ID, getStripeEnvironment } from "@/lib/stripe";
 import { claimCheckout } from "@/lib/claim.functions";
+import { CityCombobox } from "@/components/CityCombobox";
 
 export const Route = createFileRoute("/_authenticated/compatibility")({
   head: () => ({
@@ -69,7 +70,14 @@ function CompatibilityPage() {
   const loadOne = useServerFn(getSynastryReport);
   const claim = useServerFn(claimCheckout);
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<{
+    full_name: string;
+    birth_date: string;
+    birth_time: string;
+    birth_place: string;
+    birth_lat?: number;
+    birth_lng?: number;
+  }>({
     full_name: "",
     birth_date: "",
     birth_time: "",
@@ -97,6 +105,10 @@ function CompatibilityPage() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    if (form.birth_lat == null || form.birth_lng == null) {
+      setError("Pick a city from the dropdown list so Aether has exact coordinates.");
+      return;
+    }
     setBusy(true);
     try {
       const r = await run({ data: form });
@@ -261,12 +273,16 @@ function CompatibilityPage() {
                   required
                 />
               </div>
-              <Field
-                label="City of birth"
+              <CityCombobox
                 value={form.birth_place}
-                onChange={(v) => setForm({ ...form, birth_place: v })}
-                placeholder="e.g. Lisbon, Portugal"
-                required
+                onSelect={(o) =>
+                  setForm((f) => ({
+                    ...f,
+                    birth_place: o?.label ?? "",
+                    birth_lat: o?.lat,
+                    birth_lng: o?.lon,
+                  }))
+                }
               />
 
               {error && (
@@ -290,7 +306,7 @@ function CompatibilityPage() {
               onClick={() => {
                 setActive(null);
                 setShowForm(true);
-                setForm({ full_name: "", birth_date: "", birth_time: "", birth_place: "" });
+                setForm({ full_name: "", birth_date: "", birth_time: "", birth_place: "", birth_lat: undefined, birth_lng: undefined });
               }}
               className="text-[10px] uppercase tracking-[0.2em] text-accent mb-8 hover:text-stone-100"
             >
