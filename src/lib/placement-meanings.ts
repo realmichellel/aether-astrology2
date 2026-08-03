@@ -119,13 +119,9 @@ export function placementInsight(body: string, sign: string, house: number | nul
   if (!planet || !s) return null;
 
   const subject = body === "Rising" ? "Your rising sign" : body === "Midheaven" ? "Your Midheaven" : `Your ${body}`;
-  const houseLine = house
-    ? ` It sits in your ${ordinal(house)} house, so this plays out most visibly in that corner of your life.`
-    : "";
 
   const text =
     `${subject} governs ${planet.domain}. In ${sign} it runs ${s.tone} — a ${s.element} signature that ${s.approach}.` +
-    houseLine +
     ` At its best, ${planet.best}. Under pressure, ${planet.strain}.`;
 
   return { body, sign, house, significance: planet.significance, text };
