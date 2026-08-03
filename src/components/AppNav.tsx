@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { ConsentGate } from "@/components/ConsentGate";
 
 export function AppNav() {
   const navigate = useNavigate();
@@ -10,6 +11,8 @@ export function AppNav() {
   }
 
   return (
+    <>
+    <ConsentGate />
     <nav className="flex flex-col gap-3 px-5 py-5 border-b border-border sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-6">
       <div className="flex items-center justify-between gap-4">
         <Link
