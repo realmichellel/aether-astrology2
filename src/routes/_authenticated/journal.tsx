@@ -88,7 +88,10 @@ function JournalPage() {
                 <button
                   type="button"
                   key={m}
-                  onClick={() => setMood(m)}
+                  onClick={() => {
+                    setMood(m);
+                    setCustomMood("");
+                  }}
                   className={`text-[10px] uppercase tracking-[0.2em] px-3 py-2 border transition-colors ${
                     mood === m
                       ? "border-accent text-accent bg-accent/10"
@@ -98,6 +101,23 @@ function JournalPage() {
                   {m}
                 </button>
               ))}
+              <input
+                type="text"
+                value={customMood}
+                maxLength={40}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setCustomMood(v);
+                  if (v.trim()) setMood(v.trim());
+                  else setMood(MOODS[0]);
+                }}
+                placeholder="Your own"
+                className={`text-[10px] uppercase tracking-[0.2em] px-3 py-2 border bg-transparent w-28 focus:outline-none transition-colors placeholder:normal-case placeholder:tracking-normal placeholder:text-stone-600 ${
+                  customMood.trim()
+                    ? "border-accent text-accent bg-accent/10"
+                    : "border-border text-muted-foreground focus:border-accent"
+                }`}
+              />
             </div>
           </div>
 
