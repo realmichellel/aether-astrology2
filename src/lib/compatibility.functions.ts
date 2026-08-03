@@ -14,6 +14,8 @@ const PartnerInput = z.object({
   birth_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   birth_time: z.string().regex(/^\d{2}:\d{2}$/, "Birth time is required (HH:MM)."),
   birth_place: z.string().min(1).max(200),
+  birth_lat: z.number().min(-90).max(90).optional(),
+  birth_lng: z.number().min(-180).max(180).optional(),
 });
 
 type Placements = {
