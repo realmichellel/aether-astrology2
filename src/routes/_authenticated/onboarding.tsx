@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { getProfile, saveProfile } from "@/lib/profile.functions";
 import { AppNav } from "@/components/AppNav";
 import { CityCombobox } from "@/components/CityCombobox";
+import { trackPixel } from "@/lib/meta-pixel";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
@@ -53,6 +54,7 @@ function Onboarding() {
     setBusy(true);
     try {
       await save({ data: { ...form, birth_lat: coords.lat, birth_lng: coords.lon } });
+      trackPixel("CompleteRegistration", { content_name: "natal_chart_created" });
       navigate({ to: "/dashboard", replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");

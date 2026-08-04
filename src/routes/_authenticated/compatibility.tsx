@@ -12,6 +12,7 @@ import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
 import { SYNASTRY_UNLOCK_PRICE_ID, getStripeEnvironment } from "@/lib/stripe";
 import { claimCheckout } from "@/lib/claim.functions";
 import { CityCombobox } from "@/components/CityCombobox";
+import { trackPixel, trackPixelCustom } from "@/lib/meta-pixel";
 
 export const Route = createFileRoute("/_authenticated/compatibility")({
   head: () => ({
@@ -111,6 +112,7 @@ function CompatibilityPage() {
     }
     setBusy(true);
     try {
+      trackPixelCustom("SynastryReportGenerated");
       const r = await run({ data: form });
       setActive({
         id: r.id,
@@ -143,6 +145,7 @@ function CompatibilityPage() {
 
   function unlock() {
     if (!active) return;
+    trackPixel("InitiateCheckout", { content_name: "synastry_report", value: 3.99, currency: "USD" });
     setCheckoutId(active.id);
   }
 
@@ -172,6 +175,7 @@ function CompatibilityPage() {
         if (cancelled) return;
         if (r.unlocked) {
           setSettling(false);
+          trackPixel("Purchase", { content_name: "synastry_report", value: 3.99, currency: "USD" });
           setSettlementNotice("Purchase confirmed. Your full reading is unlocked.");
           setActive({
             id: r.id,

@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { initMetaPixel, trackPageView } from "../lib/meta-pixel";
 
 function NotFoundComponent() {
   return (
@@ -113,6 +114,20 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    initMetaPixel();
+    let last = window.location.pathname;
+    const unsub = router.subscribe("onResolved", () => {
+      const next = window.location.pathname;
+      if (next !== last) {
+        last = next;
+        trackPageView(next);
+      }
+    });
+    return unsub;
+  }, [router]);
 
   return (
     <QueryClientProvider client={queryClient}>
