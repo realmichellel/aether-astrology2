@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { validateMetaCapiInput, type MetaCapiInput } from "./meta-capi.server";
+import { validateMetaCapiInput, type MetaCapiInput } from "./meta-capi.shared";
 
 /**
  * Meta Conversions API — server-side mirror of the browser pixel.
