@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useId, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { trackPixel, trackPixelCustom } from "@/lib/meta-pixel";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -62,11 +63,13 @@ function AuthPage() {
           },
         });
         if (error) throw error;
+        trackPixel("CompleteRegistration", { method: "email" });
         setNotice("Check your email to confirm your account, then sign in.");
         setMode("signin");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        trackPixelCustom("SignIn", { method: "email" });
         navigate({ to: "/dashboard", replace: true });
       }
     } catch (err) {
@@ -96,6 +99,7 @@ function AuthPage() {
         /* storage unavailable — consent still recorded by the checkbox gate */
       }
     }
+    trackPixelCustom(mode === "signup" ? "SignUpStarted" : "SignInStarted", { method: "google" });
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: `${window.location.origin}/dashboard` },

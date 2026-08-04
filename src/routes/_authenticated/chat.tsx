@@ -7,6 +7,7 @@ import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
 import { ORACLE_PACK_PRICE_ID, getStripeEnvironment } from "@/lib/stripe";
 import { listChat, sendChat, getOracleCredits } from "@/lib/chat.functions";
 import { claimCheckout } from "@/lib/claim.functions";
+import { trackPixel, trackPixelCustom } from "@/lib/meta-pixel";
 
 export const Route = createFileRoute("/_authenticated/chat")({
   head: () => ({
@@ -89,6 +90,7 @@ function ChatPage() {
         if (cancelled) return;
         if (previousCredits === null || now > previousCredits) {
           setSettling(false);
+          trackPixel("Purchase", { content_name: "oracle_credits", value: 3.99, currency: "USD" });
           setSettlementNotice("Purchase confirmed. Your questions are ready.");
           return;
         }
@@ -133,6 +135,7 @@ function ChatPage() {
     setMessages((prev) => [...prev, optimistic]);
     setPending(true);
     try {
+      trackPixelCustom("OracleQuestion");
       const res = await send({ data: { content: text } });
       if (typeof res?.credits === "number") setCredits(res.credits);
       const fresh = await fetchMessages();
@@ -167,7 +170,10 @@ function ChatPage() {
           </div>
           <div className="flex items-center gap-4 sm:gap-8">
             <button
-              onClick={() => setCheckoutOpen(true)}
+              onClick={() => {
+                trackPixel("InitiateCheckout", { content_name: "oracle_credits", value: 3.99, currency: "USD" });
+                setCheckoutOpen(true);
+              }}
               className="border border-accent/40 text-accent px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-accent/10 transition-colors"
             >
               Add 10 questions — $3.99
@@ -236,7 +242,10 @@ function ChatPage() {
               arrives each week regardless.
             </p>
             <button
-              onClick={() => setCheckoutOpen(true)}
+              onClick={() => {
+                trackPixel("InitiateCheckout", { content_name: "oracle_credits", value: 3.99, currency: "USD" });
+                setCheckoutOpen(true);
+              }}
               className="bg-accent text-primary-foreground py-3 px-10 font-serif italic text-lg hover:bg-stone-100 transition-colors"
             >
               Add 10 questions
