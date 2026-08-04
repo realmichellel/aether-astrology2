@@ -11,7 +11,13 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { initMetaPixel, trackPageView } from "../lib/meta-pixel";
+import {
+  initMetaPixel,
+  trackPageView,
+  setMetaIdentity,
+  clearMetaIdentity,
+} from "../lib/meta-pixel";
+
 
 function NotFoundComponent() {
   return (
@@ -117,6 +123,26 @@ function RootComponent() {
   const router = useRouter();
 
   useEffect(() => {
+    let cancelled = false;
+    void import("../integrations/supabase/client").then(async ({ supabase }) => {
+      const { data } = await supabase.auth.getSession();
+      if (cancelled) return;
+      const user = data.session?.user;
+      if (user) setMetaIdentity({ email: user.email ?? undefined, externalId: user.id });
+      supabase.auth.onAuthStateChange((_event, session) => {
+        if (session?.user) {
+          setMetaIdentity({ email: session.user.email ?? undefined, externalId: session.user.id });
+        } else {
+          clearMetaIdentity();
+        }
+      });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
     initMetaPixel();
     let last = window.location.pathname;
     const unsub = router.subscribe("onResolved", () => {
@@ -128,6 +154,7 @@ function RootComponent() {
     });
     return unsub;
   }, [router]);
+
 
   return (
     <QueryClientProvider client={queryClient}>
