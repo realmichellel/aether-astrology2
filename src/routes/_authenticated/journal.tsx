@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { AppNav } from "@/components/AppNav";
 import { listJournal, addJournal } from "@/lib/journal.functions";
+import { trackPixelCustom } from "@/lib/meta-pixel";
 
 export const Route = createFileRoute("/_authenticated/journal")({
   head: () => ({
@@ -57,6 +58,7 @@ function JournalPage() {
     setBusy(true);
     try {
       await add({ data: { mood, content: content.trim() } });
+      trackPixelCustom("JournalEntry", { mood });
       setContent("");
       setCustomMood("");
       setMood(MOODS[0]);
