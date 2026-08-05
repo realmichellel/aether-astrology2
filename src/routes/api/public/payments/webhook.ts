@@ -46,9 +46,7 @@ async function unlockSynastryReport(userId: string, reportId: string) {
   if (!data) throw new Error("Could not unlock synastry report: report not found");
 }
 
-async function handleWebhook(req: Request, env: StripeEnv) {
-  const event = await verifyWebhook(req, env);
-
+async function handleEvent(event: { type: string; data: { object: any } }) {
   switch (event.type) {
     case "checkout.session.completed":
     case "checkout.session.async_payment_succeeded": {
@@ -59,7 +57,9 @@ async function handleWebhook(req: Request, env: StripeEnv) {
       const userId = session.metadata?.userId;
       const priceId = session.metadata?.priceId;
       if (!userId) {
-        console.error("Checkout session without userId metadata");
+        // Sessions created outside the app (e.g. Stripe dashboard) carry no
+        // user. Nothing to fulfill — acknowledge instead of retrying forever.
+        console.error("Checkout session without userId metadata:", session.id);
         break;
       }
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -101,14 +101,27 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
           console.error("Webhook received with invalid env:", rawEnv);
           return Response.json({ received: true, ignored: "invalid env" });
         }
+
+        let event: { type: string; data: { object: any } };
         try {
-          await handleWebhook(request, rawEnv as StripeEnv);
+          event = await verifyWebhook(request, rawEnv as StripeEnv);
+        } catch (e) {
+          // Signature/config problem — retrying cannot help, but Stripe must
+          // still be told the request was rejected.
+          console.error("Webhook verification failed:", e);
+          return new Response("Webhook signature verification failed", { status: 400 });
+        }
+
+        try {
+          await handleEvent(event);
           return Response.json({ received: true });
         } catch (e) {
-          console.error("Webhook error:", e);
-          return new Response("Webhook error", { status: 400 });
+          // Transient fulfillment failure — 500 so Stripe retries.
+          console.error(`Webhook handling failed for ${event.type}:`, e);
+          return new Response("Webhook handler error", { status: 500 });
         }
       },
     },
   },
 });
+
