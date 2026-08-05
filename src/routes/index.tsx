@@ -96,7 +96,7 @@ function Landing() {
             to="/auth"
             className="bg-accent text-primary-foreground py-4 px-10 font-serif italic text-lg hover:bg-stone-100 transition-colors"
           >
-            Enter the observatory
+            Get your readings
           </Link>
           <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             Free to start
