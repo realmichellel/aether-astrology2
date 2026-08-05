@@ -97,8 +97,13 @@ export async function verifyWebhook(
 
   if (!timestamp || v1Signatures.length === 0) throw new Error("Invalid signature format");
 
+  // Stripe reuses the original signature (and timestamp) when it retries a
+  // failed delivery for up to ~3 days. A 5-minute window would reject every
+  // retry forever, so allow the full retry window; the HMAC below still
+  // authenticates the payload and fulfillment is idempotent.
   const age = Math.abs(Date.now() / 1000 - Number(timestamp));
-  if (age > 300) throw new Error("Webhook timestamp too old");
+  if (age > 60 * 60 * 24 * 4) throw new Error("Webhook timestamp too old");
+
 
   const key = await crypto.subtle.importKey(
     "raw",
