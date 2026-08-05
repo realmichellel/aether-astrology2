@@ -8,9 +8,9 @@ export const Route = createFileRoute("/auth")({
 
     meta: [
       { title: "Sign in — Aether" },
-      { name: "description", content: "Enter the observatory. Sign in or create an Aether account." },
+      { name: "description", content: "Get your readings. Sign in or create an Aether account." },
       { property: "og:title", content: "Sign in — Aether" },
-      { property: "og:description", content: "Enter the observatory." },
+      { property: "og:description", content: "Get your readings." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://aetherhoroscope.com/auth" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -125,7 +125,7 @@ function AuthPage() {
             {mode === "signin" ? "Return" : "Begin"}
           </p>
           <h1 className="font-serif text-3xl sm:text-5xl font-light italic mb-10">
-            {mode === "signin" ? "Enter the observatory." : "Open an account."}
+            {mode === "signin" ? "Get your readings." : "Open an account."}
           </h1>
 
           {mode === "signup" && (
