@@ -79,7 +79,7 @@ function Dashboard() {
   });
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen text-foreground">
       <AppNav />
       <main className="max-w-6xl mx-auto px-5 py-8 sm:px-8 sm:py-12">
         <section className="mb-12 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 border-b border-border pb-8 sm:mb-16 sm:flex sm:flex-wrap sm:justify-between sm:gap-6 sm:pb-10">

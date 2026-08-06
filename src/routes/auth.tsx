@@ -112,9 +112,9 @@ function AuthPage() {
 
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div className="min-h-screen text-foreground flex flex-col">
       <nav className="flex items-center justify-between px-8 py-6 border-b border-border">
-        <Link to="/" className="text-xl font-serif italic tracking-widest text-accent">
+        <Link to="/" className="text-xl font-serif italic tracking-widest text-gilded">
           AETHER
         </Link>
       </nav>

@@ -17,7 +17,7 @@ export function AppNav() {
       <div className="flex items-center justify-between gap-4">
         <Link
           to="/dashboard"
-          className="text-xl font-serif italic tracking-widest text-accent"
+          className="text-xl font-serif italic tracking-widest text-gilded"
         >
           AETHER
         </Link>

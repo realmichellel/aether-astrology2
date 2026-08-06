@@ -40,31 +40,33 @@
 
 :root {
   --radius: 0rem;
-  --background: #080D1F;
-  --foreground: #EDE7DC;
-  --surface: #12162E;
-  --card: #12162E;
-  --card-foreground: #EDE7DC;
-  --popover: #12162E;
-  --popover-foreground: #EDE7DC;
-  --primary: #E3C08E;
-  --primary-foreground: #080D1F;
-  --secondary: #1E1B45;
-  --secondary-foreground: #EDE7DC;
-  --muted: #12162E;
-  --muted-foreground: #9A9BC0;
-  --accent: #E3C08E;
-  --accent-foreground: #080D1F;
-  --destructive: #C06A6A;
-  --destructive-foreground: #F5F2EC;
-  --border: #1E1B45;
-  --input: #1E1B45;
-  --ring: #E3C08E;
+  --background: #141A3A;
+  --foreground: #F2ECE3;
+  --surface: #1C2450;
+  --card: #1C2450;
+  --card-foreground: #F2ECE3;
+  --popover: #1C2450;
+  --popover-foreground: #F2ECE3;
+  --primary: #F0D9A8;
+  --primary-foreground: #141A3A;
+  --secondary: #2E3670;
+  --secondary-foreground: #F2ECE3;
+  --muted: #1C2450;
+  --muted-foreground: #A9AFD4;
+  --accent: #F0D9A8;
+  --accent-foreground: #141A3A;
+  --destructive: #D08585;
+  --destructive-foreground: #F7F3EC;
+  --border: #2E3670;
+  --input: #2E3670;
+  --ring: #F0D9A8;
 
-  /* soft nebula depth */
-  --nebula: radial-gradient(900px 520px at 78% -8%, color-mix(in oklab, #C9C3E0 14%, transparent), transparent 70%),
-    radial-gradient(760px 480px at 12% 6%, color-mix(in oklab, #E3C08E 9%, transparent), transparent 72%),
-    radial-gradient(1100px 700px at 50% 108%, color-mix(in oklab, #1E1B45 75%, transparent), transparent 70%);
+  /* cloudveil atmosphere — layered haze, no hard edges */
+  --cloudveil: radial-gradient(1100px 620px at 82% -12%, color-mix(in oklab, #DCC6BE 26%, transparent), transparent 68%),
+    radial-gradient(900px 560px at 8% 4%, color-mix(in oklab, #F0D9A8 12%, transparent), transparent 70%),
+    radial-gradient(1000px 700px at 20% 62%, color-mix(in oklab, #2E3670 82%, transparent), transparent 72%),
+    radial-gradient(1300px 800px at 70% 112%, color-mix(in oklab, #DCC6BE 20%, transparent), transparent 68%),
+    linear-gradient(180deg, #141A3A 0%, #1A2149 45%, #232B60 100%);
 }
 
 .dark {
@@ -82,22 +84,91 @@
 
   body {
     background-color: var(--color-background);
-    background-image: var(--nebula);
+    background-image: var(--cloudveil);
     background-attachment: fixed;
     background-repeat: no-repeat;
+    background-size: cover;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
+
+  /* faint starfield drifting over the haze */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+    background-image:
+      radial-gradient(1.4px 1.4px at 12% 18%, #FFF6E4 50%, transparent 55%),
+      radial-gradient(1.2px 1.2px at 28% 62%, #E9EDFF 50%, transparent 55%),
+      radial-gradient(1.6px 1.6px at 47% 12%, #FFF6E4 50%, transparent 55%),
+      radial-gradient(1.1px 1.1px at 63% 45%, #E9EDFF 50%, transparent 55%),
+      radial-gradient(1.5px 1.5px at 78% 24%, #FFF6E4 50%, transparent 55%),
+      radial-gradient(1.2px 1.2px at 88% 70%, #E9EDFF 50%, transparent 55%),
+      radial-gradient(1.3px 1.3px at 35% 88%, #FFF6E4 50%, transparent 55%),
+      radial-gradient(1.1px 1.1px at 70% 92%, #E9EDFF 50%, transparent 55%);
+    animation: aether-twinkle 9s ease-in-out infinite alternate;
+  }
+
+  @keyframes aether-twinkle {
+    from { opacity: 0.28; }
+    to { opacity: 0.62; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    body::before { animation: none; }
+  }
 }
 
-/* Stone utilities used across the app remapped to the nebula palette */
-@theme inline {
-  --color-stone-100: #EDE7DC;
-  --color-stone-200: #DCD8E4;
-  --color-stone-300: #C9C3E0;
-  --color-stone-400: #9A9BC0;
-  --color-stone-500: #7B7CA3;
+/* Shimmering gilded type, as in the ad wordmark */
+@utility text-gilded {
+  background-image: linear-gradient(
+    100deg,
+    #C9A46A 0%,
+    #F0D9A8 22%,
+    #FFF3D6 42%,
+    #EBCB93 58%,
+    #F5E3BC 76%,
+    #C9A46A 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: aether-gild 7s ease-in-out infinite alternate;
 }
+
+@keyframes aether-gild {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-gilded { animation: none; }
+}
+
+/* Soft, cloud-like panel instead of a solid card */
+@utility veil-panel {
+  background: linear-gradient(
+    155deg,
+    color-mix(in oklab, #2E3670 55%, transparent),
+    color-mix(in oklab, #141A3A 40%, transparent)
+  );
+  backdrop-filter: blur(18px) saturate(130%);
+  border: 1px solid color-mix(in oklab, #DCC6BE 18%, transparent);
+}
+
+/* Stone utilities used across the app remapped to the cloudveil palette */
+@theme inline {
+  --color-stone-100: #F2ECE3;
+  --color-stone-200: #E4DFEE;
+  --color-stone-300: #CFCBE6;
+  --color-stone-400: #A9AFD4;
+  --color-stone-500: #8A90BC;
+}
+
 

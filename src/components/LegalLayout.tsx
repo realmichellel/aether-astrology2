@@ -11,9 +11,9 @@ export function LegalLayout({
   children: ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen text-foreground">
       <nav className="flex items-center justify-between px-5 py-5 border-b border-border sm:px-8 sm:py-6">
-        <Link to="/" className="text-xl font-serif italic tracking-widest text-accent">
+        <Link to="/" className="text-xl font-serif italic tracking-widest text-gilded">
           AETHER
         </Link>
         <Link

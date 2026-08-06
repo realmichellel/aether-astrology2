@@ -152,7 +152,7 @@ function ChatPage() {
   const out = credits !== null && credits <= 0;
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div className="min-h-screen text-foreground flex flex-col">
       <PaymentTestModeBanner />
       <AppNav />
       <main className="flex-1 max-w-3xl w-full mx-auto px-5 py-8 sm:px-8 sm:py-10 flex flex-col">

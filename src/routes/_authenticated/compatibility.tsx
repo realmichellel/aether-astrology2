@@ -208,7 +208,7 @@ function CompatibilityPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen text-foreground">
       <PaymentTestModeBanner />
       <AppNav />
       {settling && (
