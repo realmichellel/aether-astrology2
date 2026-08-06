@@ -110,6 +110,9 @@ function Landing() {
           <span>100% private &amp; encrypted</span>
         </div>
 
+        <CompatibilityPeek />
+
+
         <h2 className="mt-32 border-t border-border pt-14 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
           What Aether gives you
         </h2>
