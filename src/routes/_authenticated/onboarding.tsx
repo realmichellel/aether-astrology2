@@ -5,6 +5,7 @@ import { getProfile, saveProfile } from "@/lib/profile.functions";
 import { AppNav } from "@/components/AppNav";
 import { CityCombobox } from "@/components/CityCombobox";
 import { trackPixel } from "@/lib/meta-pixel";
+import { readBirthDraft, clearBirthDraft, trackFunnel } from "@/lib/birth-draft";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
