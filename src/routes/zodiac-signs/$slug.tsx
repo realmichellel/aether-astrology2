@@ -13,7 +13,7 @@ export const Route = createFileRoute("/zodiac-signs/$slug")({
     const sign = loaderData as SignContent | undefined;
     if (!sign) return { meta: [{ title: "Zodiac sign — Aether" }] };
     const url = `${BASE}/${params.slug}`;
-    const title = `${sign.name} (${sign.dates}): Traits, Element & Meaning — Aether`;
+    const title = `${sign.name} (${sign.dates}): Traits & Meaning — Aether`;
     const description = `${sign.name} is a ${sign.modality.toLowerCase()} ${sign.element.toLowerCase()} sign ruled by ${sign.ruler}. Its dates, core traits, strengths, challenges, and how the placement reads in love and work.`;
     return {
       meta: [

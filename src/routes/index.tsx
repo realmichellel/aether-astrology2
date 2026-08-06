@@ -7,13 +7,13 @@ export const Route = createFileRoute("/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Aether — A quiet astrologer" },
+      { title: "Aether — Your personal astrologer" },
       {
         name: "description",
         content:
           "A personal AI astrologer reading your natal chart, live planetary transits, and the journal you keep of your own life.",
       },
-      { property: "og:title", content: "Aether — A quiet astrologer" },
+      { property: "og:title", content: "Aether — Your personal astrologer" },
       {
         property: "og:description",
         content:

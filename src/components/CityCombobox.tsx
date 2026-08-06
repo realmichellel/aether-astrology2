@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { searchCities, type CityOption } from "@/lib/places.functions";
 
@@ -18,6 +18,7 @@ export function CityCombobox({
   const [loading, setLoading] = useState(false);
   const boxRef = useRef<HTMLDivElement>(null);
   const confirmed = useRef(value);
+  const inputId = useId();
 
   useEffect(() => {
     setQuery(value);
@@ -57,10 +58,14 @@ export function CityCombobox({
 
   return (
     <div ref={boxRef} className="relative">
-      <label className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2 block">
+      <label
+        htmlFor={inputId}
+        className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2 block"
+      >
         {label}
       </label>
       <input
+        id={inputId}
         type="text"
         value={query}
         autoComplete="off"
