@@ -40,26 +40,31 @@
 
 :root {
   --radius: 0rem;
-  --background: #0D0D0D;
-  --foreground: #E7E5E4;
-  --surface: #171717;
-  --card: #171717;
-  --card-foreground: #E7E5E4;
-  --popover: #171717;
-  --popover-foreground: #E7E5E4;
-  --primary: #C2A378;
-  --primary-foreground: #0D0D0D;
-  --secondary: #262626;
-  --secondary-foreground: #E7E5E4;
-  --muted: #171717;
-  --muted-foreground: #8C8C8C;
-  --accent: #C2A378;
-  --accent-foreground: #0D0D0D;
-  --destructive: #B45454;
-  --destructive-foreground: #F5F5F4;
-  --border: #262626;
-  --input: #262626;
-  --ring: #C2A378;
+  --background: #080D1F;
+  --foreground: #EDE7DC;
+  --surface: #12162E;
+  --card: #12162E;
+  --card-foreground: #EDE7DC;
+  --popover: #12162E;
+  --popover-foreground: #EDE7DC;
+  --primary: #E3C08E;
+  --primary-foreground: #080D1F;
+  --secondary: #1E1B45;
+  --secondary-foreground: #EDE7DC;
+  --muted: #12162E;
+  --muted-foreground: #9A9BC0;
+  --accent: #E3C08E;
+  --accent-foreground: #080D1F;
+  --destructive: #C06A6A;
+  --destructive-foreground: #F5F2EC;
+  --border: #1E1B45;
+  --input: #1E1B45;
+  --ring: #E3C08E;
+
+  /* soft nebula depth */
+  --nebula: radial-gradient(900px 520px at 78% -8%, color-mix(in oklab, #C9C3E0 14%, transparent), transparent 70%),
+    radial-gradient(760px 480px at 12% 6%, color-mix(in oklab, #E3C08E 9%, transparent), transparent 72%),
+    radial-gradient(1100px 700px at 50% 108%, color-mix(in oklab, #1E1B45 75%, transparent), transparent 70%);
 }
 
 .dark {
@@ -77,9 +82,22 @@
 
   body {
     background-color: var(--color-background);
+    background-image: var(--nebula);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
 }
+
+/* Stone utilities used across the app remapped to the nebula palette */
+@theme inline {
+  --color-stone-100: #EDE7DC;
+  --color-stone-200: #DCD8E4;
+  --color-stone-300: #C9C3E0;
+  --color-stone-400: #9A9BC0;
+  --color-stone-500: #7B7CA3;
+}
+
