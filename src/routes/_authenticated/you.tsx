@@ -52,7 +52,7 @@ function YouPage() {
   }, [load]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen text-foreground">
       <AppNav />
       <main className="max-w-3xl mx-auto px-5 py-12 sm:px-8 sm:py-20">
         <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-6">Your natal chart</p>

@@ -62,7 +62,7 @@ function SignPage() {
   const others = SIGN_CONTENT.filter((s) => s.slug !== sign.slug);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen text-foreground">
       <nav className="flex items-center justify-between px-5 sm:px-8 py-6 border-b border-border">
         <Link to="/" className="text-xl font-serif italic tracking-widest text-accent">
           AETHER

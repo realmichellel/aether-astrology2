@@ -63,12 +63,12 @@ function Landing() {
     });
   }, [navigate]);
 
-  if (checking) return <div className="min-h-screen bg-background" />;
+  if (checking) return <div className="min-h-screen" />;
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-accent/30 selection:text-primary-foreground">
+    <div className="min-h-screen text-foreground selection:bg-accent/30 selection:text-primary-foreground">
       <nav className="flex items-center justify-between px-8 py-6 border-b border-border">
-        <div className="text-xl font-serif italic tracking-widest text-accent">AETHER</div>
+        <div className="text-xl font-serif italic tracking-widest text-gilded">AETHER</div>
         <Link
           to="/auth"
           className="text-[10px] uppercase tracking-[0.2em] font-medium text-muted-foreground hover:text-foreground transition-colors"
