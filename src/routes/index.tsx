@@ -84,7 +84,7 @@ function Landing() {
         <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl font-light leading-[1.05] mb-10 max-w-3xl">
           The sky keeps moving.
           <br />
-          <span className="italic">So do you.</span>
+          <span className="italic text-gilded">So do you.</span>
         </h1>
         <p className="max-w-xl text-base sm:text-lg text-stone-400 leading-relaxed mb-14">
           Your birth chart, today&rsquo;s transits, and the notes you keep about your own life — read
