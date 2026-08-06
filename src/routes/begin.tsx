@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useId } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { CityCombobox } from "@/components/CityCombobox";
 import { saveBirthDraft, trackFunnel } from "@/lib/birth-draft";
@@ -162,12 +162,17 @@ function Field({
   type?: string;
   required?: boolean;
 }) {
+  const fieldId = useId();
   return (
     <div>
-      <label className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2 block">
+      <label
+        htmlFor={fieldId}
+        className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2 block"
+      >
         {label}
       </label>
       <input
+        id={fieldId}
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}

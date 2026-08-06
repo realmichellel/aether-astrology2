@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useId } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { getProfile, saveProfile } from "@/lib/profile.functions";
 import { CityCombobox } from "@/components/CityCombobox";
@@ -174,12 +174,17 @@ function Field({
   type?: string;
   required?: boolean;
 }) {
+  const fieldId = useId();
   return (
     <div>
-      <label className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2 block">
+      <label
+        htmlFor={fieldId}
+        className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2 block"
+      >
         {label}
       </label>
       <input
+        id={fieldId}
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
