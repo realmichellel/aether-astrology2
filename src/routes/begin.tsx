@@ -65,7 +65,7 @@ function Begin() {
     }
     saveBirthDraft({ ...form, birth_lat: coords.lat, birth_lng: coords.lon });
     trackFunnel("BirthFormSubmitted");
-    navigate({ to: "/auth", search: { chart: 1 } });
+    navigate({ to: "/auth" });
   }
 
   return (
