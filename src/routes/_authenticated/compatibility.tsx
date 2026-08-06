@@ -17,8 +17,8 @@ import { trackPixel, trackPixelCustom } from "@/lib/meta-pixel";
 export const Route = createFileRoute("/_authenticated/compatibility")({
   head: () => ({
     meta: [
-      { title: "Synastry — Aether" },
-      { name: "description", content: "A synastry report between your chart and another's." },
+      { title: "Compatibility — Aether" },
+      { name: "description", content: "A compatibility report between your chart and another's." },
     ],
   }),
   component: CompatibilityPage,
@@ -243,13 +243,13 @@ function CompatibilityPage() {
       )}
       <main className="max-w-6xl mx-auto px-5 py-8 sm:px-8 sm:py-12 grid grid-cols-1 md:grid-cols-[1fr_260px] gap-10">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-4">Synastry</p>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-4">Compatibility</p>
           <h1 className="font-serif text-3xl sm:text-5xl font-light leading-tight mb-4">
             Two charts, <span className="italic">one sky.</span>
           </h1>
           <p className="text-stone-400 max-w-lg mb-10">
             Enter another person's birth details. Aether will read their chart against yours and
-            return a synastry report — attraction, friction, and everything the sky says about you two.
+            return a compatibility report — attraction, friction, and everything the sky says about you two.
           </p>
 
           {showForm ? (
@@ -301,7 +301,7 @@ function CompatibilityPage() {
                   disabled={busy}
                   className="bg-accent text-primary-foreground py-3 px-8 font-serif italic text-lg hover:bg-stone-100 transition-colors disabled:opacity-40"
                 >
-                  {busy ? "Comparing charts…" : "Generate synastry"}
+                  {busy ? "Comparing charts…" : "Generate compatibility"}
                 </button>
               </div>
             </form>

@@ -1,10 +1,10 @@
 # Aether
 
-> Aether is a personal AI astrologer that reads your natal chart, live planetary transits, and your own journal into a daily reading, an ongoing conversation, and synastry reports.
+> Aether is a personal AI astrologer that reads your natal chart, live planetary transits, and your own journal into a daily reading, an ongoing conversation, and compatibility reports.
 
 Aether computes a full natal chart from your birth date, time, and city, then uses it to generate a short daily reading, answer questions through a conversational astrologer called The Oracle, and compare your chart with another person's.
 
 ## Pages
 
-- [Home](/): What Aether is — natal chart, daily reading, The Oracle, and synastry.
+- [Home](/): What Aether is — natal chart, daily reading, The Oracle, and compatibility.
 - [Sign in](/auth): Create an account or sign in to begin.

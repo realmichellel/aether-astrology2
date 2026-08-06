@@ -42,7 +42,7 @@ export const Route = createFileRoute("/")({
               name: "Aether",
               url: "https://aetherhoroscope.com/",
               description:
-                "Aether is an AI astrology service offering natal charts, daily readings, a conversational astrologer, and synastry reports.",
+                "Aether is an AI astrology service offering natal charts, daily readings, a conversational astrologer, and compatibility reports.",
             },
           ],
         }),
@@ -132,7 +132,7 @@ function Landing() {
           />
           <FeatureBlock
             index="IV"
-            title="Synastry"
+            title="Compatibility"
             body="Read another person's chart against your own. Attraction, friction, communication, and a cheat sheet for the two of you."
           />
         </div>
