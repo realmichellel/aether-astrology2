@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useId, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { trackPixel, trackPixelCustom } from "@/lib/meta-pixel";
+import { readBirthDraft, trackFunnel } from "@/lib/birth-draft";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [hasDraft, setHasDraft] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [agreed, setAgreed] = useState(false);
@@ -35,6 +37,12 @@ function AuthPage() {
   const needsConsent = mode === "signup" && !agreed;
 
   useEffect(() => {
+    const draft = readBirthDraft();
+    if (draft) {
+      setHasDraft(true);
+      setMode("signup");
+    }
+    trackFunnel("AuthViewed", { with_chart: !!draft });
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) navigate({ to: "/dashboard", replace: true });
     });
@@ -64,12 +72,14 @@ function AuthPage() {
         });
         if (error) throw error;
         trackPixel("CompleteRegistration", { method: "email" });
+        trackFunnel("AuthCompleted", { method: "email" });
         setNotice("Check your email to confirm your account, then sign in.");
         setMode("signin");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         trackPixelCustom("SignIn", { method: "email" });
+        trackFunnel("AuthCompleted", { method: "email_signin" });
         navigate({ to: "/dashboard", replace: true });
       }
     } catch (err) {
@@ -122,11 +132,25 @@ function AuthPage() {
       <main className="flex-1 flex items-center justify-center px-6 py-16">
         <div className="w-full max-w-md">
           <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-6">
-            {mode === "signin" ? "Return" : "Begin"}
+            {hasDraft ? "Step two of two" : mode === "signin" ? "Return" : "Begin"}
           </p>
-          <h1 className="font-serif text-3xl sm:text-5xl font-light italic mb-10">
-            {mode === "signin" ? "Get your readings." : "Open an account."}
+          <h1 className="font-serif text-3xl sm:text-5xl font-light italic mb-6">
+            {hasDraft
+              ? "Your chart is ready."
+              : mode === "signin"
+                ? "Get your readings."
+                : "Open an account."}
           </h1>
+          {hasDraft ? (
+            <p className="text-sm text-stone-400 mb-8">
+              Create an account to open it — your birth details are already saved, so there's
+              nothing to retype. 100% private &amp; encrypted.
+            </p>
+          ) : (
+            <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground mb-8">
+              Join 5,000+ daily readers · 100% private &amp; encrypted
+            </p>
+          )}
 
           {mode === "signup" && (
             <div className="space-y-4 mb-8">

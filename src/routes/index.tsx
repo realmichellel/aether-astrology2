@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { trackFunnel } from "@/lib/birth-draft";
 
 export const Route = createFileRoute("/")({
   ssr: false,
@@ -86,21 +87,27 @@ function Landing() {
           <br />
           <span className="italic text-gilded">So do you.</span>
         </h1>
-        <p className="max-w-xl text-base sm:text-lg text-stone-400 leading-relaxed mb-14">
+        <p className="max-w-xl text-base sm:text-lg text-stone-400 leading-relaxed mb-10">
           Your birth chart, today&rsquo;s transits, and the notes you keep about your own life — read
           together, once a day.
         </p>
 
         <div className="flex flex-wrap items-center gap-6">
           <Link
-            to="/auth"
+            to="/begin"
+            onClick={() => trackFunnel("LandingCTA")}
             className="bg-accent text-primary-foreground py-4 px-10 font-serif italic text-lg hover:bg-stone-100 transition-colors"
           >
             Get your readings
           </Link>
           <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            Free to start
+            Free to start · No card needed
           </span>
+        </div>
+
+        <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+          <span className="text-accent">Join 5,000+ daily readers</span>
+          <span>100% private &amp; encrypted</span>
         </div>
 
         <h2 className="mt-32 border-t border-border pt-14 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
@@ -130,6 +137,9 @@ function Landing() {
           />
         </div>
 
+        <p className="mt-16 text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+          Join 5,000+ daily readers · 100% private &amp; encrypted
+        </p>
       </main>
 
       <footer className="py-12 border-t border-border">
