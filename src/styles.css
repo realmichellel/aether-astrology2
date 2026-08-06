@@ -40,33 +40,33 @@
 
 :root {
   --radius: 0rem;
-  --background: #141A3A;
+  --background: #0A0E24;
   --foreground: #F2ECE3;
-  --surface: #1C2450;
-  --card: #1C2450;
+  --surface: #141A3C;
+  --card: #141A3C;
   --card-foreground: #F2ECE3;
-  --popover: #1C2450;
+  --popover: #141A3C;
   --popover-foreground: #F2ECE3;
   --primary: #F0D9A8;
-  --primary-foreground: #141A3A;
-  --secondary: #2E3670;
+  --primary-foreground: #0A0E24;
+  --secondary: #232B5C;
   --secondary-foreground: #F2ECE3;
-  --muted: #1C2450;
-  --muted-foreground: #A9AFD4;
+  --muted: #141A3C;
+  --muted-foreground: #A0A6CC;
   --accent: #F0D9A8;
-  --accent-foreground: #141A3A;
+  --accent-foreground: #0A0E24;
   --destructive: #D08585;
   --destructive-foreground: #F7F3EC;
-  --border: #2E3670;
-  --input: #2E3670;
+  --border: #232B5C;
+  --input: #232B5C;
   --ring: #F0D9A8;
 
   /* cloudveil atmosphere — layered haze, no hard edges */
-  --cloudveil: radial-gradient(1100px 620px at 82% -12%, color-mix(in oklab, #DCC6BE 26%, transparent), transparent 68%),
-    radial-gradient(900px 560px at 8% 4%, color-mix(in oklab, #F0D9A8 12%, transparent), transparent 70%),
-    radial-gradient(1000px 700px at 20% 62%, color-mix(in oklab, #2E3670 82%, transparent), transparent 72%),
-    radial-gradient(1300px 800px at 70% 112%, color-mix(in oklab, #DCC6BE 20%, transparent), transparent 68%),
-    linear-gradient(180deg, #141A3A 0%, #1A2149 45%, #232B60 100%);
+  --cloudveil: radial-gradient(1100px 620px at 82% -12%, color-mix(in oklab, #DCC6BE 20%, transparent), transparent 68%),
+    radial-gradient(900px 560px at 8% 4%, color-mix(in oklab, #F0D9A8 9%, transparent), transparent 70%),
+    radial-gradient(1000px 700px at 20% 62%, color-mix(in oklab, #232B5C 80%, transparent), transparent 72%),
+    radial-gradient(1300px 800px at 70% 112%, color-mix(in oklab, #DCC6BE 15%, transparent), transparent 68%),
+    linear-gradient(180deg, #0A0E24 0%, #101638 45%, #161C44 100%);
 }
 
 .dark {
@@ -94,35 +94,75 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* faint starfield drifting over the haze */
-  body::before {
+  /* starfield — two layers twinkling out of phase */
+  body::before,
+  body::after {
     content: "";
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.5;
-    background-image:
-      radial-gradient(1.4px 1.4px at 12% 18%, #FFF6E4 50%, transparent 55%),
-      radial-gradient(1.2px 1.2px at 28% 62%, #E9EDFF 50%, transparent 55%),
-      radial-gradient(1.6px 1.6px at 47% 12%, #FFF6E4 50%, transparent 55%),
-      radial-gradient(1.1px 1.1px at 63% 45%, #E9EDFF 50%, transparent 55%),
-      radial-gradient(1.5px 1.5px at 78% 24%, #FFF6E4 50%, transparent 55%),
-      radial-gradient(1.2px 1.2px at 88% 70%, #E9EDFF 50%, transparent 55%),
-      radial-gradient(1.3px 1.3px at 35% 88%, #FFF6E4 50%, transparent 55%),
-      radial-gradient(1.1px 1.1px at 70% 92%, #E9EDFF 50%, transparent 55%);
-    animation: aether-twinkle 9s ease-in-out infinite alternate;
+    background-repeat: no-repeat;
   }
 
-  @keyframes aether-twinkle {
-    from { opacity: 0.28; }
-    to { opacity: 0.62; }
+  body::before {
+    background-image:
+      radial-gradient(1.8px 1.8px at 6% 12%, #FFF6E4 60%, transparent 64%),
+      radial-gradient(1.4px 1.4px at 12% 34%, #E9EDFF 60%, transparent 64%),
+      radial-gradient(2px 2px at 19% 7%, #FFF6E4 60%, transparent 64%),
+      radial-gradient(1.3px 1.3px at 24% 58%, #E9EDFF 60%, transparent 64%),
+      radial-gradient(1.7px 1.7px at 31% 22%, #FFF6E4 60%, transparent 64%),
+      radial-gradient(1.4px 1.4px at 37% 77%, #E9EDFF 60%, transparent 64%),
+      radial-gradient(2.1px 2.1px at 44% 15%, #FFFDF5 60%, transparent 64%),
+      radial-gradient(1.3px 1.3px at 49% 49%, #E9EDFF 60%, transparent 64%),
+      radial-gradient(1.6px 1.6px at 55% 88%, #FFF6E4 60%, transparent 64%),
+      radial-gradient(1.4px 1.4px at 61% 30%, #E9EDFF 60%, transparent 64%),
+      radial-gradient(1.9px 1.9px at 67% 63%, #FFF6E4 60%, transparent 64%),
+      radial-gradient(1.3px 1.3px at 73% 9%, #E9EDFF 60%, transparent 64%),
+      radial-gradient(2px 2px at 80% 41%, #FFFDF5 60%, transparent 64%),
+      radial-gradient(1.4px 1.4px at 86% 74%, #E9EDFF 60%, transparent 64%),
+      radial-gradient(1.7px 1.7px at 92% 26%, #FFF6E4 60%, transparent 64%),
+      radial-gradient(1.5px 1.5px at 97% 55%, #E9EDFF 60%, transparent 64%);
+    animation: aether-twinkle-a 6s ease-in-out infinite alternate;
+  }
+
+  body::after {
+    background-image:
+      radial-gradient(1.2px 1.2px at 3% 68%, #E9EDFF 60%, transparent 64%),
+      radial-gradient(1.6px 1.6px at 9% 90%, #FFF6E4 60%, transparent 64%),
+      radial-gradient(1.1px 1.1px at 16% 47%, #E9EDFF 60%, transparent 64%),
+      radial-gradient(1.8px 1.8px at 22% 82%, #FFF6E4 60%, transparent 64%),
+      radial-gradient(1.2px 1.2px at 29% 38%, #E9EDFF 60%, transparent 64%),
+      radial-gradient(1.5px 1.5px at 34% 5%, #FFF6E4 60%, transparent 64%),
+      radial-gradient(1.1px 1.1px at 41% 60%, #E9EDFF 60%, transparent 64%),
+      radial-gradient(1.9px 1.9px at 47% 94%, #FFFDF5 60%, transparent 64%),
+      radial-gradient(1.2px 1.2px at 53% 21%, #E9EDFF 60%, transparent 64%),
+      radial-gradient(1.6px 1.6px at 58% 70%, #FFF6E4 60%, transparent 64%),
+      radial-gradient(1.1px 1.1px at 64% 44%, #E9EDFF 60%, transparent 64%),
+      radial-gradient(1.7px 1.7px at 71% 85%, #FFF6E4 60%, transparent 64%),
+      radial-gradient(1.2px 1.2px at 77% 18%, #E9EDFF 60%, transparent 64%),
+      radial-gradient(1.8px 1.8px at 83% 57%, #FFF6E4 60%, transparent 64%),
+      radial-gradient(1.1px 1.1px at 89% 35%, #E9EDFF 60%, transparent 64%),
+      radial-gradient(1.5px 1.5px at 95% 83%, #FFF6E4 60%, transparent 64%),
+      radial-gradient(1.3px 1.3px at 99% 11%, #E9EDFF 60%, transparent 64%);
+    animation: aether-twinkle-b 4.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes aether-twinkle-a {
+    from { opacity: 0.55; }
+    to { opacity: 1; }
+  }
+
+  @keyframes aether-twinkle-b {
+    from { opacity: 0.95; }
+    to { opacity: 0.5; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    body::before { animation: none; }
+    body::before, body::after { animation: none; }
   }
 }
+
 
 /* Shimmering gilded type, as in the ad wordmark */
 @utility text-gilded {
