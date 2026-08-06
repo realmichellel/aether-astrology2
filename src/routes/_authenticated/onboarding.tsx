@@ -39,10 +39,51 @@ function Onboarding() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    load().then((p) => {
-      if (p) navigate({ to: "/dashboard", replace: true });
+    let active = true;
+    load().then(async (p) => {
+      if (!active) return;
+      if (p) {
+        clearBirthDraft();
+        navigate({ to: "/dashboard", replace: true });
+        return;
+      }
+      // Birth details entered before signing up: write them straight through
+      // so nobody types their chart twice.
+      const draft = readBirthDraft();
+      if (!draft) return;
+      setBusy(true);
+      setForm({
+        full_name: draft.full_name,
+        birth_date: draft.birth_date,
+        birth_time: draft.birth_time,
+        birth_place: draft.birth_place,
+      });
+      setCoords({ lat: draft.birth_lat, lon: draft.birth_lng });
+      try {
+        await save({
+          data: {
+            full_name: draft.full_name,
+            birth_date: draft.birth_date,
+            birth_time: draft.birth_time,
+            birth_place: draft.birth_place,
+            birth_lat: draft.birth_lat,
+            birth_lng: draft.birth_lng,
+          },
+        });
+        clearBirthDraft();
+        trackPixel("CompleteRegistration", { content_name: "natal_chart_created" });
+        trackFunnel("ChartCreated", { source: "pre_signup_draft" });
+        navigate({ to: "/dashboard", replace: true });
+      } catch {
+        // Fall back to the form, already filled in with what they gave us.
+        clearBirthDraft();
+        if (active) setBusy(false);
+      }
     });
-  }, [load, navigate]);
+    return () => {
+      active = false;
+    };
+  }, [load, save, navigate]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -55,6 +96,7 @@ function Onboarding() {
     try {
       await save({ data: { ...form, birth_lat: coords.lat, birth_lng: coords.lon } });
       trackPixel("CompleteRegistration", { content_name: "natal_chart_created" });
+      trackFunnel("ChartCreated", { source: "onboarding_form" });
       navigate({ to: "/dashboard", replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
