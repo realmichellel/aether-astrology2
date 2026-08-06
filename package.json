@@ -11,6 +11,12 @@
     "lint": "eslint .",
     "format": "prettier --write ."
   },
+  "overrides": {
+    "js-yaml": "^4.3.1"
+  },
+  "resolutions": {
+    "js-yaml": "^4.3.1"
+  },
   "dependencies": {
     "@ai-sdk/openai-compatible": "^3.0.14",
     "@hookform/resolvers": "^5.2.2",
