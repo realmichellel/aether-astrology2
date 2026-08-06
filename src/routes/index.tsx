@@ -42,7 +42,7 @@ export const Route = createFileRoute("/")({
               name: "Aether",
               url: "https://aetherhoroscope.com/",
               description:
-                "Aether is an AI astrology service offering natal charts, daily readings, a conversational astrologer, and synastry reports.",
+                "Aether is an AI astrology service offering natal charts, daily readings, a conversational astrologer, and compatibility reports.",
             },
           ],
         }),
@@ -110,6 +110,9 @@ function Landing() {
           <span>100% private &amp; encrypted</span>
         </div>
 
+        <CompatibilityPeek />
+
+
         <h2 className="mt-32 border-t border-border pt-14 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
           What Aether gives you
         </h2>
@@ -132,7 +135,7 @@ function Landing() {
           />
           <FeatureBlock
             index="IV"
-            title="Synastry"
+            title="Compatibility"
             body="Read another person's chart against your own. Attraction, friction, communication, and a cheat sheet for the two of you."
           />
         </div>
@@ -158,6 +161,79 @@ function FeatureBlock({ index, title, body }: { index: string; title: string; bo
       <div className="text-[10px] uppercase tracking-[0.3em] text-accent mb-3">{index}</div>
       <h3 className="font-serif italic text-2xl mb-3">{title}</h3>
       <p className="text-sm text-stone-400 leading-relaxed">{body}</p>
+    </div>
+  );
+}
+
+function BlurLine({ w }: { w: string }) {
+  return (
+    <div
+      className="h-2 rounded-full bg-foreground/25 blur-[3px]"
+      style={{ width: w }}
+      aria-hidden="true"
+    />
+  );
+}
+
+function Stars({ n }: { n: number }) {
+  return (
+    <span className="text-accent text-xs tracking-[0.2em]" aria-hidden="true">
+      {"★".repeat(n)}
+      <span className="text-muted-foreground/40">{"★".repeat(5 - n)}</span>
+    </span>
+  );
+}
+
+function PeekRow({ label, stars }: { label: string; stars: number }) {
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-[9px] uppercase tracking-[0.25em] text-muted-foreground">{label}</span>
+        <Stars n={stars} />
+      </div>
+      <BlurLine w="100%" />
+      <BlurLine w="72%" />
+    </div>
+  );
+}
+
+function CompatibilityPeek() {
+  return (
+    <div className="mt-12 max-w-md">
+      <div className="rounded-lg border border-border bg-foreground/[0.03] p-5 backdrop-blur-sm">
+        <div className="flex items-start justify-between gap-4 border-b border-border pb-4">
+          <div>
+            <p className="text-[9px] uppercase tracking-[0.3em] text-accent">Compatibility report</p>
+            <p className="mt-1 font-serif italic text-lg">You &amp; them</p>
+          </div>
+          <div className="text-right">
+            <div className="font-serif text-3xl text-gilded leading-none">82</div>
+            <div className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">Overall</div>
+          </div>
+        </div>
+
+        <div className="mt-4 space-y-4">
+          <PeekRow label="Emotional bond" stars={4} />
+          <PeekRow label="Chemistry" stars={5} />
+          <PeekRow label="Communication" stars={3} />
+        </div>
+
+        <div className="mt-5 grid grid-cols-2 gap-4 border-t border-border pt-4">
+          <div className="space-y-2">
+            <p className="text-[9px] uppercase tracking-[0.25em] text-accent">Green flags</p>
+            <BlurLine w="90%" />
+            <BlurLine w="65%" />
+          </div>
+          <div className="space-y-2">
+            <p className="text-[9px] uppercase tracking-[0.25em] text-muted-foreground">Red flags</p>
+            <BlurLine w="85%" />
+            <BlurLine w="55%" />
+          </div>
+        </div>
+      </div>
+      <p className="mt-3 text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+        A peek at a compatibility report
+      </p>
     </div>
   );
 }

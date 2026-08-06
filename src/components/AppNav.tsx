@@ -42,7 +42,7 @@ export function AppNav() {
           Chronicles
         </Link>
         <Link to="/compatibility" className="text-muted-foreground hover:text-foreground transition-colors">
-          Synastry
+          Compatibility
         </Link>
         <button
           onClick={signOut}
