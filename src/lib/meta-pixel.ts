@@ -3,7 +3,7 @@
 
 import { sendMetaCapiEvent } from "./meta-capi.functions";
 
-export const META_PIXEL_ID = "120250803090400374";
+export const META_PIXEL_ID = "883767011120035";
 
 declare global {
   interface Window {

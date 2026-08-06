@@ -11,7 +11,7 @@ async function sha256(value: string): Promise<string> {
 
 /** Forwards one event to Meta's Conversions API. Never throws. */
 export async function forwardMetaCapiEvent(data: MetaCapiInput) {
-  const pixelId = process.env["META_PIXEL_ID"] ?? "120250803090400374";
+  const pixelId = process.env["META_PIXEL_ID"] ?? "883767011120035";
   const token = process.env["META_CAPI_ACCESS_TOKEN"];
   if (!token) return { ok: false as const, skipped: "missing_token" as const };
 
