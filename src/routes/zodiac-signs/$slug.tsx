@@ -97,6 +97,10 @@ export const Route = createFileRoute("/zodiac-signs/$slug")({
 function SignPage() {
   const sign = Route.useLoaderData();
   const others = SIGN_CONTENT.filter((s) => s.slug !== sign.slug);
+  const faqs = faqFor(sign);
+  const { previous, next } = neighbors(sign.slug);
+  const matches = elementMatches(sign);
+
 
   return (
     <div className="min-h-screen text-foreground">
