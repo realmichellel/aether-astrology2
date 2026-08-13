@@ -110,6 +110,13 @@ function Landing() {
           <span>100% private &amp; encrypted</span>
         </div>
 
+        <Link
+          to="/zodiac-signs"
+          className="mt-4 inline-block text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4 decoration-muted-foreground/40 hover:decoration-foreground"
+        >
+          {"> "}Learn more about zodiac signs
+        </Link>
+
         <CompatibilityPeek />
 
 
