@@ -1,7 +1,35 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SIGN_CONTENT, signBySlug, type SignContent } from "@/lib/zodiac-content";
+import { BirthdaySignLookup } from "@/components/BirthdaySignLookup";
+import { SIGN_RANGES, neighbors, formatDay, elementMatches } from "@/lib/sign-lookup";
 
 const BASE = "https://aetherhoroscope.com/zodiac-signs";
+
+function faqFor(sign: SignContent) {
+  const range = SIGN_RANGES[sign.slug];
+  const { previous, next } = neighbors(sign.slug);
+  const start = formatDay(range.start[0], range.start[1]);
+  const end = formatDay(range.end[0], range.end[1]);
+  const matches = elementMatches(sign).map((s) => s.name);
+  return [
+    {
+      q: `What are the ${sign.name} dates?`,
+      a: `${sign.name} dates are ${start} to ${end}. If you were born on or before ${formatDay(range.start[0], range.start[1] - 1 || 1)} you are ${previous.name}; if you were born after ${end} you are ${next.name}.`,
+    },
+    {
+      q: `Is ${sign.name} a ${sign.element.toLowerCase()} sign?`,
+      a: `Yes. ${sign.name} is a ${sign.modality.toLowerCase()} ${sign.element.toLowerCase()} sign ruled by ${sign.ruler}.`,
+    },
+    {
+      q: `What signs are most compatible with ${sign.name}?`,
+      a: `Traditionally ${sign.name} pairs easily with the other ${sign.element.toLowerCase()} signs and with ${sign.element === "Fire" || sign.element === "Air" ? "air and fire" : "earth and water"} signs generally — ${matches.slice(0, 5).join(", ")}. Real compatibility depends on the whole chart, not the Sun sign alone.`,
+    },
+    {
+      q: `Do the ${sign.name} dates shift from year to year?`,
+      a: `Slightly. The Sun enters ${sign.name} around ${start} each year, but the exact moment moves by up to a day depending on the year and your time zone. If your birthday falls on the boundary, your birth time and city settle it.`,
+    },
+  ];
+}
 
 export const Route = createFileRoute("/zodiac-signs/$slug")({
   loader: ({ params }) => {
@@ -13,8 +41,9 @@ export const Route = createFileRoute("/zodiac-signs/$slug")({
     const sign = loaderData as SignContent | undefined;
     if (!sign) return { meta: [{ title: "Zodiac sign — Aether" }] };
     const url = `${BASE}/${params.slug}`;
-    const title = `${sign.name} (${sign.dates}): Traits & Meaning — Aether`;
-    const description = `${sign.name} is a ${sign.modality.toLowerCase()} ${sign.element.toLowerCase()} sign ruled by ${sign.ruler}. Its dates, core traits, strengths, challenges, and how the placement reads in love and work.`;
+    const title = `${sign.name} Dates: ${sign.dates} — Aether`;
+    const description = `${sign.name} dates are ${sign.dates}. A ${sign.modality.toLowerCase()} ${sign.element.toLowerCase()} sign ruled by ${sign.ruler} — traits, strengths, love and work.`;
+    const faqs = faqFor(sign);
     return {
       meta: [
         { title },
@@ -48,6 +77,14 @@ export const Route = createFileRoute("/zodiac-signs/$slug")({
                   { "@type": "ListItem", position: 3, name: sign.name, item: url },
                 ],
               },
+              {
+                "@type": "FAQPage",
+                mainEntity: faqs.map((f) => ({
+                  "@type": "Question",
+                  name: f.q,
+                  acceptedAnswer: { "@type": "Answer", text: f.a },
+                })),
+              },
             ],
           }),
         },
@@ -60,6 +97,10 @@ export const Route = createFileRoute("/zodiac-signs/$slug")({
 function SignPage() {
   const sign = Route.useLoaderData();
   const others = SIGN_CONTENT.filter((s) => s.slug !== sign.slug);
+  const faqs = faqFor(sign);
+  const { previous, next } = neighbors(sign.slug);
+  const matches = elementMatches(sign);
+
 
   return (
     <div className="min-h-screen text-foreground">
@@ -87,7 +128,22 @@ function SignPage() {
           <span className="mr-3 text-accent">{sign.symbol}</span>
           <span className="italic">{sign.name}</span>
         </h1>
-        <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-10">{sign.dates}</p>
+        <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-6">{sign.dates}</p>
+
+        <p className="text-lg sm:text-xl font-light leading-relaxed text-stone-200 mb-4">
+          <strong className="font-normal text-accent">
+            {sign.name} dates are {sign.dates}.
+          </strong>{" "}
+          If you were born in that window, the Sun was moving through {sign.name} — a{" "}
+          {sign.modality.toLowerCase()} {sign.element.toLowerCase()} sign ruled by {sign.ruler}.
+        </p>
+        <p className="text-sm text-stone-400 leading-relaxed mb-10">
+          Born a day or two either side? The boundary shifts slightly year to year. Just before{" "}
+          {sign.dates.split("–")[0].trim()} belongs to {previous.name}; just after{" "}
+          {sign.dates.split("–")[1].trim()} belongs to {next.name}. Your birth time and city decide
+          the edge cases.
+        </p>
+
 
         <dl className="grid grid-cols-3 gap-px bg-border border border-border mb-12">
           {[
@@ -138,6 +194,48 @@ function SignPage() {
             <h2 className="font-serif text-2xl sm:text-3xl italic mb-3">{sign.name} at work</h2>
             <p className="text-sm sm:text-base text-stone-400 leading-relaxed">{sign.atWork}</p>
           </div>
+        </section>
+
+        <section className="border-t border-border pt-10 mb-12">
+          <h2 className="font-serif text-2xl sm:text-3xl italic mb-3">
+            Who {sign.name} tends to get along with
+          </h2>
+          <p className="text-sm sm:text-base text-stone-400 leading-relaxed mb-5">
+            By element, {sign.name} shares an easy language with the other{" "}
+            {sign.element.toLowerCase()} signs and with{" "}
+            {sign.element === "Fire" || sign.element === "Air" ? "air and fire" : "earth and water"}{" "}
+            signs generally. It's a starting point, not a verdict — two whole charts decide the rest.
+          </p>
+          <div className="flex flex-wrap gap-x-6 gap-y-3">
+            {matches.map((s) => (
+              <Link
+                key={s.slug}
+                to="/zodiac-signs/$slug"
+                params={{ slug: s.slug }}
+                className="font-serif italic text-lg text-stone-300 hover:text-accent transition-colors"
+              >
+                {s.symbol} {s.name}
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <div className="mb-12">
+          <BirthdaySignLookup heading="Not sure it's your sign?" />
+        </div>
+
+        <section className="border-t border-border pt-10 mb-12">
+          <h2 className="font-serif text-2xl sm:text-3xl italic mb-6">
+            {sign.name} questions, answered
+          </h2>
+          <dl className="space-y-6">
+            {faqs.map((f) => (
+              <div key={f.q}>
+                <dt className="font-serif text-lg text-stone-200 mb-2">{f.q}</dt>
+                <dd className="text-sm sm:text-base text-stone-400 leading-relaxed">{f.a}</dd>
+              </div>
+            ))}
+          </dl>
         </section>
 
         <section className="border-t border-border pt-10 mb-14">

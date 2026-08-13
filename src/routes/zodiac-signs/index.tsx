@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SIGN_CONTENT } from "@/lib/zodiac-content";
+import { BirthdaySignLookup } from "@/components/BirthdaySignLookup";
 
 const URL = "https://aetherhoroscope.com/zodiac-signs";
 
@@ -71,6 +72,10 @@ function ZodiacIndex() {
           planet, and what each placement tends to look like in a life — the same material Aether
           reads when it writes your daily resonance from your Sun, Moon, and rising signs together.
         </p>
+
+        <div className="mb-14">
+          <BirthdaySignLookup />
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-border border border-border">
           {SIGN_CONTENT.map((s) => (
