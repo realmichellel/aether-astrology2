@@ -1,7 +1,35 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SIGN_CONTENT, signBySlug, type SignContent } from "@/lib/zodiac-content";
+import { BirthdaySignLookup } from "@/components/BirthdaySignLookup";
+import { SIGN_RANGES, neighbors, formatDay, elementMatches } from "@/lib/sign-lookup";
 
 const BASE = "https://aetherhoroscope.com/zodiac-signs";
+
+function faqFor(sign: SignContent) {
+  const range = SIGN_RANGES[sign.slug];
+  const { previous, next } = neighbors(sign.slug);
+  const start = formatDay(range.start[0], range.start[1]);
+  const end = formatDay(range.end[0], range.end[1]);
+  const matches = elementMatches(sign).map((s) => s.name);
+  return [
+    {
+      q: `What are the ${sign.name} dates?`,
+      a: `${sign.name} dates are ${start} to ${end}. If you were born on or before ${formatDay(range.start[0], range.start[1] - 1 || 1)} you are ${previous.name}; if you were born after ${end} you are ${next.name}.`,
+    },
+    {
+      q: `Is ${sign.name} a ${sign.element.toLowerCase()} sign?`,
+      a: `Yes. ${sign.name} is a ${sign.modality.toLowerCase()} ${sign.element.toLowerCase()} sign ruled by ${sign.ruler}.`,
+    },
+    {
+      q: `What signs are most compatible with ${sign.name}?`,
+      a: `Traditionally ${sign.name} pairs easily with the other ${sign.element.toLowerCase()} signs and with ${sign.element === "Fire" || sign.element === "Air" ? "air and fire" : "earth and water"} signs generally — ${matches.slice(0, 5).join(", ")}. Real compatibility depends on the whole chart, not the Sun sign alone.`,
+    },
+    {
+      q: `Do the ${sign.name} dates shift from year to year?`,
+      a: `Slightly. The Sun enters ${sign.name} around ${start} each year, but the exact moment moves by up to a day depending on the year and your time zone. If your birthday falls on the boundary, your birth time and city settle it.`,
+    },
+  ];
+}
 
 export const Route = createFileRoute("/zodiac-signs/$slug")({
   loader: ({ params }) => {
