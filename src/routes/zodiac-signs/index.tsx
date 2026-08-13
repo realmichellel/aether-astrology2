@@ -73,6 +73,10 @@ function ZodiacIndex() {
           reads when it writes your daily resonance from your Sun, Moon, and rising signs together.
         </p>
 
+        <div className="mb-14">
+          <BirthdaySignLookup />
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-border border border-border">
           {SIGN_CONTENT.map((s) => (
             <Link
