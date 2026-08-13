@@ -128,7 +128,22 @@ function SignPage() {
           <span className="mr-3 text-accent">{sign.symbol}</span>
           <span className="italic">{sign.name}</span>
         </h1>
-        <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-10">{sign.dates}</p>
+        <p className="text-[10px] uppercase tracking-[0.3em] text-accent mb-6">{sign.dates}</p>
+
+        <p className="text-lg sm:text-xl font-light leading-relaxed text-stone-200 mb-4">
+          <strong className="font-normal text-accent">
+            {sign.name} dates are {sign.dates}.
+          </strong>{" "}
+          If you were born in that window, the Sun was moving through {sign.name} — a{" "}
+          {sign.modality.toLowerCase()} {sign.element.toLowerCase()} sign ruled by {sign.ruler}.
+        </p>
+        <p className="text-sm text-stone-400 leading-relaxed mb-10">
+          Born a day or two either side? The boundary shifts slightly year to year. Just before{" "}
+          {sign.dates.split("–")[0].trim()} belongs to {previous.name}; just after{" "}
+          {sign.dates.split("–")[1].trim()} belongs to {next.name}. Your birth time and city decide
+          the edge cases.
+        </p>
+
 
         <dl className="grid grid-cols-3 gap-px bg-border border border-border mb-12">
           {[
