@@ -196,6 +196,48 @@ function SignPage() {
           </div>
         </section>
 
+        <section className="border-t border-border pt-10 mb-12">
+          <h2 className="font-serif text-2xl sm:text-3xl italic mb-3">
+            Who {sign.name} tends to get along with
+          </h2>
+          <p className="text-sm sm:text-base text-stone-400 leading-relaxed mb-5">
+            By element, {sign.name} shares an easy language with the other{" "}
+            {sign.element.toLowerCase()} signs and with{" "}
+            {sign.element === "Fire" || sign.element === "Air" ? "air and fire" : "earth and water"}{" "}
+            signs generally. It's a starting point, not a verdict — two whole charts decide the rest.
+          </p>
+          <div className="flex flex-wrap gap-x-6 gap-y-3">
+            {matches.map((s) => (
+              <Link
+                key={s.slug}
+                to="/zodiac-signs/$slug"
+                params={{ slug: s.slug }}
+                className="font-serif italic text-lg text-stone-300 hover:text-accent transition-colors"
+              >
+                {s.symbol} {s.name}
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <div className="mb-12">
+          <BirthdaySignLookup heading="Not sure it's your sign?" />
+        </div>
+
+        <section className="border-t border-border pt-10 mb-12">
+          <h2 className="font-serif text-2xl sm:text-3xl italic mb-6">
+            {sign.name} questions, answered
+          </h2>
+          <dl className="space-y-6">
+            {faqs.map((f) => (
+              <div key={f.q}>
+                <dt className="font-serif text-lg text-stone-200 mb-2">{f.q}</dt>
+                <dd className="text-sm sm:text-base text-stone-400 leading-relaxed">{f.a}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
         <section className="border-t border-border pt-10 mb-14">
           <h2 className="font-serif text-2xl sm:text-3xl italic mb-3">
             How Aether reads {sign.name}
