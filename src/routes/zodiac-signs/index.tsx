@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SIGN_CONTENT } from "@/lib/zodiac-content";
+import { BirthdaySignLookup } from "@/components/BirthdaySignLookup";
 
 const URL = "https://aetherhoroscope.com/zodiac-signs";
 
