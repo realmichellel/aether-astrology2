@@ -77,6 +77,14 @@ export const Route = createFileRoute("/zodiac-signs/$slug")({
                   { "@type": "ListItem", position: 3, name: sign.name, item: url },
                 ],
               },
+              {
+                "@type": "FAQPage",
+                mainEntity: faqs.map((f) => ({
+                  "@type": "Question",
+                  name: f.q,
+                  acceptedAnswer: { "@type": "Answer", text: f.a },
+                })),
+              },
             ],
           }),
         },
